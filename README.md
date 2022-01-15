@@ -58,7 +58,7 @@ N 是结算时下一步的按钮
 
 Num1-3(数字键盘) 是对应队伍1-3
 
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/AutoPcr_py/%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%94%AE%E4%BD%8D%E8%AE%BE%E7%BD%AE.png"  width= "800"/>
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/AutoPcr_py/%E6%A8%A1%E6%8B%9F%E5%99%A8%E9%94%AE%E4%BD%8D%E8%AE%BE%E7%BD%AE.png" width= "800"/>
 
 
 ## 3.地下城配队
