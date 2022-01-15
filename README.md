@@ -1,6 +1,6 @@
 # AutoPcr
 公主连结自动化任务
-<img src="https://github.com/smartgrass/blob/main/AutoPcr/Top.png"/>
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png"/>
 提示:
 1.本源码供学习用，禁止用于商业相关
 2.使用时不能有中文路径
@@ -26,7 +26,7 @@ exe版本就直接用吧
 编辑器分辨率保持和截图一样 这对识别率很重要;
 设置完分辨率后建议固定窗口大小
 (模拟器大小900x506-dpi180-固定大小)
-<img src="https://github.com/smartgrass/blob/main/AutoPcr/AutoPcr_py/模拟器大小900x506-dpi180-固定大小.png"/>
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/AutoPcr/AutoPcr_py/模拟器大小900x506-dpi180-固定大小.png"/>
 
 
 按键配置
@@ -35,7 +35,7 @@ p 是 开始挑战按钮
 N 是结算时下一步的按钮
 1-5是编组 6是我的队伍
 Num1-3(数字键盘) 是对应队伍1-3
-<img src="https://github.com/smartgrass/blob/main/AutoPcr/AutoPcr_py/模拟器键位设置.png"/>
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/AutoPcr/AutoPcr_py/模拟器键位设置.png"/>
 
 
 3.地下城配队
