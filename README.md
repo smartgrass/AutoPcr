@@ -1,5 +1,5 @@
-# AutoPcr
-公主连结自动化任务
+# AutoPcr 公主连结自动化任务
+git : https://github.com/smartgrass/AutoPcr
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png"/>
 提示:
 1.本源码供学习用，禁止用于商业相关
