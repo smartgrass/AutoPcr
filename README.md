@@ -1,6 +1,22 @@
-# 公主连结自动化任务 https://github.com/smartgrass/AutoPcr
+## 公主连结自动化任务 
+
+git: https://github.com/smartgrass/AutoPcr
+
+b站: https://www.bilibili.com/video/BV14a411q7uA
+
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
+
+# 更新
+从评论区知道了春黑加连点能自动1刀,试了下可以,就用了
+
+春黑版本文件是 AutoPcr_ChunHei.py
+
+用之前需要新增一个快捷键'm'给连点用
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/NewKey1.png"/>
+
+配好后就可以用了
 
 # 提示:
 
