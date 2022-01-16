@@ -18,6 +18,8 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 配好后就可以用了
 
+其次是按Esc可以中断程序
+
 # 提示:
 
 1.本源码供学习用，禁止用于商业相关
