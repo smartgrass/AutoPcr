@@ -294,6 +294,7 @@ def WaitBossFight():
 	if(LongTimeCheck('dxc/win.png','dxc/lose.png')):
 		#win
 		print('win')
+		stop_thread(t1)
 		time.sleep(2)
 		DoKeyDown(nextKey)
 		time.sleep(3)
