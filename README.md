@@ -12,11 +12,13 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 春黑版本文件是 AutoPcr_ChunHei.py
 
-用之前需要新增一个快捷键'm'给连点用
+使用需要新加一个keyboard的库, => pip install keyboard
+
+然后是新增一个快捷键'm'给连点用
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/NewKey1.png"/>
 
-配好后就可以用了
+都配好后就可以用了
 
 其次是按Esc可以中断程序
 
@@ -43,6 +45,8 @@ exe版本就直接用吧
  
  PIL库做屏幕截图;
  
+ keyboard 做键盘事件检测
+ 
 安装命令:
 
  pip install aircv
@@ -51,6 +55,7 @@ exe版本就直接用吧
  
  pip install pillow
  
+ pip install keyboard
 
 
 ## 2.分辨率和按键设置
