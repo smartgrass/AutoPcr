@@ -17,7 +17,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/QuickStart.png" width= "500"/>
 
-需要注意是:
+### 配置
 
 要给两个cmd文件配上路径,改成自己的AutoPcr目录 和 雷电模拟器的目录
 
