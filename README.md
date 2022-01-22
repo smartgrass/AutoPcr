@@ -25,7 +25,7 @@ start.cmd :
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd0.png"  width= "500"/>
 
-start.cmd1 :
+start1.cmd :
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd1.png" width= "500"/>
 
