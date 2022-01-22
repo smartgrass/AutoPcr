@@ -6,10 +6,28 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
+
 # 更新-懒得开雷电模拟器版本(仅限Windows系统)
-用管理员模式打开AutoPcr/start.cmd 就可以了
+
+用管理员模式打开AutoPcr/start.cmd 就可以了自动启动模拟器,开app自动刷任务
+
 然后,为了更加偷懒,可以给start.cmd创建快捷方式
+
 属性->快捷方式->高级-> √ 用管理员身份运行
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/QuickStart.png" width= "500"/>
+
+需要注意是:
+
+要给两个cmd文件配上路径,改成自己的AutoPcr目录 和 雷电模拟器的目录
+
+start.cmd :
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd0.png"  width= "500"/>
+
+start.cmd1 :
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd1.png" width= "500"/>
 
 
 # 更新-春黑连点版本
@@ -33,7 +51,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 2.使用时不能有中文路径
 
-3.推荐用雷电, mumu用不了
+3.推荐用雷电, mumu用不了(据说是管理员权限的问题)
 
 
 # 运行需求:
