@@ -1,4 +1,5 @@
 import ctypes
+from importlib.resources import path
 import inspect
 from re import A
 import threading
@@ -9,6 +10,7 @@ from ctypes import *
 from PIL import ImageGrab
 import aircv as ac
 import keyboard
+import sys
 
 #快速检测图片
 def IsHasImg(targetImg,isClick = True,stopTime = 2):
@@ -30,6 +32,7 @@ def WaitImgLongTime(targetImg):
 def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = False):
 	target_ImgPath = GetImagPath(targetImg)
 	Screen_ImgPath = image_X()
+	print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
 	imsch = ac.imread(target_ImgPath) # 带查找的部分
 	match_result = ac.find_template(imsrc, imsch, minMatch)
@@ -321,6 +324,7 @@ def GetImagPath(pngName):
 	return os.path.join(curDir,pngName)
 
 
+
 def LongTimeCheck(im1,im2):
 	isWaiting = True
 	#True表示识别1图 False表示识别2图
@@ -381,7 +385,19 @@ def stop_thread(thread):
 	print("stop ",thread)
 	_async_raise(thread.ident, SystemExit)
 
-
+def WaitStart():
+	print('=== WaitStart ===')
+	time.sleep(5)
+	while(IsHasImg("fight.png",False) == False):
+		DoKeyDown(exitKey)
+		time.sleep(0.5)
+		DoKeyDown(exitKey)
+		time.sleep(1)
+	while(IsHasImg("fight.png",False) == False):
+		DoKeyDown(exitKey)
+		time.sleep(0.5)
+		DoKeyDown(exitKey)
+		time.sleep(1)
 
 #按下Ctrl 停止
 def CheckEnd(_key):
@@ -402,6 +418,7 @@ role3Key = 'm' #春黑是第个三位置
 
 if __name__ == '__main__':
 	curDir = os.path.dirname(__file__)
+
 	waitTime = 0
 	minMatch = 0.64 #最低相似度匹配
 	warnMatch = 0.85 #相似度小于此时, 打印黄字
@@ -409,14 +426,13 @@ if __name__ == '__main__':
 	StartBossIndex = 0
 	isUseChunHei = True #地下城是否使用春黑连点
 
-
 	#按下Esc键停止
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
 	t1 = threading.Thread(target=LoopKeyDown,args=(role3Key,))
-	print('=== Start ===')
 	time.sleep(0.5)
-
+	WaitStart()
+	print('=== Start ===')
 	# WaitImgLongTime("jjc/jjcTop.png") #用于检测匹配程度,用jjcTop
 	# LongTimeCheck("dxc/box3.png","dxc/box4.png")
 	# AutoHuoDong()  #打普通关用
