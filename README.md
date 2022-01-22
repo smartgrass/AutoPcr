@@ -6,8 +6,13 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
+# 更新-懒得开雷电模拟器版本(仅限Windows系统)
+用管理员模式打开AutoPcr/start.cmd 就可以了
+然后,为了更加偷懒,可以给start.cmd创建快捷方式
+属性->快捷方式->高级-> √ 用管理员身份运行
 
-# 更新
+
+# 更新-春黑连点版本
 从评论区知道了春黑加连点能自动1刀,试了下可以,就用了
 
 春黑版本文件是 AutoPcr_ChunHei.py
