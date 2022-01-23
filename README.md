@@ -9,7 +9,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新-懒得开雷电模拟器版本(仅限Windows系统)
 
-用管理员模式打开AutoPcr/start.cmd 就可以了自动启动模拟器,开app自动刷任务
+用管理员模式打开AutoPcr_py/start.cmd 就可以了自动启动模拟器,开app自动刷任务
 
 然后,为了更加偷懒,可以给start.cmd创建快捷方式
 
