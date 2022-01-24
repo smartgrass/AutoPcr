@@ -298,7 +298,7 @@ def WaitBossFight():
 #图片路径拼接
 def GetImagPath(pngName):
 	global curDir
-	return curDir+"/"+pngName
+	return os.path.join(curDir,pngName)
 
 #1-5是编组位置 6 是队伍
 #num1-3 队伍位置
