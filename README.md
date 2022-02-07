@@ -72,13 +72,15 @@ exe版本就直接用吧
  
 安装命令:
 
- pip install aircv
- 
- pip install pyautogui
- 
- pip install pillow
- 
- pip install keyboard
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple aircv
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyautogui
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pillow
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple keyboard
 
 ### (或者管理员模式运行 "pyPipInstall.cmd" 安装)
 
