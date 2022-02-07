@@ -1,4 +1,5 @@
 
+import sys
 from sysconfig import get_path
 from tkinter.tix import Tree
 from xmlrpc.client import Boolean
@@ -19,7 +20,19 @@ import aircv as ac
 import keyboard
 
 #Glabol
+print("path " ,os.path.dirname(sys.executable))
+# print("path " , os.getcwd())
+
 curDir = os.path.dirname(__file__)
+#图片路径拼接
+def GetImagPath(pngName):
+	global curDir
+	return os.path.join(curDir,pngName)
+
+#利用文件是否存在判断是Exe 还是 Py文件
+if(os.path.exists(GetImagPath('config.ini')) == False):
+	print('Exe Run')
+	curDir =os.getcwd()
 
 waitTime = 0
 minMatch = 0.64 #最低相似度匹配
@@ -338,14 +351,6 @@ def WaitBossFight():
 		WaitToClickImg('dxc/dxcBack.png')
 		time.sleep(2)
 		StartBoss()
-
-
-
-#图片路径拼接
-def GetImagPath(pngName):
-	global curDir
-	return os.path.join(curDir,pngName)
-
 
 
 def LongTimeCheck(im1,im2):
