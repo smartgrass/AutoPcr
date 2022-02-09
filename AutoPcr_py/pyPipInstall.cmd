@@ -8,6 +8,8 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pillow
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple keyboard
 
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pypiwin32
+
 echo OK!!
 
 pause
