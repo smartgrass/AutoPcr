@@ -1,4 +1,4 @@
-start call E:\MyApplication2\AutoPcr\AutoPcr_py\start1.cmd
+start call E:\MyApplication2\AutoPcr\AutoPcr_py\startPy.cmd
 
 cd /d D:\program files\LeiDian\LDPlayer4.0
 
