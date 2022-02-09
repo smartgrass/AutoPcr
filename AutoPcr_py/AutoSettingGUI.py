@@ -30,6 +30,7 @@ isTansuo = Boolean(cfg.get('MainSetting','isTansuo')=='True')
 isDxc = Boolean(cfg.get('MainSetting','isDxc')=='True')
 isExp = Boolean(cfg.get('MainSetting','isExp')=='True')
 isNiuDan = Boolean(cfg.get('MainSetting','isNiuDan')=='True')
+LeiDianDir = cfg.get('MainSetting','LeiDianDir')
 
 StartRunName = "启动模拟器并运行"
 RunName = "运行"
@@ -49,6 +50,7 @@ def SavaConfig(AllValues):
 	cfg.set('MainSetting', 'isExp', str(isExp))
 	cfg.set('MainSetting', 'isNiuDan', str(isNiuDan))
 	cfg.set('MainSetting', 'isRunAndStart', str(isRunAndStart))
+	cfg.set('MainSetting', 'LeiDianDir', LeiDianDir)
 	with open(configPath, "w+") as f:
 		cfg.write(f)
 
@@ -75,7 +77,7 @@ def StartPcr():
 # [sg.Text('Enter something on Row 2'), sg.InputText()],
 layout = [	[sg.Checkbox('竞技场',isJJC)],[sg.Checkbox('探索',isTansuo)],[sg.Checkbox('地下城',isDxc)],
 			[sg.Checkbox('购买经验',isExp)],[sg.Checkbox('扭蛋',isNiuDan)],
-			[sg.Text('雷电模拟器文件夹路径'), sg.InputText('D:\program files\LeiDian\LDPlayer4.0')],
+			[sg.Text('雷电模拟器文件夹路径'), sg.InputText(LeiDianDir)],
 			[sg.Button(StartRunName), sg.Button(RunName),sg.Button('保存路径'), ] ]
 
 # Create the Window
@@ -89,6 +91,7 @@ while True:
 		break
 	SetCurConfig(values)
 	if event == '保存路径':
+		LeiDianDir = values[5]
 		WriteLeiDian(values[5])
 		SavaConfig(values)
 	if ((event == StartRunName) | (event == RunName)):
