@@ -494,7 +494,6 @@ StartRunName = "启动模拟器并运行"
 RunName = "运行"
 
 
-
 def RunAutoPcr():
 	#按下Esc键停止
 	global t0
@@ -504,6 +503,7 @@ def RunAutoPcr():
 	t1 = threading.Thread(target=LoopKeyDown,args=(role3Key,))
 	time.sleep(0.5)
 	if(isRunAndStart):
+		SetStartRunFalse()
 		print('Wait Start...')
 		time.sleep(20)
 		WaitStart()
@@ -524,6 +524,11 @@ isDxc = Boolean(cfg.get('MainSetting','isDxc')=='True')
 isExp = Boolean(cfg.get('MainSetting','isExp')=='True')
 isNiuDan = Boolean(cfg.get('MainSetting','isNiuDan')=='True')
 
+#恢复设置用完就消失
+def SetStartRunFalse():
+	cfg.set('MainSetting', 'isRunAndStart', str(False))
+	with open(configPath, "w+") as f:
+		cfg.write(f)
 
 if __name__ == '__main__':
 	print('isRunAndStart: ',isRunAndStart)

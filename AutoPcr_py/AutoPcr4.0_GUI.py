@@ -81,7 +81,7 @@ layout = [	[sg.Checkbox('竞技场',isJJC)],[sg.Checkbox('探索',isTansuo)],[sg
 			[sg.Button(StartRunName), sg.Button(RunName),sg.Button('保存路径'), ] ]
 
 # Create the Window
-window = sg.Window('Window Title', layout)
+window = sg.Window('AutoPcr', layout)
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
 	event, values = window.read()
