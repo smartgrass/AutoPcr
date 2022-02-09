@@ -1,14 +1,11 @@
 
+from sqlite3 import Time
 import sys
-from sysconfig import get_path
-from tkinter import E
-from tkinter.tix import Tree
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
 
 import ctypes
-from importlib.resources import path
 import inspect
 from re import A
 import threading
@@ -26,12 +23,12 @@ print("path " ,os.path.dirname(sys.executable))
 
 curDir = os.path.dirname(__file__)
 #图片路径拼接
-def GetImagPath(pngName):
+def GetFullPath(pngName):
 	global curDir
 	return os.path.join(curDir,pngName)
 
 #利用文件是否存在判断是Exe 还是 Py文件
-if(os.path.exists(GetImagPath('config.ini')) == False):
+if(os.path.exists(GetFullPath('config.ini')) == False):
 	print('Exe Run')
 	curDir =os.getcwd()
 
@@ -67,7 +64,7 @@ def WaitImgLongTime(targetImg):
 #isShip:查找失败后是否跳过
 #maxTry:查找失败重新尝试次数
 def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = False):
-	target_ImgPath = GetImagPath(targetImg)
+	target_ImgPath = GetFullPath(targetImg)
 	Screen_ImgPath = image_X()
 	print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
@@ -359,7 +356,8 @@ def WaitBossFight():
 
 def BuyExp():
 	ToShopPage()
-	WaitToClickImg('shop/select1.png')
+	time.sleep(0.5)
+	DoKeyDown('2')
 	if(IsHasImg('shop/exp2.png',False) == False):
 		ToHomePage()
 		print('no to buy')
@@ -428,8 +426,6 @@ def AutoHuoDong():
 	AutoHuoDong()
 
 def DailyTasks():
-	if(isSend):
-		SendZb()
 	if(isNiuDan):
 		NiuDan()
 	if(isExp):
@@ -457,6 +453,12 @@ def _async_raise(tid, exctype):
 def stop_thread(thread):
 	print("stop ",thread)
 	_async_raise(thread.ident, SystemExit)
+
+	# f  = open(GetFullPath('StartLeiDian.cmd'), "r")
+	# cmdStr =  f.read()
+	# print(cmdStr)
+	# popen(cmdStr)
+	# os.system(command=cmdStr)
 
 def WaitStart():
 	print('=== WaitStart ===')
@@ -502,12 +504,10 @@ def RunAutoPcr():
 	t1 = threading.Thread(target=LoopKeyDown,args=(role3Key,))
 	time.sleep(0.5)
 	if(isRunAndStart):
+		print('Wait Start...')
+		time.sleep(20)
 		WaitStart()
 	print('=== Start ===')
-	# WaitImgLongTime("jjc/jjcTop.png") #用于检测匹配程度,用jjcTop
-	# LongTimeCheck("dxc/box3.png","dxc/box4.png")
-	# AutoHuoDong()  #打普通关用
-	# StartBoss()
 
 #日常
 	DailyTasks()
@@ -515,65 +515,16 @@ def RunAutoPcr():
 
 #======读取配置======
 cfg = ConfigParser()
-configPath = GetImagPath('config.ini')
+configPath = GetFullPath('config.ini')
 cfg.read(configPath)
-isRunAndStart = False
+isRunAndStart = (cfg.get('MainSetting','isRunAndStart')=='True')
 isJJC = Boolean(cfg.get('MainSetting','isJJC')=='True')
 isTansuo = Boolean(cfg.get('MainSetting','isTansuo')=='True')
 isDxc = Boolean(cfg.get('MainSetting','isDxc')=='True')
 isExp = Boolean(cfg.get('MainSetting','isExp')=='True')
-isSend = Boolean(cfg.get('MainSetting','isSend')=='True')
 isNiuDan = Boolean(cfg.get('MainSetting','isNiuDan')=='True')
 
-def SetCurConfig(AllValues):
-	global isJJC,isTansuo,isExp,isDxc,isSend,isNiuDan
-	isJJC = AllValues[0]
-	isTansuo =AllValues[1]
-	isDxc=AllValues[2]
-	isExp=AllValues[3]
-	isSend=AllValues[4]
-	isNiuDan = AllValues[5]
-#保存配置
-def SavaConfig(AllValues):
-	cfg.set('MainSetting', 'isJJC', str(AllValues[0]))
-	cfg.set('MainSetting', 'isTansuo', str(AllValues[1]))
-	cfg.set('MainSetting', 'isDxc', str(AllValues[2]))
-	cfg.set('MainSetting', 'isExp', str(AllValues[3]))
-	cfg.set('MainSetting', 'isSend', str(AllValues[4]))
-	cfg.set('MainSetting', 'isNiuDan', str(AllValues[5]))
 
-	with open(configPath, "w+") as f:
-		cfg.write(f)
-# isJJC = True
-#============GUI================
-# sg.theme('DarkAmber')   # Add a touch of color
-# All the stuff inside your window.
-# [sg.Text('Enter something on Row 2'), sg.InputText()],
-layout = [  [sg.Checkbox('竞技场',isJJC)],[sg.Checkbox('探索',isTansuo)],[sg.Checkbox('地下城',isDxc)],
-			[sg.Checkbox('购买经验',isExp)],[sg.Checkbox('送装备',isSend)],[sg.Checkbox('扭蛋',isNiuDan)],
-			[sg.Button(StartRunName), sg.Button(RunName),sg.Button('Save'), ] ]
-
-# Create the Window
-window = sg.Window('Window Title', layout)
-# Event Loop to process "events" and get the "values" of the inputs
-while True:
-	event, values = window.read()
-	if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
-		break
-	SetCurConfig(values)
-	if event == 'Save':
-		SavaConfig(values)
-	if ((event == StartRunName) | (event == RunName)):
-		isRunAndStart = (event == StartRunName)
-		print('Run ', isRunAndStart )
-		tMain = threading.Thread(target=RunAutoPcr)
-		tMain.start()
-	# print('You entered ', values[0])
-	print('You entered ', values )
-	print('You event ', event )
-
-print("close")
-os._exit(0)
-window.close()
-
-#============GUIEnd================
+if __name__ == '__main__':
+	print('isRunAndStart: ',isRunAndStart)
+	RunAutoPcr()
