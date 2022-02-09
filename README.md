@@ -9,7 +9,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新-懒得开雷电模拟器版本(仅限Windows系统)
 
-用管理员模式打开AutoPcr_py/start.cmd 就可以了自动启动模拟器,开app自动刷任务
+用管理员模式打开AutoPcr_py/Start.cmd 就可以了自动启动模拟器,开app自动刷任务
 
 然后,为了更加偷懒,可以给start.cmd创建快捷方式
 
@@ -21,11 +21,11 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 要给两个cmd文件配上路径,改成自己的AutoPcr目录 和 雷电模拟器的目录
 
-start.cmd :
+Start.cmd :
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd0.png"  width= "500"/>
 
-start1.cmd :
+StartPy.cmd:
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd1.png" width= "500"/>
 
@@ -71,7 +71,6 @@ exe版本就直接用吧
  keyboard 做键盘事件检测
  
 安装命令:
-
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple aircv
@@ -82,7 +81,10 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pillow
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple keyboard
 
-### (或者管理员模式运行 "pyPipInstall.cmd" 安装)
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pypiwin32
+
+
+### (或者管理员模式运行 "SetupPip.cmd" 安装)
 
 ## 2.分辨率和按键设置
 
