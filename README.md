@@ -11,6 +11,8 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
 
+启动文件: AutoPcr4.0_GUI.py
+
 需要配好雷电模拟器路径
 
 新增库 ->运行 SetupPip.cmd
