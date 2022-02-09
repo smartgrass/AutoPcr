@@ -7,7 +7,15 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
-# 更新-懒得开雷电模拟器版本(仅限Windows系统)
+# 更新-GUI版本(仅限Windows系统) 
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
+
+需要配好雷电模拟器路径
+
+新增库 -> SetupPip.cmd
+
+# 更新-一键开启版本(仅限Windows系统) 
 
 用管理员模式打开AutoPcr_py/Start.cmd 就可以了自动启动模拟器,开app自动刷任务
 
@@ -35,7 +43,7 @@ StartPy.cmd:
 
 春黑版本文件是 AutoPcr_ChunHei.py
 
-使用需要新加一个keyboard的库, => pip install keyboard
+新增库 -> SetupPip.cmd
 
 然后是新增一个快捷键'm'给连点用
 
