@@ -13,7 +13,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 需要配好雷电模拟器路径
 
-新增库 -> SetupPip.cmd
+新增库 ->运行 SetupPip.cmd
 
 # 更新-一键开启版本(仅限Windows系统) 
 
@@ -43,7 +43,7 @@ StartPy.cmd:
 
 春黑版本文件是 AutoPcr_ChunHei.py
 
-新增库 -> SetupPip.cmd
+新增库 ->运行 SetupPip.cmd
 
 然后是新增一个快捷键'm'给连点用
 
