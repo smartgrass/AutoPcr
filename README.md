@@ -78,6 +78,8 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple keyboard
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pypiwin32
 
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple PySimpleGUI
+
 
 ### (或者管理员模式运行 "SetupPip.cmd" 安装)
 
