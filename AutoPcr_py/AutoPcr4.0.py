@@ -377,10 +377,15 @@ def NiuDan():
 	WaitToClickImg('niuDan.png')
 	time.sleep(1)
 	DoKeyDown('6')
-	if(IsHasImg('other/niu2.png')):
-		ToHomePage()
-	else:
-		print()
+
+
+	if(IsHasImg('other/niu1.png')):
+		WaitToClickImg('tansuo/sure.png')
+		WaitToClickImg('tansuo/sure_white.png')
+	ToHomePage()
+	# if(IsHasImg('other/niu2.png'),False):
+	
+	# else:
 
 def SendZb():
 	print()
@@ -507,10 +512,10 @@ def RunAutoPcr():
 		time.sleep(20)
 		WaitStart()
 	print('=== Start ===')
-
 #日常
 	DailyTasks()
 	print('=== end ===')
+	os._exit(0)
 
 #======读取配置======
 cfg = ConfigParser()
