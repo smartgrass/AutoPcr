@@ -3,6 +3,13 @@ https://www.python.org/downloads/ 官网下载选最新就行了
 
 安装完成后
 
+
+### 再重新打开安装包
+
+勾选一样的选项
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/python4.gif" width= "500"/>
+
 ### 检查是否安装成功
 
 打开cmd输入'python'  和
