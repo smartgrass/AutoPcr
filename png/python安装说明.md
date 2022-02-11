@@ -1,5 +1,6 @@
 ## python安装 
 https://www.python.org/downloads/ 官网下载选最新就行了
+
 安装完成后
 
 ### 检查是否安装成功
