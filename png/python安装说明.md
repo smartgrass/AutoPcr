@@ -20,6 +20,9 @@ https://www.python.org/downloads/ 官网下载选最新就行了
 
 管理员模式下运行 SetupPip.cmd 就可以了
 
-## 为python.exe设置管理员模式运行
+
+## 设置python.exe管理员模式运行
+
+找到python.exe ,然后打开属性
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Python3.png" width= "500"/>
