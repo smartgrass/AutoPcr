@@ -7,7 +7,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
-# 更新4.0-GUI版本(仅限Windows) 扭蛋开发中...
+# 更新4.0-GUI版本(仅限Windows) 
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
 
