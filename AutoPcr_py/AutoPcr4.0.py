@@ -384,7 +384,7 @@ def NiuDan():
 		WaitToClickImg('tansuo/sure_white.png')
 	ToHomePage()
 	# if(IsHasImg('other/niu2.png'),False):
-	
+
 	# else:
 
 def SendZb():
@@ -431,10 +431,10 @@ def AutoHuoDong():
 	AutoHuoDong()
 
 def DailyTasks():
-	if(isNiuDan):
-		NiuDan()
 	if(isExp):
 		BuyExp()
+	if(isNiuDan):
+		NiuDan()
 	if(isTansuo):
 		StartTanSuo()
 	if(isJJC):
@@ -511,6 +511,8 @@ def RunAutoPcr():
 		print('Wait Start...')
 		time.sleep(20)
 		WaitStart()
+	else:
+		time.sleep(2)
 	print('=== Start ===')
 #日常
 	DailyTasks()
