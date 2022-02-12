@@ -23,12 +23,6 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 启动文件 AutoPcr_py/Start.cmd (管理员模式)
 
-然后,为了更加偷懒,可以给start.cmd创建快捷方式
-
-属性->快捷方式->高级-> √ 用管理员身份运行
-
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/QuickStart.png" width= "400"/>
-
 ### 配置
 
 要给两个cmd文件配上路径,改成自己的AutoPcr目录 和 雷电模拟器的目录
