@@ -19,7 +19,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 新增库 ->运行 SetupPip.cmd (管理员
 
-# 更新-cmd一键启动版本(仅限Windows) (可跳过)
+# 更新-cmd一键启动版本(可跳过)
 
 启动文件 AutoPcr_py/Start.cmd (管理员模式)
 
