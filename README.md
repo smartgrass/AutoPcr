@@ -19,22 +19,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 新增库 ->运行 SetupPip.cmd (管理员
 
-# 更新3.0-cmd一键启动版本(可跳过)
-
-启动文件 AutoPcr_py/Start.cmd (管理员模式)
-
-### 配置
-
-要给两个cmd文件配上路径,改成自己的AutoPcr目录 和 雷电模拟器的目录
-
-Start.cmd :
-
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd0.png"  width= "500"/>
-
-StartPy.cmd:
-
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/cmd1.png" width= "500"/>
-
+保存路径后将自动生成 AutoPcr_py/Start.cmd (管理员运行也可用
 
 # 提示:
 
