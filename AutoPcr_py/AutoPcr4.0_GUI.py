@@ -54,12 +54,27 @@ def SavaConfig(AllValues):
 	with open(configPath, "w+") as f:
 		cfg.write(f)
 
+def WriteCmds(path):
+	WriteLeiDian(path)
+	WirteStart(path)
+	WirteStartPy()
+
 def WriteLeiDian(path):
 	print('write ',path)
 	with open(GetFullPath('StartLeiDian.cmd'),'w') as f:
 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe launchex --index 0 --packagename com.bilibili.priconne\n\nexit")
 		f.write(cmdStr)
 
+def WirteStartPy():
+	with open(GetFullPath('StartPy.cmd'),'w') as f:
+		cmdStr =("python "+curDir+"\AutoPcr4.0.py")
+		f.write(cmdStr)
+
+def WirteStart(path):
+	with open(GetFullPath('start.cmd'),'w') as f:
+		print('write ',path)
+		cmdStr  = "start call "+curDir+"\startPy.cmd\n\n"+"cd /d "+ path+"\n\ndnconsole.exe launchex --index 0 --packagename com.bilibili.priconne\n\nexit"
+		f.write(cmdStr)
 
 def CallLeiDian():
 	win32api.ShellExecute(0, 'open', GetFullPath('StartLeiDian.cmd'), '', '', 1)
@@ -92,7 +107,7 @@ while True:
 	SetCurConfig(values)
 	if event == '保存路径':
 		LeiDianDir = values[5]
-		WriteLeiDian(values[5])
+		WriteCmds(values[5])
 		SavaConfig(values)
 	if ((event == StartRunName) | (event == RunName)):
 		isRunAndStart = (event == StartRunName)

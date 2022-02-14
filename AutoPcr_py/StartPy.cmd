@@ -1,1 +1,0 @@
-python E:\MyApplication2\AutoPcr\AutoPcr_py\AutoPcr4.0.py
