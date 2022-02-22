@@ -1,4 +1,5 @@
 
+from math import fabs
 from sqlite3 import Time
 import sys
 from xmlrpc.client import Boolean
@@ -211,7 +212,8 @@ def StartTanSuo():
 	print("===exit===")
 	DoKeyDown(exitKey)
 	#exp
-	ToFightPage()
+	if(IsHasImg("tansuo/tansuo.png",False) == False):
+		ToFightPage()
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/tansuo.png")
 	time.sleep(0.5)
