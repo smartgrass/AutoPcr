@@ -102,8 +102,9 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = 
 def image_X():
 	global curDir
 	img = ImageGrab.grab()
-	img.save(curDir + "/temp.png")
-	return curDir + "/temp.png"
+	sp = os.path.join(curDir,"temp.png")
+	img.save( sp)
+	return sp
 
 #Fight界面
 def ToFightPage():
@@ -469,12 +470,18 @@ def WaitStart():
 	time.sleep(5)
 	while(IsHasImg("fight.png",False) == False):
 		DoKeyDown(exitKey)
-		time.sleep(0.5)
+		time.sleep(2)
 		DoKeyDown(exitKey)
-		time.sleep(1)
+		time.sleep(3)
 	while(IsHasImg("fight.png",False) == False):
 		DoKeyDown(exitKey)
-		time.sleep(0.5)
+		time.sleep(1)
+		DoKeyDown(exitKey)
+		time.sleep(1)
+	time.sleep(2)
+	while(IsHasImg("fight.png",False) == False):
+		DoKeyDown(exitKey)
+		time.sleep(1)
 		DoKeyDown(exitKey)
 		time.sleep(1)
 
@@ -508,7 +515,7 @@ def RunAutoPcr():
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start...')
-		time.sleep(20)
+		time.sleep(25)
 		WaitStart()
 	else:
 		time.sleep(2)
