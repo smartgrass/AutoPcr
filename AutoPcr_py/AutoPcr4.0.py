@@ -481,12 +481,13 @@ def WaitStart():
 		time.sleep(1)
 		DoKeyDown(exitKey)
 		time.sleep(1)
-	time.sleep(2)
+	time.sleep(0.5)
 	while(IsHasImg("fight.png",False) == False):
+		time.sleep(0.5)
 		DoKeyDown(exitKey)
-		time.sleep(1)
+		time.sleep(0.5)
 		DoKeyDown(exitKey)
-		time.sleep(1)
+
 
 #按下Ctrl 停止
 def CheckEnd(_key):
