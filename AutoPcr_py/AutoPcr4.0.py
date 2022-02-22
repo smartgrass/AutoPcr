@@ -358,8 +358,9 @@ def WaitBossFight():
 
 
 def BuyExp():
+	time.sleep(1)
 	ToShopPage()
-	time.sleep(0.5)
+	time.sleep(2)
 	DoKeyDown('2')
 	if(IsHasImg('shop/exp2.png',False) == False):
 		ToHomePage()
