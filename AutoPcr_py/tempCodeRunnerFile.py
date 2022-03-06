@@ -1,1 +1,1 @@
-window.close()
+needZbNameKey = 'needZbName'
