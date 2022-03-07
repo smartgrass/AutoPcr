@@ -640,13 +640,13 @@ partyKey ='y'
 exitKey ='z'
 huodongKey='x'
 playerKey = 'p'	#p是挑战位置
-nextKey = 'n' #n 是下一步
+nextKey = 'l' #n 是下一步
 endKey ='Esc'
 #roleKey 123
-listSelectKeys=['f','g','h']
+listSelectKeys=['i','j','n']
 roleKeys = ['1','2','3','4','5']
 groupKeys = ['q','w','e','r','t']
-duiKeys =['j','k','l']
+duiKeys =['u','h','b']
 
 
 StartRunName = "启动模拟器并运行"
