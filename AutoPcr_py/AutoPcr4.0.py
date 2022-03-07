@@ -446,14 +446,16 @@ def EnterDiaoCha():
 	ToFightPage()
 	WaitToClickImg('main/diaoCha.png')
 
-def SaoDang(time =4):
+def SaoDang(_time =4):
 	WaitToClickImg('tansuo/plus.png')
-	for i in range(time):
+	for i in range(_time):
 		pyautogui.click()
 	WaitToClickImg('tansuo/start.png')
 	WaitToClickImg("main/sure.png")
 	WaitToClickImg("main/skip.png")
-	WaitToClickImg("main/sure_white.png")
+	time.sleep(0.3)
+	pyautogui.click()
+
 
 def ExitSaoDang():
 	time.sleep(0.5)
@@ -462,21 +464,28 @@ def ExitSaoDang():
 	DoKeyDown(exitKey)
 
 def Xqb():
-	WaitToClickImg('tansuo/xqbEnter.png')
+	if(WaitToClickImg('tansuo/xqbEnter.png')==False):
+		ExitSaoDang()
+		WaitToClickImg('tansuo/xqbEnter.png')
+
 
 	WaitToClickImg('tansuo/xqbTop.png',False)
 	print('listSelectKeys[1]' ,listSelectKeys[1])
 	DoKeyDown(listSelectKeys[0])
-	SaoDang()
-	ExitSaoDang()
-
-	WaitToClickImg('tansuo/xqbTop.png',False)
+	if(IsHasImg('tansuo/xqbTop.png',False) ==False):
+		SaoDang()
+		ExitSaoDang()
+		WaitToClickImg('tansuo/xqbTop.png',False)
+		print('ship')
 	DoKeyDown(listSelectKeys[1])
 	SaoDang()
 	ExitSaoDang()
 
+
 def xinSui():
-	WaitToClickImg('tansuo/xinSuiEnter.png')
+	if(WaitToClickImg('tansuo/xinSuiEnter.png')==False):
+		ExitSaoDang()
+		WaitToClickImg('tansuo/xinSuiEnter.png')
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
 	DoKeyDown(listSelectKeys[0])
@@ -496,12 +505,12 @@ def SendZb():
 	WaitToClickImg('other/hhDown.png',True,True,4)
 	time.sleep(0.2)
 	for i in range(2):
-		WaitToClickImg('other/sendBtn.png',True,match=0.93,isRgb=True)
-		WaitToClickImg('other/sendMax.png',True,True,7,False,0.85)
-		WaitToClickImg('main/sure_white.png')
-		time.sleep(0.2)
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
+		if(WaitToClickImg('other/sendBtn.png',True,match=0.93,isRgb=True)):
+			WaitToClickImg('other/sendMax.png',True,True,7,False,0.85)
+			WaitToClickImg('main/sure.png')
+			time.sleep(0.2)
+			DoKeyDown(exitKey)
+			DoKeyDown(exitKey)
 
 def GetZBPath(name):
 	return os.path.join('other\\zuanbei\\',str(name)+'.png')
@@ -570,16 +579,17 @@ def DailyTasks():
 		StartJJC()
 		StartPJJC()
 	if(isDxc):
-		StartDxc(3)
+		StartDxc(0)
 	if(isHomeTake):
 		ghHomeTake()
 		StartTakeAll()
-	if(isXQB | isXinSui):
+
+	if(isXQB):
 		EnterDiaoCha()
-		if(isXQB):
-			Xqb()
-		if(isXinSui):
-			xinSui()
+		Xqb()
+	if(isXinSui):
+		EnterDiaoCha()
+		xinSui()
 	if(isSend):
 		SendZb()
 	if(isNeedSeed):
