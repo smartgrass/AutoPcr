@@ -195,12 +195,19 @@ def CheckEnd(_key):
 		print(_key)
 		os._exit(0)
 
+#1-5是编组位置 6 是队伍
+#num1-3 队伍位置
+partyKey ='y'
+exitKey ='z'
+huodongKey='x'
+playerKey = 'p'	#p是挑战位置
+nextKey = 'l' #n 是下一步
 endKey ='Esc'
 #roleKey 123
-listSelectKeys=['f','g','h']
+listSelectKeys=['i','j','n']
 roleKeys = ['1','2','3','4','5']
 groupKeys = ['q','w','e','r','t']
-duiKeys =['j','k','l']
+duiKeys =['u','h','b']
 
 
 roleNameDic = {}
