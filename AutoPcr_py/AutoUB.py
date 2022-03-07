@@ -2,6 +2,7 @@ from math import fabs
 from operator import truediv
 from sqlite3 import Time
 import sys
+from tkinter import E
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
@@ -99,24 +100,26 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = 
 
 
 def IsHasImgHight(targetImg,match = minMatch):
-	target_ImgPath = GetFullPath(targetImg)
+	target_ImgPath = targetImg
 	Screen_ImgPath = image_X()
-	print(target_ImgPath)
+	# print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
 	imsch = ac.imread(target_ImgPath) # 带查找的部分
 	match_result = ac.find_template(imsrc, imsch, match)
 	if match_result != None:
-		time.sleep(0.03)
 		return True
 	else:
-		time.sleep(0.03)
 		return False
 
 #屏幕截图,并返回保存路径
 def image_X():
 	global curDir
+	global waitToEnd
 	img = ImageGrab.grab()
-	sp = os.path.join(curDir,"temp.png")
+	if(waitToEnd):
+		sp = os.path.join(curDir,"temp.png")
+	else:
+		sp = os.path.join(curDir,"temp2.png")
 	img.save( sp)
 	return sp
 
@@ -153,14 +156,16 @@ def LongTimeCheck(im1,im2):
 #快按钮事件
 def FastKeyDown(_key):
 	# print(_key)
-	time.sleep(0.03)
+	time.sleep(0.015)
 	pyautogui.press(_key)
 
 global loopKey
 def LoopKeyDown():
-	time.sleep(0.2)
+	time.sleep(0.02)
 	while(True):
-		FastKeyDown(loopKey)
+		# if(waitToEnd==False):
+		if(isRun):
+			FastKeyDown(loopKey)
 
 def StartLoopKeyDown(key):
 	global loopKey
@@ -187,13 +192,17 @@ def stop_thread(thread):
 
 
 
-
 #按下Esc 停止
 def CheckEnd(_key):
 	while(True):
 		keyboard.wait(_key)
-		print(_key)
-		os._exit(0)
+		if(isRun):
+			isRun = False
+			print('pause')
+		else:
+			print(_key)
+			os._exit(0)
+
 
 #1-5是编组位置 6 是队伍
 #num1-3 队伍位置
@@ -247,10 +256,10 @@ def ReadZhou():
 
 def StartZhou():
 	#检查入场png
-	bossStartPath ='other/bossStart.png' #1倍速
-	sleepTime = 0.1 #2
-	# bossStartPath ='other/bossStart2.png' #2倍速足够细
-	# sleepTime = 1.5
+	bossStartPath =	GetFullPath('other/bossStart.png') #1倍速
+	# sleepTime = 1.5 #2
+	# bossStartPath =GetFullPath('other/bossStart2.png') #2倍速足够细
+	sleepTime = 1.5
 
 
 	WaitToClickImg(bossStartPath,False,False,30)
@@ -261,24 +270,44 @@ def StartZhou():
 	print('next->',zhous[0])
 	StartLoopKeyDown(roleKeys[roleNameDic[zhous[0]]])
 	roleIndex = 1
+	global waitToEnd
+	waitTime = 0
 	while(roleIndex<zhouCount):
-		if(IsHasImgHight(bossStartPath)==False):
-			print('next->',zhous[roleIndex],zhouDes[roleIndex])
-			loopKey = roleKeys[roleNameDic[zhous[roleIndex]]]
-			time.sleep(sleepTime)
-			roleIndex=roleIndex+1
-			# StopLoopKeyDown()
-			print('awake')
+			if(IsHasImgHight(bossStartPath)==False):
+				if(waitToEnd ==False):
+					print('next->',zhous[roleIndex],zhouDes[roleIndex])
+					loopKey = roleKeys[roleNameDic[zhous[roleIndex]]]
+					waitToEnd = True
+					roleIndex=roleIndex+1
+					time.sleep(2)
+					# StopLoopKeyDown()
+				else:
+					waitTime = waitTime+1
+					print('waitTime',waitTime)
+					time.sleep(0.3)
+			else:
+				if(waitToEnd):
+					waitToEnd = False
+					waitTime =0
+					time.sleep(0.2)
+					print('awake')
+				time.sleep(0.1)
 
-
+isRun = True
 def RunAutoPcr():
 	#按下Esc键停止
 	global t0
 	global t1
+	global t2
+	global waitToEnd
+	waitToEnd = False
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
+	# t2 = threading.Thread(target=CheckPause,args=())
+	# t2.start()
 	t1 = threading.Thread(target=LoopKeyDown,args=())
 	# time.sleep(0.5)
+
 	ReadZhou()
 	time.sleep(1)
 	print('开始检查进场')
