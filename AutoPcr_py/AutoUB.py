@@ -111,14 +111,19 @@ def IsHasImgHight(targetImg,match = minMatch):
 	else:
 		return False
 
+imgIndex = 0
+
 #屏幕截图,并返回保存路径
 def image_X():
 	global curDir
-	global waitToEnd
+	global imgIndex
 	img = ImageGrab.grab()
-	if(waitToEnd):
+
+	if(imgIndex ==0 ):
+		imgIndex =1
 		sp = os.path.join(curDir,"temp.png")
 	else:
+		imgIndex =0
 		sp = os.path.join(curDir,"temp2.png")
 	img.save( sp)
 	return sp
@@ -156,16 +161,16 @@ def LongTimeCheck(im1,im2):
 #快按钮事件
 def FastKeyDown(_key):
 	# print(_key)
-	time.sleep(0.015)
+	time.sleep(0.01)
 	pyautogui.press(_key)
 
 global loopKey
 def LoopKeyDown():
-	time.sleep(0.02)
+	time.sleep(0.01)
 	while(True):
 		# if(waitToEnd==False):
-		if(isRun):
-			FastKeyDown(loopKey)
+		# if(isRun):
+		FastKeyDown(loopKey)
 
 def StartLoopKeyDown(key):
 	global loopKey
@@ -194,14 +199,16 @@ def stop_thread(thread):
 
 #按下Esc 停止
 def CheckEnd(_key):
+
 	while(True):
 		keyboard.wait(_key)
-		if(isRun):
-			isRun = False
-			print('pause')
-		else:
-			print(_key)
-			os._exit(0)
+		# print('CheckEnd')
+		# if(isRun):
+		# 	isRun = False
+		# 	print('pause')
+		# else:
+		print(_key)
+		os._exit(0)
 
 
 #1-5是编组位置 6 是队伍
@@ -252,7 +259,10 @@ def ReadZhou():
 		# print(i,line)
 	# for line in tf.readlines()：
 
-
+autoKey = 'a'
+def AutoSwitch():
+	WaitToClickImg('other/Auto.png')
+	# DoKeyDown(autoKey)
 
 def StartZhou():
 	#检查入场png
@@ -270,30 +280,34 @@ def StartZhou():
 	print('next->',zhous[0])
 	StartLoopKeyDown(roleKeys[roleNameDic[zhous[0]]])
 	roleIndex = 1
+	waitToAuto = False
 	global waitToEnd
 	waitTime = 0
 	while(roleIndex<zhouCount):
 			if(IsHasImgHight(bossStartPath)==False):
 				if(waitToEnd ==False):
+					# if(zhous[roleIndex] !='Auto'):
 					print('next->',zhous[roleIndex],zhouDes[roleIndex])
 					loopKey = roleKeys[roleNameDic[zhous[roleIndex]]]
 					waitToEnd = True
 					roleIndex=roleIndex+1
-					time.sleep(2)
-					# StopLoopKeyDown()
+					time.sleep(0.4)
+						# StopLoopKeyDown()
 				else:
 					waitTime = waitTime+1
 					print('waitTime',waitTime)
-					time.sleep(0.3)
+					time.sleep(0.1)
 			else:
 				if(waitToEnd):
 					waitToEnd = False
 					waitTime =0
-					time.sleep(0.2)
+					time.sleep(0.1)
 					print('awake')
 				time.sleep(0.1)
+	#end
+	AutoSwitch()
 
-isRun = True
+# isRun = True
 def RunAutoPcr():
 	#按下Esc键停止
 	global t0

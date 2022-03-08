@@ -103,7 +103,10 @@ needZbName = GetStrConfig(needZbNameKey)
 
 #new
 DxcDuiWu ='1,2,3'
-
+isAllSelectKey_1 = 'isAllSelect_1'
+isAllSelectKey_2 = 'isAllSelect_2'
+isAllSelect1 = False
+isAllSelect2= False
 
 
 #保存配置
@@ -198,12 +201,14 @@ def StartPcr():
 	CallPy()
 
 
-left_col = [[sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
+left_col = [
+[sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
+[sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('家具',isHomeTake,key=isHomeTakeKey)],
-[sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey)],
-[sg.Text('次用功能')],
+[sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey)],
+[sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey),sg.Checkbox('普通关卡清空所有体力',isUseAllPower,key=isUseAllPowerKey)],
-[sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey)],
+[sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('星球杯',isXQB,key = isXQBKey),],
 
 [sg.Text('雷电模拟器文件夹:')],
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
@@ -232,6 +237,22 @@ def RunTimeValue():
 	MainSettingKey='MainSetting_'+mnqIndex
 	print('MainSettingKey = ',MainSettingKey)
 
+def SetAllSelect1():
+	window[isJJCKey].Update(isAllSelect1)
+	window[isTansuoKey].Update(isAllSelect1)
+	window[isDxcKey].Update(isAllSelect1)
+	window[isExpKey].Update(isAllSelect1)
+	window[isNiuDanKey].Update(isAllSelect1)
+	window[isHomeTakeKey].Update(isAllSelect1)
+	window[isXinSuiKey].Update(isAllSelect1)
+	window[isNeedSeedKey].Update(isAllSelect1)
+
+
+def SetAllSelect2():
+	window[isSendKey].Update(isAllSelect2)
+	window[isHouDongHardKey].Update(isAllSelect2)
+	window[isUseAllPowerKey].Update(isAllSelect2)
+	window[isXQBKey].Update(isAllSelect2)
 
 # sg.popup_get_folder('Enter the file you wish to process')
 # Event Loop to process "events" and get the "values" of the inputs
@@ -241,6 +262,14 @@ while True:
 	if event == 'test':
 		print("==============")
 		print("Values = ",values["isJJC"])
+
+	if event ==  isAllSelectKey_1:
+		isAllSelect1 = bool(1-isAllSelect1)
+		SetAllSelect1()
+	if event ==  isAllSelectKey_2:
+		isAllSelect2 = bool(1-isAllSelect2)
+		SetAllSelect2()
+
 	if event == mnqIndexKey:
 		ReadConfig()
 
