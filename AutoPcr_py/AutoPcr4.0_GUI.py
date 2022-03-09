@@ -164,7 +164,7 @@ def WriteCmds():
 	path = str(LeiDianDir)
 	index = str(mnqIndex)
 	WriteLeiDian(path,index)
-	WirteStartPy()
+	# WirteStartPy()
 
 def WriteLeiDian(path,index):
 	print('write ',path,'StartLeiDian.cmd')
@@ -175,10 +175,10 @@ def WriteLeiDian(path,index):
 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe launchex --index "+index+" --packagename com.bilibili.priconne\n\nexit")
 		f.write(cmdStr)
 
-def WirteStartPy():
-	with open(GetFullPath('StartPy.cmd'),'w') as f:
-		cmdStr =("python "+curDir+"\AutoPcr4.0.py")
-		f.write(cmdStr)
+# def WirteStartPy():
+# 	with open(GetFullPath('StartPy.cmd'),'w') as f:
+# 		cmdStr =("python "+curDir+"\AutoPcr4.0.py\n\nexit")
+# 		f.write(cmdStr)
 
 # def WirteStart(path):
 # 	with open(GetFullPath('start.cmd'),'w') as f:
