@@ -1,4 +1,5 @@
 from math import fabs
+from pydoc import doc
 from sqlite3 import Time
 import sys
 from xmlrpc.client import Boolean
@@ -171,7 +172,11 @@ def StopLoopKeyDown():
 #region 界面跳转
 def ToFightPage():
 	if(IsHasImg("main/fight2.png")==False):
-		WaitToClickImg("main/fight.png",True,True,5)
+		if(WaitToClickImg("main/fight.png",True,True,5,True) == False):
+			DoKeyDown(exitKey)
+			DoKeyDown(exitKey)
+			print('re to Fight')
+			ToFightPage()
 	time.sleep(1)
 def ToHomePage():
 	if(IsHasImg("main/home2.png")==False):
@@ -205,12 +210,15 @@ def StartJJC():
 	DoKeyDown(listSelectKeys[0])
 	time.sleep(1)
 	DoKeyDown(playerKey)
-	time.sleep(12)
+	time.sleep(4)
 	print("sleep...")
-	LongTimeCheck(dxcDir + "/win.png","jjc/lose.png")
+	WaitToClickImg('jjc/ship.png')
+	time.sleep(2)
+	LongTimeCheck("dxc/win.png","jjc/lose.png")
 	time.sleep(1.5)
 	DoKeyDown(nextKey)
 	time.sleep(3)
+	DoKeyDown(nextKey)
 
 def StartPJJC():
 	ToFightPage()
@@ -229,8 +237,10 @@ def StartPJJC():
 	DoKeyDown(playerKey)
 	time.sleep(0.3)
 	DoKeyDown(playerKey)
-	print("sleep for 30s...")
-	time.sleep(30)
+	print("sleep for 4s...")
+	time.sleep(4)
+	WaitToClickImg('jjc/ship.png')
+	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
 	DoKeyDown(nextKey)
@@ -273,13 +283,16 @@ def StartTanSuo():
 	time.sleep(1.5)
 
 def StartTakeAll():
-	time.sleep(2.5)
+	time.sleep(2)
 	ToHomePage()
 	WaitToClickImg("task/task.png")
 	WaitToClickImg("task/takeAll.png")
 	WaitToClickImg("task/close.png")
+def TakeGift():
 	ToHomePage()
-
+	WaitToClickImg("task/gift.png")
+	WaitToClickImg("task/takeAll.png")
+	WaitToClickImg("main/sure_white.png")
 #region 地下城
 StartBossIndex = 0
 
@@ -414,6 +427,7 @@ def WaitBossFight():
 
 def BuyExp():
 	time.sleep(1)
+	ToHomePage()
 	ToShopPage()
 	time.sleep(2)
 	DoKeyDown('2')
@@ -538,7 +552,9 @@ def OnHouDongHard():
 	ToFightPage()
 	WaitToClickImg('main/dxc.png',False)
 	DoKeyDown(huodongKey)
-	ClickUntilNul('main/player'+mnqIndex+'.png')
+	DoKeyDown(exitKey)
+	DoKeyDown(exitKey)
+	WaitToClickImg('main/player'+mnqIndex+'.png')
 	for	i in range(5):
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=4,isClick=False)):
 			MoveToLeft()
@@ -556,9 +572,12 @@ def UseAllPower():
 	print('OnHouDongHard')
 	ToFightPage()
 	WaitToClickImg('main/zhuXian.png',True)
-	ClickUntilNul('main/player'+mnqIndex+'.png')
+
+	if(WaitToClickImg('main/player'+mnqIndex+'.png')==False):
+		DoKeyDown(exitKey)
+		WaitToClickImg('main/player'+mnqIndex+'.png')
 	i = 0
-	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=4,isClick=False)):
+	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=3,isClick=False)):
 		MoveToLeft()
 		i=i+1
 		if(i>4):
@@ -583,6 +602,7 @@ def DailyTasks():
 	if(isHomeTake):
 		ghHomeTake()
 		StartTakeAll()
+		TakeGift()
 
 	if(isXQB):
 		EnterDiaoCha()

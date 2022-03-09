@@ -296,7 +296,7 @@ def StartZhou():
 				else:
 					waitTime = waitTime+1
 					print('waitTime',waitTime)
-					time.sleep(0.1)
+					time.sleep(0.02)
 			else:
 				if(waitToEnd):
 					waitToEnd = False
