@@ -19,8 +19,6 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 新增库 ->运行 SetupPip.cmd (管理员
 
-保存路径后将自动生成 AutoPcr_py/Start.cmd (管理员运行也可用
-
 # 提示:
 
 1.本源码供学习用，禁止用于商业相关
