@@ -785,11 +785,11 @@ def RunAutoPcr():
 	else:
 		time.sleep(2)
 	print('=== Start ===')
+	print('\n=== 按Exc退出程序 ===\n')
 #日常
 	DailyTasks()
 	print('=== end ===')
 	os._exit(0)
 
 if __name__ == '__main__':
-	print('isRunAndStart: ',isRunAndStart)
 	RunAutoPcr()
