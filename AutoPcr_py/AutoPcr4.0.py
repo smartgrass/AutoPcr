@@ -213,6 +213,8 @@ def StartJJC():
 	time.sleep(4)
 	print("sleep...")
 	WaitToClickImg('jjc/ship.png')
+	WaitToClickImg('jjc/ship.png')
+	pyautogui.click()
 	time.sleep(2)
 	LongTimeCheck("dxc/win.png","jjc/lose.png")
 	time.sleep(1.5)
@@ -238,7 +240,8 @@ def StartPJJC():
 	time.sleep(0.3)
 	DoKeyDown(playerKey)
 	print("sleep for 4s...")
-	time.sleep(4)
+	time.sleep(5)
+	WaitToClickImg('jjc/ship.png')
 	WaitToClickImg('jjc/ship.png')
 	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
@@ -292,7 +295,9 @@ def TakeGift():
 	ToHomePage()
 	WaitToClickImg("task/gift.png")
 	WaitToClickImg("task/takeAll.png")
-	WaitToClickImg("main/sure_white.png")
+	WaitToClickImg("task/sure.png",match=hightMatch)
+	WaitToClickImg("main/sure_white.png",match=hightMatch)
+	ToHomePage()
 #region 地下城
 StartBossIndex = 0
 
@@ -429,8 +434,7 @@ def BuyExp():
 	time.sleep(1)
 	ToHomePage()
 	ToShopPage()
-	time.sleep(2)
-	DoKeyDown('2')
+	WaitToClickImg('shop/shopTop.png',False)
 	if(IsHasImg('shop/exp2.png',False) == False):
 		ToHomePage()
 		print('no to buy')
@@ -505,8 +509,8 @@ def xinSui():
 	DoKeyDown(listSelectKeys[0])
 	SaoDang()
 	ExitSaoDang()
-
-
+	DoKeyDown(exitKey)
+	DoKeyDown(exitKey)
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
 	DoKeyDown(listSelectKeys[1])
 	SaoDang()
@@ -534,10 +538,14 @@ def needSeedZb():
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
 	WaitToClickImg('other/needSend.png')
-	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4) == False,False):
+	if(WaitToClickImg('other/needSend2.png',False)==False):
+		DoKeyDown(exitKey)
+		WaitToClickImg('other/needSend.png')
+	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 4) == False):
 		DoKeyDown(partyKey)
 	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4)):
 		WaitToClickImg('other/needSend2.png')
+		WaitToClickImg('main/sure.png')
 		WaitToClickImg('main/sure.png')
 
 def ghHomeTake():
@@ -552,7 +560,9 @@ def OnHouDongHard():
 	ToFightPage()
 	WaitToClickImg('main/dxc.png',False)
 	DoKeyDown(huodongKey)
+	time.sleep(0.5)
 	DoKeyDown(exitKey)
+	time.sleep(0.5)
 	DoKeyDown(exitKey)
 	WaitToClickImg('main/player'+mnqIndex+'.png')
 	for	i in range(5):
@@ -602,7 +612,6 @@ def DailyTasks():
 	if(isHomeTake):
 		ghHomeTake()
 		StartTakeAll()
-		TakeGift()
 
 	if(isXQB):
 		EnterDiaoCha()
@@ -619,6 +628,8 @@ def DailyTasks():
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
+	if(isHomeTake):
+		TakeGift()	
 
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
