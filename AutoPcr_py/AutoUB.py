@@ -92,7 +92,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = 
 		if((isShip==False)|(waitTime < maxTry)):
 			time.sleep(0.1)
 			if((waitTime > maxTry)&isShip == False):
-				time.sleep(2)
+				time.sleep(1)
 			return WaitToClickImg(targetImg,isClick,isShip,maxTry,autoExit)
 		else:
 			print("Ship >> ",targetImg)
@@ -161,7 +161,7 @@ def LongTimeCheck(im1,im2):
 #快按钮事件
 def FastKeyDown(_key):
 	# print(_key)
-	time.sleep(0.01)
+	time.sleep(0.006)
 	pyautogui.press(_key)
 
 global loopKey
@@ -262,6 +262,7 @@ def ReadZhou():
 autoKey = 'a'
 def AutoSwitch():
 	WaitToClickImg('other/Auto.png')
+	IsHasImg('other/Auto.png')
 	# DoKeyDown(autoKey)
 
 def StartZhou():
@@ -291,7 +292,7 @@ def StartZhou():
 					loopKey = roleKeys[roleNameDic[zhous[roleIndex]]]
 					waitToEnd = True
 					roleIndex=roleIndex+1
-					time.sleep(0.4)
+					time.sleep(0.3)
 						# StopLoopKeyDown()
 				else:
 					waitTime = waitTime+1
