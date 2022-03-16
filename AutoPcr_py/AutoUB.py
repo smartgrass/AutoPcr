@@ -292,7 +292,7 @@ def StartZhou():
 					loopKey = roleKeys[roleNameDic[zhous[roleIndex]]]
 					waitToEnd = True
 					roleIndex=roleIndex+1
-					time.sleep(0.3)
+					time.sleep(0.1)
 						# StopLoopKeyDown()
 				else:
 					waitTime = waitTime+1

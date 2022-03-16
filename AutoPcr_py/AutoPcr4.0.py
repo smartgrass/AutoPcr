@@ -2,6 +2,7 @@ from math import fabs
 from pydoc import doc
 from sqlite3 import Time
 import sys
+from tkinter import E
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
@@ -62,7 +63,7 @@ def WaitImgLongTime(targetImg):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = False,match = minMatch,isRgb = False):
+def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
 	#isClick:找到图片后是否点击
 	#isShip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
@@ -90,6 +91,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = 
 		waitTime = 0
 
 		if(isClick):
+			y1 = y1+offsetY
 			pyautogui.moveTo(x1,y1)
 			pyautogui.click()
 			time.sleep(0.4)
@@ -210,9 +212,9 @@ def StartJJC():
 	DoKeyDown(listSelectKeys[0])
 	time.sleep(1)
 	DoKeyDown(playerKey)
-	time.sleep(4)
+	time.sleep(6)
 	print("sleep...")
-	WaitToClickImg('jjc/ship.png')
+	WaitToClickImg('jjc/ship.png',isShip= False)
 	WaitToClickImg('jjc/ship.png')
 	pyautogui.click()
 	time.sleep(2)
@@ -239,10 +241,11 @@ def StartPJJC():
 	DoKeyDown(playerKey)
 	time.sleep(0.3)
 	DoKeyDown(playerKey)
-	print("sleep for 4s...")
+	print("sleep for 5s...")
 	time.sleep(5)
+	WaitToClickImg('jjc/ship.png',isShip= False)
 	WaitToClickImg('jjc/ship.png')
-	WaitToClickImg('jjc/ship.png')
+	pyautogui.click()
 	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
@@ -296,7 +299,7 @@ def TakeGift():
 	WaitToClickImg("task/gift.png")
 	WaitToClickImg("task/takeAll.png")
 	WaitToClickImg("task/sure.png",match=hightMatch)
-	WaitToClickImg("main/sure_white.png",match=hightMatch)
+	ExitSaoDang()
 	ToHomePage()
 #region 地下城
 StartBossIndex = 0
@@ -488,13 +491,16 @@ def Xqb():
 
 
 	WaitToClickImg('tansuo/xqbTop.png',False)
-	print('listSelectKeys[1]' ,listSelectKeys[1])
 	DoKeyDown(listSelectKeys[0])
-	if(IsHasImg('tansuo/xqbTop.png',False) ==False):
-		SaoDang()
-		ExitSaoDang()
-		WaitToClickImg('tansuo/xqbTop.png',False)
-		print('ship')
+
+
+	SaoDang()
+	ExitSaoDang()
+
+	DoKeyDown(exitKey)
+	DoKeyDown(exitKey)
+	WaitToClickImg('tansuo/xqbTop.png',False)
+
 	DoKeyDown(listSelectKeys[1])
 	SaoDang()
 	ExitSaoDang()
@@ -507,11 +513,14 @@ def xinSui():
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
 	DoKeyDown(listSelectKeys[0])
+
 	SaoDang()
 	ExitSaoDang()
+
 	DoKeyDown(exitKey)
 	DoKeyDown(exitKey)
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
+
 	DoKeyDown(listSelectKeys[1])
 	SaoDang()
 	ExitSaoDang()
@@ -530,6 +539,9 @@ def SendZb():
 			DoKeyDown(exitKey)
 			DoKeyDown(exitKey)
 
+def  Click():
+	pyautogui.click()
+
 def GetZBPath(name):
 	return os.path.join('other\\zuanbei\\',str(name)+'.png')
 
@@ -537,16 +549,25 @@ def needSeedZb():
 	print('need Send ')
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
+	time.sleep(0.8)
 	WaitToClickImg('other/needSend.png')
+	Click()
 	if(WaitToClickImg('other/needSend2.png',False)==False):
-		DoKeyDown(exitKey)
+		print("上次捐赠确认->退出重试")
+		DoKeyDown(groupKeys[0])
+		time.sleep(0.5)
 		WaitToClickImg('other/needSend.png')
+
 	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 4) == False):
+		print("找不到装备->反转排序")
 		DoKeyDown(partyKey)
 	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4)):
 		WaitToClickImg('other/needSend2.png')
 		WaitToClickImg('main/sure.png')
 		WaitToClickImg('main/sure.png')
+	else:
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
 
 def ghHomeTake():
 	WaitToClickImg('main/ghHome.png')
@@ -554,6 +575,39 @@ def ghHomeTake():
 	WaitToClickImg('main/ghHome_take.png')
 	DoKeyDown(exitKey)
 	DoKeyDown(exitKey)
+
+tuichuMaxTry =0
+
+def ClickPlayer():
+	if(WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=55)):
+		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False,maxTry=3) == False):
+			print("没有出现挑战界面->重试")
+			tuichuMaxTry = tuichuMaxTry+1
+			if(tuichuMaxTry>4):
+				tuichuMaxTry =0
+				return
+			ClickPlayer()
+		else:
+			tuichuMaxTry =0
+
+def tuichu():
+	ClickPlayer()
+	if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False)):
+		DoKeyDown(playerKey)
+		DoKeyDown(playerKey)
+		DoKeyDown(playerKey)
+		LongTimeCheck("main/next.png","main/next.png")
+		DoKeyDown(exitKey)
+		DoKeyDown(nextKey)
+		time.sleep(0.3)
+		DoKeyDown(exitKey)
+		DoKeyDown(nextKey)
+		DoKeyDown(exitKey)
+		DoKeyDown(nextKey)
+		tuichu()
+	else:
+		print("end")
+	return
 
 def OnHouDongHard():
 	print('OnHouDongHard')
@@ -629,7 +683,7 @@ def DailyTasks():
 		UseAllPower()
 		StartTakeAll()
 	if(isHomeTake):
-		TakeGift()	
+		TakeGift()
 
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
@@ -770,6 +824,7 @@ elif(dxcBoss =="绿龙"):
 
 #endregion
 
+
 def RunAutoPcr():
 	#按下Esc键停止
 	global t0
@@ -788,6 +843,7 @@ def RunAutoPcr():
 	print('\n=== 按Exc退出程序 ===\n')
 #日常
 	DailyTasks()
+	# tuichu()
 	print('=== end ===')
 	os._exit(0)
 
