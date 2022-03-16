@@ -182,7 +182,11 @@ def ToFightPage():
 	time.sleep(1)
 def ToHomePage():
 	if(IsHasImg("main/home2.png")==False):
-		WaitToClickImg("main/home.png",True,True,5)
+		if(WaitToClickImg("main/home.png",True,True,5) == False):
+			DoKeyDown(exitKey)
+			DoKeyDown(exitKey)
+			print('re to Fight')
+			ToHomePage()
 	time.sleep(1)
 def ToShopPage():
 	WaitToClickImg("shop/shop1.png",True,True,5)
