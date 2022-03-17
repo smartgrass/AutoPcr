@@ -1,3 +1,5 @@
+pip install  -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple aircv
