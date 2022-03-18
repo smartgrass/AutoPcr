@@ -578,6 +578,7 @@ def ghHomeTake():
 	time.sleep(0.5)
 	WaitToClickImg('main/ghHome_take.png')
 	DoKeyDown(exitKey)
+	WaitToClickImg('task/close.png')
 	DoKeyDown(exitKey)
 
 tuichuMaxTry =0
