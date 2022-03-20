@@ -90,7 +90,7 @@ isXinSui =GetBoolConfig(isXinSuiKey)
 isXQB = GetBoolConfig(isXQBKey)
 isSend = GetBoolConfig(isSendKey)
 isNeedSeed= GetBoolConfig(isNeedSeedKey)
-isRunAndStart = GetBoolConfig(isRunAndStartKey)
+isRunAndStart = False
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
