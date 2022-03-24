@@ -52,6 +52,7 @@ def GetBoolConfig(boolKey):
 def SetCurMnqIndex():
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 def SetMnqDir():
+	print(LeiDianDir)
 	cfg.set('MainSetting',LeiDianDirKey,LeiDianDir)
 isRunAndStart = False
 
@@ -132,6 +133,9 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isHouDongHardKey,AllValues)
 
 	SetConfigAuto(needZbNameKey,AllValues)
+	# SetConfigAuto(LeiDianDirKey,AllValues)
+	global LeiDianDir
+	LeiDianDir = AllValues[LeiDianDirKey]
 	SetCurMnqIndex()
 	SetMnqDir()
 
