@@ -563,10 +563,10 @@ def needSeedZb():
 		time.sleep(0.5)
 		WaitToClickImg('other/needSend.png')
 
-	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 4) == False):
+	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 4,match = 0.9) == False):
 		print("找不到装备->反转排序")
 		DoKeyDown(partyKey)
-	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4)):
+	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4,match = 0.9)):
 		WaitToClickImg('other/needSend2.png')
 		WaitToClickImg('main/sure.png')
 		WaitToClickImg('main/sure.png')
