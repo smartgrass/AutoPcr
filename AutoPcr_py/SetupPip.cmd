@@ -14,6 +14,14 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pypiwin32
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple PySimpleGUI
 
+set path=%~dp0xiaocao.vbs
+
+echo %path%
+
+start %path%
+
+echo create lnk
+
 echo OK!!
 
 pause

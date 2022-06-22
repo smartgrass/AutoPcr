@@ -1,1 +1,2 @@
-needZbNameKey = 'needZbName'
+dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
+dxcGroupBossKey ='DxcGroupBoss'
