@@ -44,11 +44,17 @@ def ReadBoolConfig(key):
 	window[key].Update(GetBoolConfig(key))
 
 def GetStrConfig(key):
-	return cfg.get(MainSettingKey,key)
+	try:
+		return cfg.get(MainSettingKey,key)
+	except :
+		return ""
 
 def GetBoolConfig(boolKey):
-	return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
-
+	try:
+		return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
+	except :
+		return False
+	
 def SetCurMnqIndex():
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 def SetMnqDir():
@@ -67,6 +73,8 @@ isExpKey = 'isExp'
 isNiuDanKey ='isNiuDan'
 LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
+dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
+dxcGroupBossKey ='DxcGroupBoss'
 
 #newKey
 isXQBKey='isXQB'
@@ -99,6 +107,9 @@ isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 
 
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
+
+dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
+dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
 dxcBoss=GetStrConfig(dxcDropKey)
 needZbName = GetStrConfig(needZbNameKey)
 
@@ -133,6 +144,10 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isHouDongHardKey,AllValues)
 
 	SetConfigAuto(needZbNameKey,AllValues)
+	SetConfigAuto(dxcGroupBossKey,AllValues)
+	SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
+
+
 	# SetConfigAuto(LeiDianDirKey,AllValues)
 	global LeiDianDir
 	LeiDianDir = AllValues[LeiDianDirKey]
@@ -161,6 +176,10 @@ def ReadConfig():
 
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
+
+	ReadStrConfig(dxcGroupDaoZhongKey)
+	ReadStrConfig(dxcGroupBossKey)
+
 	# ReadStrConfig(mnqIndexKey,AllValues)
 
 
@@ -221,7 +240,9 @@ right_col = [[sg.Text('其他配置                  ')],
 sg.Checkbox('启动模拟器',isRunAndStart,key=isRunAndStartKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(20,None)),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
-# [sg.Text('绿龙队伍'),sg.InputText(DxcDuiWu,size=(35,None))],
+[sg.Text('绿龙队伍:')],
+[sg.Text('道中队:'),sg.InputText(dxcGroupDaoZhong,size =(35,None),key= dxcGroupDaoZhongKey)],
+[sg.Text('Boss队:'),sg.InputText(dxcGroupBoss,size =(35,None),key= dxcGroupBossKey)],
 ]
 
 layout = [
