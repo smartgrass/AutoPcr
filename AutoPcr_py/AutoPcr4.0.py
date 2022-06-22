@@ -1,4 +1,5 @@
 from math import fabs
+from pickle import TRUE
 from pydoc import doc
 from sqlite3 import Time
 import sys
@@ -6,7 +7,7 @@ from tkinter import E
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
-
+import win32api
 import ctypes
 import inspect
 from re import A
@@ -39,9 +40,8 @@ waitTime = 0
 minMatch = 0.7 #最低相似度匹配
 hightMatch = 0.90
 warnMatch = 0.85 #相似度小于此时, 打印黄字
-dxcIndex =1
+nextDxcLevel=1
 StartBossIndex = 0
-isUseChunHei = True #地下城是否使用春黑连点
 
 tMain = threading.Thread()
 t0 =threading.Thread()
@@ -308,11 +308,12 @@ def TakeGift():
 	ToHomePage()
 #region 地下城
 StartBossIndex = 0
-
+lastGroup =""
 
 def StartDxc(index =1):
 	print("===地下城==")
-	dxcIndex = index
+	global nextDxcLevel
+	nextDxcLevel = index
 	ToFightPage()
 	#进入地下城
 	EnterDxc()
@@ -327,20 +328,23 @@ def StartDxc(index =1):
 			WaitToClickImg("main/sure.png")
 			StartDxc()
 			return
+	print('wait box1...')
+	WaitToClickImg(dxcDir + "/box1.png",False)
+	print('found box1 => start')
 
-	if(dxcIndex <= 1):
-		DxcFristFight()
+	if(nextDxcLevel <= 1):
+		DxcBoxFight(1)
 		DxcBoxFightWait() 	#1战中
-	if(dxcIndex <= 2):
+	if(nextDxcLevel <= 2):
 		DxcBoxFight(2)
 		DxcBoxFightWait() #2
-	if(dxcIndex <= 3):
+	if(nextDxcLevel <= 3):
 		DxcBoxFight(3)
 		DxcBoxFightWait() #3
-	if(dxcIndex <= 4):
+	if(nextDxcLevel <= 4):
 		DxcBoxFight(4)
 		DxcBoxFightWait()  #4
-	if(dxcIndex <= 5):
+	if(nextDxcLevel <= 5):
 		if(isKillBoss):
 			StartBoss()
 #进入地下城界面
@@ -351,22 +355,52 @@ def EnterDxc():
 	time.sleep(1)
 	IsHasImg("main/sure.png")
 	time.sleep(2)
-#地下城第一次战斗
-def DxcFristFight():
-	WaitToClickImg(dxcDir + "/box1.png")
-	time.sleep(1)
-	DoKeyDown(playerKey) #进入挑战
-	time.sleep(1)
-	#选中队伍
-	SelectParty(5,1)
-	time.sleep(0.4)
-	DoKeyDown(playerKey)
-	dxcIndex =2
+
+def GetBossLoopKey(level):
+	rawValue = dxcBossLoopRole
+	values = rawValue.split(",")
+	listLen = len(values)
+	if(rawValue == ""):
+		return 0
+	if(listLen >= level):
+		return values[level-1]
+	return 0
+
+def GetGroupInfo(level,isBoss):
+	rawValue = ""
+	if(isBoss == TRUE):
+		rawValue = dxcGroupBoss
+	else:
+		rawValue =dxcGroupDaoZhong
+	values = rawValue.split(",")
+	listLen = len(values)
+	if(rawValue == ""):
+		return "5-1"
+	if(listLen >= level):
+		return values[level-1]
+	else:
+		return values[listLen-1]
+
+
+def CheckSelectGroup(level,isBoss):
+	global lastGroup
+	curGroup= GetGroupInfo(level,isBoss)
+	#如果上一个队伍和下一个队伍相同 则什么都不做
+	if(lastGroup!= curGroup):
+		time.sleep(1)
+		lastGroup =curGroup
+		infos = curGroup.split("-")
+		SelectParty(int(infos[0]),int(infos[1]))
+		time.sleep(1)
+
 
 def DxcBoxFight(level):
-	dxcIndex = level+1
+	global nextDxcLevel
+	nextDxcLevel = level+1
 	#自动取消关闭奖励界面
-	if(level == 2):
+	if(level == 1):
+		ClickUntilNul(dxcDir + "/box1.png")
+	elif(level == 2):
 		ClickUntilNul(dxcDir + "/box2.png")
 	elif(level == 3):
 		ClickUntilNul(dxcDir + "/box3.png")
@@ -376,6 +410,8 @@ def DxcBoxFight(level):
 	time.sleep(1)
 	DoKeyDown(playerKey)
 	time.sleep(1.5)
+	CheckSelectGroup(level,False)
+
 	DoKeyDown(playerKey)
 
 def DxcBoxFightWait():
@@ -396,22 +432,20 @@ def StartBoss():
 	ClickUntilNul(dxcDir + "/box5.png")
 	time.sleep(1)
 	DoKeyDown(playerKey)
-	global StartBossIndex
+	global StartBossIndex #0开始计数
 	time.sleep(0.4)
-	if(StartBossIndex == 0):
-		SelectParty(5,2)
-		time.sleep(0.4)
-	if(StartBossIndex == 1):
-		time.sleep(0.4)
-	if(StartBossIndex == 2):
-		SelectParty(5,3)
-		time.sleep(0.4)
+	CheckSelectGroup(StartBossIndex+1,True)
+	time.sleep(0.4)
+
 	DoKeyDown(playerKey)
 	time.sleep(0.4)
 	DoKeyDown(playerKey)
+
+	roleLoop = GetBossLoopKey(StartBossIndex)
+	if(roleLoop != 0):
+		StartLoopKeyDown(roleKeys[roleLoop-1])
+
 	StartBossIndex = StartBossIndex+1
-	if(isUseChunHei):
-		StartLoopKeyDown(roleKeys[3])
 	WaitBossFight()
 
 def WaitBossFight():
@@ -691,6 +725,11 @@ def DailyTasks():
 	if(isHomeTake):
 		TakeGift()
 
+def CloseMoniqi():
+	print("3 秒后关闭模拟器")
+	time.sleep(3)
+	win32api.ShellExecute(0, 'open', GetFullPath('CloseLeiDian.cmd'), '', '', 1)
+
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
     if not inspect.isclass(exctype):
@@ -767,11 +806,18 @@ cfg.read(configPath,encoding='utf-8')
 mnqIndex = cfg.get('MainSetting',mnqIndexKey)
 MainSettingKey='MainSetting_'+mnqIndex
 
+
 def GetStrConfig(key):
-	return cfg.get(MainSettingKey,key)
+	try:
+		return cfg.get(MainSettingKey,key)
+	except :
+		return ""
 
 def GetBoolConfig(boolKey):
-	return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
+	try:
+		return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
+	except :
+		return False
 
 isRunAndStart = False
 
@@ -785,6 +831,7 @@ isExpKey = 'isExp'
 isNiuDanKey ='isNiuDan'
 LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
+isAutoCloseKey ="isAutoClose"
 
 #newKey
 isXQBKey='isXQB'
@@ -799,6 +846,10 @@ isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
 needZbNameKey = 'needZbName'
 
+dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
+dxcGroupBossKey ='DxcGroupBoss'
+dxcBossLoopRoleKey ='dxcBossLoopRole'
+
 isJJC = GetBoolConfig(isJJCKey)
 isTansuo =GetBoolConfig(isTansuoKey)
 isDxc = GetBoolConfig(isDxcKey)
@@ -812,12 +863,17 @@ isXQB = GetBoolConfig(isXQBKey)
 isSend = GetBoolConfig(isSendKey)
 isNeedSeed= GetBoolConfig(isNeedSeedKey)
 isRunAndStart = GetBoolConfig(isRunAndStartKey)
+isAutoClose = GetBoolConfig(isAutoCloseKey)
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 needZbName = GetStrConfig(needZbNameKey)
 
+
+dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
+dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
+dxcBossLoopRole = GetStrConfig(dxcBossLoopRoleKey)
 
 dxcBoss=GetStrConfig(dxcDropKey)
 dxcDir = ''
@@ -839,6 +895,7 @@ def RunAutoPcr():
 	t0.start()
 	t1 = threading.Thread(target=LoopKeyDown,args=())
 	time.sleep(0.5)
+
 	if(isRunAndStart):
 		print('Wait Start... 25s ')
 		time.sleep(25)
@@ -851,6 +908,10 @@ def RunAutoPcr():
 	DailyTasks()
 	# tuichu()
 	print('=== end ===')
+
+	if(isAutoClose):
+		CloseMoniqi()
+
 	os._exit(0)
 
 if __name__ == '__main__':
