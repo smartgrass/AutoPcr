@@ -16,6 +16,8 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple PySimpleGUI
 
 set path=%~dp0xiaocao.vbs
 
+cd %~dp0
+
 echo %path%
 
 start %path%
