@@ -331,6 +331,8 @@ def StartDxc(index =1):
 	print('wait box1...')
 	WaitToClickImg(dxcDir + "/box1.png",False)
 	print('found box1 => start')
+	if(nextDxcLevel <= 0):
+		nextDxcLevel = 1
 
 	if(nextDxcLevel <= 1):
 		DxcBoxFight(1)
@@ -368,7 +370,7 @@ def GetBossLoopKey(level):
 
 def GetGroupInfo(level,isBoss):
 	rawValue = ""
-	if(isBoss == TRUE):
+	if(isBoss):
 		rawValue = dxcGroupBoss
 	else:
 		rawValue =dxcGroupDaoZhong
@@ -428,12 +430,21 @@ def DxcBoxFightWait():
 	time.sleep(0.5)
 
 def StartBoss():
+
+	global StartBossIndex #0开始计数
+	values = dxcGroupDaoZhong.split(",")
+	listLen = len(values)
+	if(StartBossIndex > listLen):
+		print("DxcBoss 失败")
+		return
+
 	print('===StartBoss===')
 	ClickUntilNul(dxcDir + "/box5.png")
 	time.sleep(1)
 	DoKeyDown(playerKey)
-	global StartBossIndex #0开始计数
+
 	time.sleep(0.4)
+
 	CheckSelectGroup(StartBossIndex+1,True)
 	time.sleep(0.4)
 
@@ -702,7 +713,7 @@ def DailyTasks():
 		StartJJC()
 		StartPJJC()
 	if(isDxc):
-		StartDxc(0)
+		StartDxc(int(dxcStartLevel))
 	if(isHomeTake):
 		ghHomeTake()
 		StartTakeAll()
@@ -849,6 +860,7 @@ needZbNameKey = 'needZbName'
 dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
 dxcBossLoopRoleKey ='dxcBossLoopRole'
+dxcStartLevelKey ='dxcStartLevel'
 
 isJJC = GetBoolConfig(isJJCKey)
 isTansuo =GetBoolConfig(isTansuoKey)
@@ -874,6 +886,9 @@ needZbName = GetStrConfig(needZbNameKey)
 dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
 dxcBossLoopRole = GetStrConfig(dxcBossLoopRoleKey)
+dxcStartLevel = GetStrConfig(dxcStartLevelKey)
+if(dxcStartLevel==""):
+	dxcStartLevel = "1"
 
 dxcBoss=GetStrConfig(dxcDropKey)
 dxcDir = ''
@@ -895,7 +910,6 @@ def RunAutoPcr():
 	t0.start()
 	t1 = threading.Thread(target=LoopKeyDown,args=())
 	time.sleep(0.5)
-
 	if(isRunAndStart):
 		print('Wait Start... 25s ')
 		time.sleep(25)

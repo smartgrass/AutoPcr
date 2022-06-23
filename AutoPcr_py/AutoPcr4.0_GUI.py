@@ -79,6 +79,7 @@ isAutoCloseKey ='isAutoClose'
 dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
 dxcBossLoopRoleKey ='dxcBossLoopRole'
+dxcStartLevelKey ='dxcStartLevel'
 
 #newKey
 isXQBKey='isXQB'
@@ -113,6 +114,8 @@ isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
 
+
+dxcStartLevel=GetStrConfig(dxcStartLevelKey)
 dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
 dxcBossLoopRole =GetStrConfig(dxcBossLoopRoleKey)
@@ -154,7 +157,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(dxcGroupBossKey,AllValues)
 	SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
 	SetConfigAuto(dxcBossLoopRoleKey,AllValues)
-
+	SetConfigAuto(dxcStartLevelKey,AllValues)
 
 	# SetConfigAuto(LeiDianDirKey,AllValues)
 	global LeiDianDir
@@ -255,7 +258,7 @@ left_col = [
 right_col = [[sg.Text('其他配置                  ')],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(8,None),key =mnqIndexKey),
 sg.Checkbox('启动模拟器',isRunAndStart,key=isRunAndStartKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ],
-[sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(20,None)),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
+[sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('编组-队伍 编组:1~5 队伍:1~3')],
 [sg.Text('道中队:'),sg.InputText(dxcGroupDaoZhong,size =(35,None),key= dxcGroupDaoZhongKey)],
