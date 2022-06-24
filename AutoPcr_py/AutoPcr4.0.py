@@ -159,15 +159,24 @@ global loopKey
 def LoopKeyDown():
 	time.sleep(2)
 	while(True):
+		if(loopKey =='exit'):
+			return
 		FastKeyDown(loopKey)
 
 def StartLoopKeyDown(key):
+	print("start loop " ,key)
 	global loopKey
 	loopKey = key
+	global t1
+	t1 = threading.Thread(target=LoopKeyDown,args=())
 	t1.start()
 
+
 def StopLoopKeyDown():
-	stop_thread(t1)
+	global loopKey
+	loopKey ='exit'
+	print('StopLoopKeyDown')
+	# stop_thread(t1)
 
 #endregion
 
@@ -435,8 +444,8 @@ def StartBoss():
 	global StartBossIndex #0开始计数
 	values = dxcGroupDaoZhong.split(",")
 	listLen = len(values)
-	if(StartBossIndex > listLen):
-		print("DxcBoss 失败")
+	if(StartBossIndex >= listLen): #0开始计数
+		print("===Boss 挑战 失败==='")
 		return
 
 	print('===StartBoss===')
@@ -479,7 +488,8 @@ def WaitBossFight():
 	else:
 		#lose
 		StopLoopKeyDown()
-		WaitToClickImg('dxc/dxcBack.png')
+		DoKeyDown(nextKey)
+		DoKeyDown(nextKey)
 		time.sleep(2)
 		StartBoss()
 
@@ -755,6 +765,7 @@ def _async_raise(tid, exctype):
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
 def stop_thread(thread):
+	return
 	print("stop ",thread)
 	_async_raise(thread.ident, SystemExit)
 
@@ -910,7 +921,6 @@ def RunAutoPcr():
 	global t1
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
-	t1 = threading.Thread(target=LoopKeyDown,args=())
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start... 25s ')
@@ -928,6 +938,7 @@ def RunAutoPcr():
 	if(isAutoClose):
 		CloseMoniqi()
 
+	time.sleep(1)
 	os._exit(0)
 
 if __name__ == '__main__':
