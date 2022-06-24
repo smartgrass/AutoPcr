@@ -328,9 +328,10 @@ def StartDxc(index =1):
 			WaitToClickImg("main/sure.png")
 			StartDxc()
 			return
-	print('wait box1...')
-	WaitToClickImg(dxcDir + "/box1.png",False)
-	print('found box1 => start')
+	if(nextDxcLevel <= 1):
+		print('wait box1...')
+		WaitToClickImg(dxcDir + "/box1.png",False)
+		print('found box1 => start')
 	if(nextDxcLevel <= 0):
 		nextDxcLevel = 1
 
@@ -363,10 +364,10 @@ def GetBossLoopKey(level):
 	values = rawValue.split(",")
 	listLen = len(values)
 	if(rawValue == ""):
-		return 0
+		return '0'
 	if(listLen >= level):
-		return values[level-1]
-	return 0
+		return values[level]
+	return '0'
 
 def GetGroupInfo(level,isBoss):
 	rawValue = ""
@@ -453,14 +454,15 @@ def StartBoss():
 	DoKeyDown(playerKey)
 
 	roleLoop = GetBossLoopKey(StartBossIndex)
-	if(roleLoop != 0):
-		StartLoopKeyDown(roleKeys[roleLoop-1])
+	print('roleLoop ',roleLoop)
+	if(roleLoop != '0'):
+		StartLoopKeyDown(roleLoop)
 
 	StartBossIndex = StartBossIndex+1
 	WaitBossFight()
 
 def WaitBossFight():
-	if(LongTimeCheck('dxc/win.png','dxc/lose.png')):
+	if(LongTimeCheck('dxc/win.png',dxcDir+'/lose.png')):
 		#win
 		print('win')
 		StopLoopKeyDown()
