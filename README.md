@@ -11,15 +11,23 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新5.0绿龙自动刀版本(仅限Windows) 
 
+功能渐渐花里胡哨了起来...
+
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
 
 运行配置见'运行说明'文件夹
 
-新增库 ->运行 SetupPip.cmd (管理员
+步骤: 
 
-启动文件: AutoPcr4.0_GUI.py (管理员模式: 需要把python.exe的启动改为管理员模式)
+1.安装py
 
-配好雷电模拟器路径
+2.安装py第三方库: 运行 SetupPip.cmd (管理员
+
+3.设置管理员权限 : (把python.exe的启动改为管理员模式)
+
+4.配好雷电模拟器路径, 配好模拟器快捷按钮
+
+5.运行
 
 # 提示:
 
