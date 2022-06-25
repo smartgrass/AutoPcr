@@ -11,7 +11,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新5.0绿龙自动刀版本(仅限Windows) 
 
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/AutoPcr_py/%E6%89%A9%E5%B1%95%E5%8A%9F%E8%83%BD%E8%AF%B4%E6%98%8E/%E5%9C%B0%E4%B8%8B%E5%9F%8Eex2/%E5%9C%B0%E4%B8%8B%E5%9F%8E%E9%98%9F%E4%BC%8D%E9%85%8D%E7%BD%AE.png" width= "500"/>
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
 
 运行配置见'运行说明'文件夹
 
