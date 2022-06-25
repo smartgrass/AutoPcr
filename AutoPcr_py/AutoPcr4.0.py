@@ -141,13 +141,14 @@ def LongTimeCheck(im1,im2):
 	isWaiting = True
 	#True表示识别1图 False表示识别2图
 	while(isWaiting):
+		time.sleep(2)
 		if(IsHasImg(im1,False)):
 			print('has ',im1)
 			return True
 		if(IsHasImg(im2,False)):
 			print('has ',im2)
 			return False
-		time.sleep(2)
+
 
 #快按钮事件
 def FastKeyDown(_key):
@@ -442,7 +443,7 @@ def DxcBoxFightWait():
 def StartBoss():
 
 	global StartBossIndex #0开始计数
-	values = dxcGroupDaoZhong.split(",")
+	values = dxcGroupBoss.split(",")
 	listLen = len(values)
 	if(StartBossIndex >= listLen): #0开始计数
 		print("===Boss 挑战 失败==='")
@@ -488,9 +489,10 @@ def WaitBossFight():
 	else:
 		#lose
 		StopLoopKeyDown()
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
 		time.sleep(2)
+		DoKeyDown(nextKey)
+		DoKeyDown(nextKey)
+		time.sleep(1)
 		StartBoss()
 
 #endregion
@@ -778,6 +780,9 @@ def WaitStart():
 		time.sleep(2)
 		DoKeyDown(exitKey)
 		time.sleep(3)
+		if(IsHasImg("main/skipIco.png",True)):
+			break
+
 	while(IsHasImg("main/fight.png",False) == False):
 		DoKeyDown(exitKey)
 		time.sleep(1)
@@ -938,7 +943,7 @@ def RunAutoPcr():
 	if(isAutoClose):
 		CloseMoniqi()
 
-	time.sleep(1)
+	time.sleep(2)
 	os._exit(0)
 
 if __name__ == '__main__':
