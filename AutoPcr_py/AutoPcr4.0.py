@@ -347,6 +347,8 @@ def StartDxc(index =1):
 
 	if(nextDxcLevel <= 1):
 		DxcBoxFight(1)
+		time.sleep(4)
+		CheckAuto()
 		DxcBoxFightWait() 	#1战中
 	if(nextDxcLevel <= 2):
 		DxcBoxFight(2)
@@ -360,6 +362,12 @@ def StartDxc(index =1):
 	if(nextDxcLevel <= 5):
 		if(isKillBoss):
 			StartBoss()
+
+def CheckAuto():
+	if(WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=20)):
+		print('检测到自动未开启, 开启自动')
+		WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=3)
+
 #进入地下城界面
 def EnterDxc():
 	WaitToClickImg("main/dxc.png")
@@ -428,7 +436,7 @@ def DxcBoxFight(level):
 	DoKeyDown(playerKey)
 
 def DxcBoxFightWait():
-	time.sleep(2)
+	time.sleep(2.5)
 	WaitImgLongTime(dxcDir + "/win.png")
 	time.sleep(2)
 	DoKeyDown(nextKey) #返回
@@ -926,6 +934,7 @@ def RunAutoPcr():
 	global t1
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
+
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start... 25s ')
