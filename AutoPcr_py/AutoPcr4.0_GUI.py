@@ -138,7 +138,6 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isDxcKey,AllValues)
 	SetConfigAuto(isExpKey,AllValues)
 	SetConfigAuto(isNiuDanKey,AllValues)
-	SetConfigAuto(isRunAndStartKey,AllValues)
 	SetConfigAuto(isAutoCloseKey,AllValues)
 
 	#new
@@ -174,7 +173,6 @@ def ReadConfig():
 	ReadBoolConfig(isDxcKey)
 	ReadBoolConfig(isExpKey)
 	ReadBoolConfig(isNiuDanKey)
-	ReadBoolConfig(isRunAndStartKey)
 	ReadBoolConfig(isAutoCloseKey)
 	#new
 	ReadBoolConfig(isXQBKey)
@@ -257,7 +255,7 @@ left_col = [
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('test')]]
 right_col = [[sg.Text('其他配置                  ')],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(8,None),key =mnqIndexKey),
-sg.Checkbox('启动模拟器',isRunAndStart,key=isRunAndStartKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ],
+sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('编组-队伍 编组:1~5 队伍:1~3')],
@@ -278,7 +276,6 @@ window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
 	global isRunAndStart,mnqIndex,MainSettingKey
-	isRunAndStart = values[isRunAndStartKey] #这个需要获取
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	print('MainSettingKey = ',MainSettingKey)
@@ -326,7 +323,6 @@ while True:
 		SavaConfig(values)
 		WriteCmds()
 	if ((event == RunName) | (event == StartRunName)):
-		if(event == StartRunName):
-			values[isRunAndStartKey] = True
+		SetConfig(isRunAndStartKey,str(event == StartRunName))
 		SavaConfig(values)
 		StartPcr()

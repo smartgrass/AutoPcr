@@ -1,25 +1,19 @@
-from math import fabs
-from pickle import TRUE
-from pydoc import doc
-from sqlite3 import Time
 import sys
-from tkinter import E
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
-import win32api
 import ctypes
 import inspect
 from re import A
 import threading
-import pyautogui
 import time
 import os
 from ctypes import *
 from PIL import ImageGrab
+from PIL import Image
 import aircv as ac
 import keyboard
-
+import win32gui, win32ui, win32con,win32api
 #region 获取当前路径
 print("path " ,os.path.dirname(sys.executable))
 
@@ -47,9 +41,125 @@ tMain = threading.Thread()
 t0 =threading.Thread()
 t1 = threading.Thread()
 
+
+
+#region win32初始化
+#获取后台窗口的句柄，注意后台窗口不能最小化
+#雷电模拟器 或 雷电模拟器-1 或直接None
+window_title = None
+MainhWnd =  0
+Subhwnd = None
+width = 960
+height = 540
+saveDC = None
+mfcDC = None
+saveBitMap = None
+
+def winfun(hwnd, lparam):
+	global Subhwnd
+	subtitle = win32gui.GetWindowText(hwnd)
+	if subtitle == 'TheRender':
+		Subhwnd = hwnd
+		print("Find Subhwnd",Subhwnd)
+
+def WaitWin32Start():
+	#如果Main为0则等待
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
+	while(MainhWnd ==0):
+		print("=========等待模拟器启动=========")
+		time.sleep(1.5)
+		MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
+
+	#已打开雷电
+	print("Find MainhWnd",MainhWnd)
+	win32gui.EnumChildWindows(MainhWnd, winfun, None)
+	hWndDC = win32gui.GetWindowDC(Subhwnd)
+	#创建设备描述表
+	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
+	#创建内存设备描述表
+	saveDC = mfcDC.CreateCompatibleDC()
+	#创建位图对象准备保存图片
+	saveBitMap = win32ui.CreateBitmap()
+	saveBitMap.CreateCompatibleBitmap(mfcDC,width,height)
+	#将截图保存到saveBitMap中
+	saveDC.SelectObject(saveBitMap)
+
+
+def SavaShoot():
+	#保存bitmap到内存设备描述表
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	saveDC.BitBlt((0,0), (width,height), mfcDC, (0, 0), win32con.SRCCOPY)
+	bmpinfo = saveBitMap.GetInfo()
+	bmpstr = saveBitMap.GetBitmapBits(True)
+
+	im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+	im_PIL.save(GetFullPath("temp.png")) #保存
+	return GetFullPath("temp.png")
+	# im_PIL.show() #显示
+
+key_map = {
+    "0": 49, "1": 50, "2": 51, "3": 52, "4": 53, "5": 54, "6": 55, "7": 56, "8": 57, "9": 58,
+    'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116, 'F6': 117, 'F7': 118, 'F8': 119,
+    'F9': 120, 'F10': 121, 'F11': 122, 'F12': 123, 'F13': 124, 'F14': 125, 'F15': 126, 'F16': 127,
+    "A": 65, "B": 66, "C": 67, "D": 68, "E": 69, "F": 70, "G": 71, "H": 72, "I": 73, "J": 74,
+    "K": 75, "L": 76, "M": 77, "N": 78, "O": 79, "P": 80, "Q": 81, "R": 82, "S": 83, "T": 84,
+    "U": 85, "V": 86, "W": 87, "X": 88, "Y": 89, "Z": 90,
+    'BACKSPACE': 8, 'TAB': 9, 'TABLE': 9, 'CLEAR': 12,
+    'ENTER': 13, 'SHIFT': 16, 'CTRL': 17,
+    'CONTROL': 17, 'ALT': 18, 'ALTER': 18, 'PAUSE': 19, 'BREAK': 19, 'CAPSLK': 20, 'CAPSLOCK': 20, 'ESC': 27,
+    'SPACE': 32, 'SPACEBAR': 32, 'PGUP': 33, 'PAGEUP': 33, 'PGDN': 34, 'PAGEDOWN': 34, 'END': 35, 'HOME': 36,
+    'LEFT': 37, 'UP': 38, 'RIGHT': 39, 'DOWN': 40, 'SELECT': 41, 'PRTSC': 42, 'PRINTSCREEN': 42, 'SYSRQ': 42,
+    'SYSTEMREQUEST': 42, 'EXECUTE': 43, 'SNAPSHOT': 44, 'INSERT': 45, 'DELETE': 46, 'HELP': 47, 'WIN': 91,
+    'WINDOWS': 91, 'NMLK': 144,
+    'NUMLK': 144, 'NUMLOCK': 144, 'SCRLK': 145,
+    '[': 219, ']': 221, '+': 107, '-': 109}
+
+
+def GetWinPos():
+	print("")
+
+lastX=0
+lastY =0
+def Click(x=None, y=None):
+	try:
+		global Subhwnd,lastY,lastX
+		if(x==None):
+			x = lastX
+			y = lastY
+		positon = win32api.MAKELONG(int(x), int(y))
+		lastX = x
+		lastY = y
+
+		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, positon)
+		time.sleep(0.02)
+		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON,positon)
+		time.sleep(0.1)
+	except Exception as e:
+		print(f"fallback adb click:{e}")
+
+def testKey():
+	win32gui.PostMessage(Subhwnd, win32con.WM_KEYDOWN, 90, 0)
+	win32gui.PostMessage(Subhwnd, win32con.WM_KEYUP, 90, 0)
+
+#抬起按键
+
+def release_key(key_code):
+    win32api.keybd_event(key_code, win32api.MapVirtualKey(key_code, 0), win32con.KEYEVENTF_KEYUP, 0)
+#按下按键
+def press_key(key_code):
+    win32api.keybd_event(key_code, win32api.MapVirtualKey(key_code, 0), 0, 0)
+#  按一下按键
+def press_and_release_key(key_code):
+    press_key(key_code)
+    release_key(key_code)
+
+#endregion
+
+
 #region 图片检查&点击事件
 #快速检测图片
-def IsHasImg(targetImg,isClick = True,stopTime = 2):
+def IsHasImg(targetImg,isClick = True,stopTime = 4):
 	return WaitToClickImg(targetImg,isClick,True,stopTime)
 
 #等待图片出现,低频率检测
@@ -63,12 +173,12 @@ def WaitImgLongTime(targetImg):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
+def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 14,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
 	#isClick:找到图片后是否点击
 	#isShip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
 	target_ImgPath = GetFullPath(targetImg)
-	Screen_ImgPath = image_X()
+	Screen_ImgPath = SavaShoot()
 	print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
 	imsch = ac.imread(target_ImgPath) # 带查找的部分
@@ -92,15 +202,15 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 7,autoExit = 
 
 		if(isClick):
 			y1 = y1+offsetY
-			pyautogui.moveTo(x1,y1)
-			pyautogui.click()
-			time.sleep(0.4)
+			time.sleep(0.1)
+			Click(x1,y1)
+			time.sleep(0.6)
 		return True
 	else:
 		waitTime = waitTime+1
 		print((isShip==False))
 		if((isShip==False)|(waitTime < maxTry)):
-			time.sleep(0.1)
+			time.sleep(0.12)
 			if(isShip == False):
 				time.sleep(3)
 			if(waitTime < maxTry & autoExit):
@@ -133,8 +243,12 @@ def ClickUntilNul(path):
 # 		ClickUntilNul2(path,exsitPath)
 # 		break
 
-def DoKeyDown(_key):
-	pyautogui.press(_key)
+def pressKey(key):
+	keyCode =key_map[key]
+	win32gui.PostMessage(Subhwnd, win32con.WM_KEYDOWN, keyCode, 0)
+	win32gui.PostMessage(Subhwnd, win32con.WM_KEYUP, keyCode, 0)
+def DoKeyDown(key):
+	pressKey(key)
 	time.sleep(0.6)
 
 def LongTimeCheck(im1,im2):
@@ -154,7 +268,8 @@ def LongTimeCheck(im1,im2):
 def FastKeyDown(_key):
 	print(_key)
 	time.sleep(0.03)
-	pyautogui.press(_key)
+	pressKey(_key)
+
 
 global loopKey
 def LoopKeyDown():
@@ -228,9 +343,9 @@ def StartJJC():
 	DoKeyDown(playerKey)
 	time.sleep(6)
 	print("sleep...")
-	if(WaitToClickImg('jjc/ship.png',maxTry=10) == False):
-		WaitToClickImg('jjc/ship.png',maxTry=10)
-	pyautogui.click()
+	if(WaitToClickImg('jjc/ship.png',maxTry=20) == False):
+		WaitToClickImg('jjc/ship.png',maxTry=20)
+	Click()
 	time.sleep(2)
 	LongTimeCheck("dxc/win.png","jjc/lose.png")
 	time.sleep(1.5)
@@ -257,10 +372,10 @@ def StartPJJC():
 	DoKeyDown(playerKey)
 	print("sleep for 5s...")
 	time.sleep(6)
-	if(WaitToClickImg('jjc/ship.png',maxTry=10) == False):
-		WaitToClickImg('jjc/ship.png',maxTry=10)
-	pyautogui.click()
-	pyautogui.click()
+	if(WaitToClickImg('jjc/ship.png',maxTry=20) == False):
+		WaitToClickImg('jjc/ship.png',maxTry=20)
+	Click()
+	Click()
 	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
@@ -276,6 +391,8 @@ def StartTanSuo():
 	WaitToClickImg("tansuo/mana.png")
 	WaitToClickImg("tansuo/topMana.png",False)
 	DoKeyDown(listSelectKeys[0])
+	if(IsHasImg("tansuo/topMana.png",False)):
+		DoKeyDown(listSelectKeys[0])
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/start.png")
 	WaitToClickImg("main/sure.png")
@@ -294,6 +411,8 @@ def StartTanSuo():
 
 	WaitToClickImg("tansuo/topExp.png",False)
 	DoKeyDown(listSelectKeys[0])
+	if(IsHasImg("tansuo/topExp.png",False)):
+		DoKeyDown(listSelectKeys[0])
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/start.png")
 	WaitToClickImg("main/sure.png")
@@ -364,9 +483,9 @@ def StartDxc(index =1):
 			StartBoss()
 
 def CheckAuto():
-	if(WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=20)):
+	if(WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=40)):
 		print('检测到自动未开启, 开启自动')
-		WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=3)
+		WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=6)
 
 #进入地下城界面
 def EnterDxc():
@@ -542,12 +661,13 @@ def EnterDiaoCha():
 def SaoDang(_time =4):
 	WaitToClickImg('tansuo/plus.png')
 	for i in range(_time):
-		pyautogui.click()
+		Click()
 	WaitToClickImg('tansuo/start.png')
 	WaitToClickImg("main/sure.png")
+	time.sleep(0.2)
 	WaitToClickImg("main/skip.png")
 	time.sleep(0.3)
-	pyautogui.click()
+	Click()
 
 
 def ExitSaoDang():
@@ -611,8 +731,6 @@ def SendZb():
 			DoKeyDown(exitKey)
 			DoKeyDown(exitKey)
 
-def  Click():
-	pyautogui.click()
 
 def GetZBPath(name):
 	return os.path.join('other\\zuanbei\\',str(name)+'.png')
@@ -630,10 +748,10 @@ def needSeedZb():
 		time.sleep(0.5)
 		WaitToClickImg('other/needSend.png')
 
-	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 4,match = 0.9) == False):
+	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 8,match = 0.9) == False):
 		print("找不到装备->反转排序")
 		DoKeyDown(partyKey)
-	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 4,match = 0.9)):
+	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 8,match = 0.9)):
 		WaitToClickImg('other/needSend2.png')
 		WaitToClickImg('main/sure.png')
 		WaitToClickImg('main/sure.png')
@@ -643,7 +761,7 @@ def needSeedZb():
 
 def ghHomeTake():
 	WaitToClickImg('main/ghHome.png')
-	time.sleep(0.5)
+	time.sleep(1)
 	WaitToClickImg('main/ghHome_take.png')
 	DoKeyDown(exitKey)
 	WaitToClickImg('task/close.png')
@@ -653,7 +771,7 @@ tuichuMaxTry =0
 
 def ClickPlayer():
 	if(WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=55)):
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False,maxTry=3) == False):
+		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False,maxTry=6) == False):
 			print("没有出现挑战界面->重试")
 			tuichuMaxTry = tuichuMaxTry+1
 			if(tuichuMaxTry>4):
@@ -693,7 +811,7 @@ def OnHouDongHard():
 	DoKeyDown(exitKey)
 	WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=25)
 	for	i in range(5):
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=4,isClick=False)):
+		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
 		SaoDang(2)
 		DoKeyDown(groupKeys[0])
@@ -703,18 +821,19 @@ def OnHouDongHard():
 	ExitSaoDang()
 
 def MoveToLeft():
-	DoKeyDown('c')
+	DoKeyDown('C')
 
 def UseAllPower():
 	print('OnHouDongHard')
 	ToFightPage()
 	WaitToClickImg('main/zhuXian.png',True)
 
-	if(WaitToClickImg('main/player'+mnqIndex+'.png')==False):
+	while(WaitToClickImg('main/player'+mnqIndex+'.png')==False):
 		DoKeyDown(exitKey)
-		WaitToClickImg('main/player'+mnqIndex+'.png')
+		if(WaitToClickImg('main/player'+mnqIndex+'.png')):
+			break
 	i = 0
-	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=3,isClick=False)):
+	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
 		MoveToLeft()
 		i=i+1
 		if(i>4):
@@ -779,10 +898,8 @@ def stop_thread(thread):
 	print("stop ",thread)
 	_async_raise(thread.ident, SystemExit)
 
-
 def WaitStart():
 	print('=== WaitStart ===')
-	time.sleep(5)
 	while(IsHasImg("main/fight.png",False) == False):
 		DoKeyDown(exitKey)
 		time.sleep(2)
@@ -813,17 +930,17 @@ def CheckEnd(_key):
 
 #1-5是编组位置 6 是队伍
 #num1-3 队伍位置
-partyKey ='y'
-exitKey ='z'
-huodongKey='x'
-playerKey = 'p'	#p是挑战位置
-nextKey = 'l' #n 是下一步
+partyKey ='Y'
+exitKey ='Z'
+huodongKey='X'
+playerKey = 'P'	#p是挑战位置
+nextKey = 'L' #n 是下一步
 endKey ='Esc'
 #roleKey 123
-listSelectKeys=['i','j','n']
+listSelectKeys=['I','J','N']
 roleKeys = ['1','2','3','4','5']
-groupKeys = ['q','w','e','r','t']
-duiKeys =['u','h','b']
+groupKeys = ['Q','W','E','R','T']
+duiKeys =['U','H','B']
 
 
 StartRunName = "启动模拟器并运行"
@@ -934,14 +1051,15 @@ def RunAutoPcr():
 	global t1
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
-
+	WaitWin32Start()
 	time.sleep(0.5)
 	if(isRunAndStart):
-		print('Wait Start... 25s ')
-		time.sleep(25)
+		print('Wait Start... 15s ')
+		time.sleep(15)
 		WaitStart()
 	else:
 		time.sleep(2)
+
 	print('=== Start ===')
 	print('\n=== 按Exc退出程序 ===\n')
 #日常
