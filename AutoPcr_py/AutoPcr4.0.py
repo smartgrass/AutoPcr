@@ -210,7 +210,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 14,autoExit =
 		waitTime = waitTime+1
 		print((isShip==False))
 		if((isShip==False)|(waitTime < maxTry)):
-			time.sleep(0.12)
+			time.sleep(0.18)
 			if(isShip == False):
 				time.sleep(3)
 			if(waitTime < maxTry & autoExit):
