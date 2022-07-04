@@ -246,6 +246,7 @@ def ClickUntilNul(path):
 def pressKey(key):
 	keyCode =key_map[key]
 	win32gui.PostMessage(Subhwnd, win32con.WM_KEYDOWN, keyCode, 0)
+	time.sleep(0.05)
 	win32gui.PostMessage(Subhwnd, win32con.WM_KEYUP, keyCode, 0)
 def DoKeyDown(key):
 	pressKey(key)
@@ -339,12 +340,15 @@ def StartJJC():
 	DoKeyDown(exitKey)
 	DoKeyDown(exitKey)
 	DoKeyDown(listSelectKeys[0])
+	if(IsHasImg("jjc/jjcTop.png",False)):
+		DoKeyDown(exitKey)
+		DoKeyDown(listSelectKeys[0])
 	time.sleep(1)
 	DoKeyDown(playerKey)
-	time.sleep(6)
+	time.sleep(7)
 	print("sleep...")
-	if(WaitToClickImg('jjc/ship.png',maxTry=20) == False):
-		WaitToClickImg('jjc/ship.png',maxTry=20)
+	if(WaitToClickImg('jjc/ship.png',maxTry=25) == False):
+		WaitToClickImg('jjc/ship.png',maxTry=25)
 	Click()
 	time.sleep(2)
 	LongTimeCheck("dxc/win.png","jjc/lose.png")
