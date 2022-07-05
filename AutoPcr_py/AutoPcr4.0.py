@@ -119,11 +119,14 @@ key_map = {
 def GetWinPos():
 	print("")
 
+rect=None
+trueH=0
+trueW=0
 lastX=0
 lastY =0
 def Click(x=None, y=None):
 	try:
-		global Subhwnd,lastY,lastX
+		global Subhwnd,lastY,lastX,rect,trueH,trueW
 		if(x==None):
 			x = lastX
 			y = lastY
@@ -131,14 +134,14 @@ def Click(x=None, y=None):
 			lastX = x
 			lastY = y
 
-	
+		if(rect==None):
+			rect = win32gui.GetClientRect(Subhwnd)
+			trueH = rect[3]
+			trueW = rect[2]
 
-		ret = win32gui.GetWindowRect(Subhwnd)
-		height = ret[3] - ret[1]
-		width = ret[2] - ret[0]
-		tx = int(x * width/960)
-		ty = int(y * height/540)
-		print(height,width,"oldPos:",x,y,"truePos:",tx,ty)
+		tx = int(x * trueW/960)
+		ty = int(y * trueH/540)
+		# print(trueH,trueW,"simPos:",x,y,"truePos:",tx,ty)
 		positon = win32api.MAKELONG(int(tx), int(ty))
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, positon)
 		time.sleep(0.02)
@@ -1056,7 +1059,26 @@ elif(dxcBoss =="绿龙"):
 	dxcDir = "dxc_ex3"
 
 #endregion
+def test():
+	time.sleep(1)
+	for i in range(100):
+		time.sleep(0.5)
+		testWin(i,i)
+	
+	print("testend")
+	time.sleep(40)
+	return
+def testWin(x,y):
+	ret = win32gui.GetWindowRect(Subhwnd)
+	ret2 = win32gui.GetClientRect(Subhwnd)
+	height = ret[3] - ret[1]
+	width = ret[2] - ret[0]
+	tx = int(x * width/960)
+	ty = int(y * height/540)
+	print(ret,ret2)
+	print(height,width,"oldPos:",x,y,"truePos:",tx,ty)	
 
+	return
 
 def RunAutoPcr():
 	#按下Esc键停止
@@ -1065,6 +1087,7 @@ def RunAutoPcr():
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
 	WaitWin32Start()
+	# test()	
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start... 20s ')
