@@ -127,10 +127,19 @@ def Click(x=None, y=None):
 		if(x==None):
 			x = lastX
 			y = lastY
-		positon = win32api.MAKELONG(int(x), int(y))
-		lastX = x
-		lastY = y
+		else:
+			lastX = x
+			lastY = y
 
+	
+
+		ret = win32gui.GetWindowRect(Subhwnd)
+		height = ret[3] - ret[1]
+		width = ret[2] - ret[0]
+		tx = int(x * width/960)
+		ty = int(y * height/540)
+		print(height,width,"oldPos:",x,y,"truePos:",tx,ty)
+		positon = win32api.MAKELONG(int(tx), int(ty))
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, positon)
 		time.sleep(0.02)
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON,positon)
@@ -1058,8 +1067,8 @@ def RunAutoPcr():
 	WaitWin32Start()
 	time.sleep(0.5)
 	if(isRunAndStart):
-		print('Wait Start... 15s ')
-		time.sleep(15)
+		print('Wait Start... 20s ')
+		time.sleep(20)
 		WaitStart()
 	else:
 		time.sleep(2)
