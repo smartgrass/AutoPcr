@@ -737,7 +737,8 @@ def xinSui():
 def SendZb():
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
-	WaitToClickImg('other/hhDown.png',True,True,4)
+	time.sleep(0.4)
+	WaitToClickImg('other/hhDown.png')
 	time.sleep(0.2)
 	for i in range(2):
 		if(WaitToClickImg('other/sendBtn.png',True,match=0.93,isRgb=True)):
@@ -916,12 +917,14 @@ def stop_thread(thread):
 
 def WaitStart():
 	print('=== WaitStart ===')
-	while(IsHasImg("main/fight.png",False) == False):
+	while(IsHasImg("main/fight.png",False,stopTime=2) == False):
 		DoKeyDown(exitKey)
 		time.sleep(2)
 		DoKeyDown(exitKey)
 		time.sleep(3)
 		if(IsHasImg("main/skipIco.png",True)):
+			Click()
+			time.sleep(2)
 			break
 
 	while(IsHasImg("main/fight.png",False) == False):
@@ -1064,7 +1067,7 @@ def test():
 	for i in range(100):
 		time.sleep(0.5)
 		testWin(i,i)
-	
+
 	print("testend")
 	time.sleep(40)
 	return
@@ -1076,7 +1079,7 @@ def testWin(x,y):
 	tx = int(x * width/960)
 	ty = int(y * height/540)
 	print(ret,ret2)
-	print(height,width,"oldPos:",x,y,"truePos:",tx,ty)	
+	print(height,width,"oldPos:",x,y,"truePos:",tx,ty)
 
 	return
 
@@ -1087,7 +1090,7 @@ def RunAutoPcr():
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
 	WaitWin32Start()
-	# test()	
+	# test()
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start... 20s ')
