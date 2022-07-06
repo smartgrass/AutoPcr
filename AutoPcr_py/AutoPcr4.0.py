@@ -99,7 +99,7 @@ def SavaShoot():
 	# im_PIL.show() #显示
 
 key_map = {
-    "0": 49, "1": 50, "2": 51, "3": 52, "4": 53, "5": 54, "6": 55, "7": 56, "8": 57, "9": 58,
+    "0": 48, "1": 49, "2": 50, "3": 51, "4": 52, "5": 53, "6": 54, "7": 55, "8": 56, "9": 57,
     'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116, 'F6': 117, 'F7': 118, 'F8': 119,
     'F9': 120, 'F10': 121, 'F11': 122, 'F12': 123, 'F13': 124, 'F14': 125, 'F15': 126, 'F16': 127,
     "A": 65, "B": 66, "C": 67, "D": 68, "E": 69, "F": 70, "G": 71, "H": 72, "I": 73, "J": 74,
@@ -917,7 +917,7 @@ def stop_thread(thread):
 
 def WaitStart():
 	print('=== WaitStart ===')
-	while(IsHasImg("main/fight.png",False,stopTime=2) == False):
+	while(IsHasImg("main/fight.png",False,stopTime=3) == False):
 		DoKeyDown(exitKey)
 		time.sleep(2)
 		DoKeyDown(exitKey)
@@ -926,19 +926,17 @@ def WaitStart():
 			Click()
 			time.sleep(2)
 			break
-
+	time.sleep(0.5)
+	DoKeyDown(exitKey)
+	time.sleep(0.5)
+	DoKeyDown(exitKey)
 	while(IsHasImg("main/fight.png",False) == False):
 		DoKeyDown(exitKey)
 		time.sleep(1)
 		DoKeyDown(exitKey)
 		time.sleep(1)
 	time.sleep(0.5)
-	while(IsHasImg("main/fight.png",False) == False):
-		time.sleep(0.5)
-		DoKeyDown(exitKey)
-		time.sleep(0.5)
-		DoKeyDown(exitKey)
-
+	ToHomePage()
 
 #按下Esc 停止
 def CheckEnd(_key):
