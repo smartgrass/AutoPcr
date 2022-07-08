@@ -339,7 +339,9 @@ def SelectParty(x,y):
 	x= x-1
 	y= y-1
 	DoKeyDown(groupKeys[x])
+	time.sleep(0.1)
 	DoKeyDown(duiKeys[y])
+	time.sleep(0.1)
 
 def StartJJC():
 	print("===竞技场==")
@@ -352,10 +354,8 @@ def StartJJC():
 	DoKeyDown(exitKey)
 	DoKeyDown(exitKey)
 	DoKeyDown(listSelectKeys[0])
-	if(IsHasImg("jjc/jjcTop.png",False)):
-		DoKeyDown(exitKey)
-		DoKeyDown(listSelectKeys[0])
 	time.sleep(1)
+	DoKeyDown(playerKey)
 	DoKeyDown(playerKey)
 	time.sleep(7)
 	print("sleep...")
@@ -366,7 +366,7 @@ def StartJJC():
 	LongTimeCheck("dxc/win.png","jjc/lose.png")
 	time.sleep(1.5)
 	DoKeyDown(nextKey)
-	time.sleep(3)
+	time.sleep(1.5)
 	DoKeyDown(nextKey)
 
 def StartPJJC():
