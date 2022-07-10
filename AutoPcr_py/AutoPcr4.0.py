@@ -185,7 +185,7 @@ def WaitImgLongTime(targetImg):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 14,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
+def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
 	#isClick:找到图片后是否点击
 	#isShip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
