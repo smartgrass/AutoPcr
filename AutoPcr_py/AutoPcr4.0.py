@@ -619,7 +619,8 @@ def WaitBossFight():
 		#win
 		print('win')
 		StopLoopKeyDown()
-		time.sleep(2)
+		time.sleep(2.5)
+		DoKeyDown(nextKey)
 		DoKeyDown(nextKey)
 		time.sleep(3)
 		DoKeyDown(exitKey)
