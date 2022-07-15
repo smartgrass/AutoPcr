@@ -927,6 +927,10 @@ def WaitStart():
 			Click()
 			time.sleep(2)
 			break
+		if(IsHasImg("main/home.png",stopTime=3)):
+			print("find home")
+		
+		
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
