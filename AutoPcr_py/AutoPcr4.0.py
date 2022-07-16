@@ -74,6 +74,11 @@ def WaitWin32Start():
 	#已打开雷电
 	print("Find MainhWnd",MainhWnd)
 	win32gui.EnumChildWindows(MainhWnd, winfun, None)
+	while(Subhwnd == None):
+		time.sleep(1)
+		print("wait subHwnd...")
+		win32gui.EnumChildWindows(MainhWnd, winfun, None)
+
 	hWndDC = win32gui.GetWindowDC(Subhwnd)
 	#创建设备描述表
 	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
@@ -929,8 +934,8 @@ def WaitStart():
 			break
 		if(IsHasImg("main/home.png",stopTime=3)):
 			print("find home")
-		
-		
+
+
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
