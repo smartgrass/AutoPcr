@@ -523,7 +523,7 @@ def GetBossLoopKey(level):
 	listLen = len(values)
 	if(rawValue == ""):
 		return '0'
-	if(listLen >= level):
+	if(listLen > level):
 		return values[level]
 	return '0'
 
@@ -856,13 +856,17 @@ def UseAllPower():
 		if(WaitToClickImg('main/player'+mnqIndex+'.png')):
 			break
 	i = 0
+	isSaodang = True
 	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
 		MoveToLeft()
 		i=i+1
-		if(i>4):
+		if(i>3):
+			isSaodang =False
 			break
-	SaoDang(30)
-	ExitSaoDang()
+
+	if(isSaodang):
+		SaoDang(60)
+		ExitSaoDang()
 	ExitSaoDang()
 
 #日常任务
