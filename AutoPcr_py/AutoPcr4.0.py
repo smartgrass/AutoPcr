@@ -41,11 +41,24 @@ tMain = threading.Thread()
 t0 =threading.Thread()
 t1 = threading.Thread()
 
+#region 读取配置
+#其他页面
+dxcDropKey ='dxcDrop'
+mnqIndexKey ='mnqDrop'
+dxcDropValue =["炸脖龙","绿龙"]
+mnqIndexDropValue=["1","0"]
+
+cfg = ConfigParser()
+configPath = GetFullPath('config.ini')
+cfg.read(configPath,encoding='utf-8')
+mnqIndex = cfg.get('MainSetting',mnqIndexKey)
+MainSettingKey='MainSetting_'+mnqIndex
 
 
 #region win32初始化
 #获取后台窗口的句柄，注意后台窗口不能最小化
 #雷电模拟器 或 雷电模拟器-1 或直接None
+
 window_title = None
 MainhWnd =  0
 Subhwnd = None
@@ -65,6 +78,11 @@ def winfun(hwnd, lparam):
 def WaitWin32Start():
 	#如果Main为0则等待
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	if(mnqIndex == "0"):
+		window_title ="雷电模拟器"
+	elif(mnqIndex == "1"):
+		window_title ="雷电模拟器1"
+
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
 	while(MainhWnd ==0):
 		print("=========等待模拟器启动=========")
@@ -977,19 +995,6 @@ duiKeys =['U','H','B']
 StartRunName = "启动模拟器并运行"
 RunName = "运行"
 
-
-#region 读取配置
-#其他页面
-dxcDropKey ='dxcDrop'
-mnqIndexKey ='mnqDrop'
-dxcDropValue =["炸脖龙","绿龙"]
-mnqIndexDropValue=["1","0"]
-
-cfg = ConfigParser()
-configPath = GetFullPath('config.ini')
-cfg.read(configPath,encoding='utf-8')
-mnqIndex = cfg.get('MainSetting',mnqIndexKey)
-MainSettingKey='MainSetting_'+mnqIndex
 
 
 def GetStrConfig(key):
