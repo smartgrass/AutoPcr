@@ -10,6 +10,8 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新5.5 可挂后台版本
 
+跳过启动时生日
+
 使用win32gui代替鼠标点击, 运行时可挂后台,但不能最小化
 
 # 更新5.0绿龙自动刀版本(仅限Windows) 
