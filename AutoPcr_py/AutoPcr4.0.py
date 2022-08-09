@@ -1,3 +1,4 @@
+from operator import ne
 import sys
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
@@ -776,10 +777,14 @@ def SendZb():
 def GetZBPath(name):
 	return os.path.join('other\\zuanbei\\',str(name)+'.png')
 
+isRetryNeedZb = False
+
 def needSeedZb():
+	global isRetryNeedZb
 	print('need Send ')
-	ToHomePage()
-	WaitToClickImg('other/hanghui.png')
+	if(isRetryNeedZb == False):
+		ToHomePage()
+		WaitToClickImg('other/hanghui.png')
 	time.sleep(0.8)
 	WaitToClickImg('other/needSend.png')
 	Click()
@@ -788,6 +793,11 @@ def needSeedZb():
 		DoKeyDown(groupKeys[0])
 		time.sleep(0.5)
 		WaitToClickImg('other/needSend.png')
+
+		if(isNeedSeed == False):
+			isRetryNeedZb = True
+			needSeedZb()
+			return
 
 	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 8,match = 0.9) == False):
 		print("找不到装备->反转排序")
@@ -955,7 +965,6 @@ def WaitStart():
 		if(IsHasImg("main/skipIco.png",True)):
 			Click()
 			time.sleep(2)
-			break
 		if(IsHasImg("other/brithDay.png")):
 			ClickCenter()
 
