@@ -328,7 +328,7 @@ def StopLoopKeyDown():
 	global loopKey
 	loopKey ='exit'
 	print('StopLoopKeyDown')
-	# stop_thread(t1)
+
 
 #endregion
 
@@ -938,10 +938,12 @@ def _async_raise(tid, exctype):
         ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
-def stop_thread(thread):
-	return
-	print("stop ",thread)
-	_async_raise(thread.ident, SystemExit)
+
+def ClickCenter():
+	print("Center")
+	Click(x = width/2,y=height*0.4)
+	Click(x = width/2,y=height*0.45)
+	Click(x = width/2,y=height*0.35)
 
 def WaitStart():
 	print('=== WaitStart ===')
@@ -954,6 +956,9 @@ def WaitStart():
 			Click()
 			time.sleep(2)
 			break
+		if(IsHasImg("other/brithDay.png")):
+			ClickCenter()
+
 		if(IsHasImg("main/home.png",stopTime=3)):
 			print("find home")
 
