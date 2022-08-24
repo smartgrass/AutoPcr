@@ -989,6 +989,7 @@ def CheckEnd(_key):
 	while(True):
 		keyboard.wait(_key)
 		print(_key)
+		StopLoopKeyDown()
 		os._exit(0)
 
 #1-5是编组位置 6 是队伍
