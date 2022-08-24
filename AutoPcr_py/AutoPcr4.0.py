@@ -76,17 +76,19 @@ def winfun(hwnd, lparam):
 		Subhwnd = hwnd
 		print("Find Subhwnd",Subhwnd)
 
+
 def WaitWin32Start():
 	#如果Main为0则等待
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
 	if(mnqIndex == "0"):
 		window_title ="雷电模拟器"
 	elif(mnqIndex == "1"):
-		window_title ="雷电模拟器1"
+		window_title ="雷电模拟器-1"
+	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称)" )
 
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
 	while(MainhWnd ==0):
-		print("=========等待模拟器启动=========")
+		print("等待模拟器启动中...")
 		time.sleep(1.5)
 		MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
 
