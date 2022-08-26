@@ -75,6 +75,7 @@ isNiuDanKey ='isNiuDan'
 LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ='isAutoClose'
+isFor64Key ='isFor64'
 
 dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
@@ -105,6 +106,7 @@ isXQB = GetBoolConfig(isXQBKey)
 isSend = GetBoolConfig(isSendKey)
 isNeedSeed= GetBoolConfig(isNeedSeedKey)
 isAutoClose = GetBoolConfig(isAutoCloseKey)
+isFor64 = GetBoolConfig(isFor64Key)
 isRunAndStart = False
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
@@ -139,8 +141,8 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isExpKey,AllValues)
 	SetConfigAuto(isNiuDanKey,AllValues)
 	SetConfigAuto(isAutoCloseKey,AllValues)
+	SetConfigAuto(isFor64Key,AllValues)	#new
 
-	#new
 	SetConfigAuto(isXQBKey,AllValues)
 	SetConfigAuto(isXinSuiKey,AllValues)
 	SetConfigAuto(isKillBossKey,AllValues)
@@ -174,6 +176,7 @@ def ReadConfig():
 	ReadBoolConfig(isExpKey)
 	ReadBoolConfig(isNiuDanKey)
 	ReadBoolConfig(isAutoCloseKey)
+	ReadBoolConfig(isFor64Key)	
 	#new
 	ReadBoolConfig(isXQBKey)
 	ReadBoolConfig(isXinSuiKey)
@@ -255,7 +258,7 @@ left_col = [
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('test')]]
 right_col = [[sg.Text('其他配置                  ')],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(8,None),key =mnqIndexKey),
-sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ],
+sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ,sg.Checkbox('64位',isFor64,key=isFor64Key)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('编组-队伍 编组:1~5 队伍:1~3')],
