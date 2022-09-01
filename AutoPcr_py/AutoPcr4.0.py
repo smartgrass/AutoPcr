@@ -836,6 +836,11 @@ def ghHomeTake():
 tuichuMaxTry =0
 
 def ClickPlayer():
+	global playerName
+	if(playerName==""):
+		print("玩家角色 为空!")
+		playerName = "player0"
+
 	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6) == NULL):
 		ExitSaoDang()
 		print("No player")
