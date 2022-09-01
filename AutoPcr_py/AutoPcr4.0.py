@@ -1,5 +1,7 @@
+from asyncio.windows_events import NULL
 from operator import ne
 import sys
+from tkinter import E
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
@@ -197,8 +199,8 @@ def press_and_release_key(key_code):
 
 #region 图片检查&点击事件
 #快速检测图片
-def IsHasImg(targetImg,isClick = True,stopTime = 4):
-	return WaitToClickImg(targetImg,isClick,True,stopTime)
+def IsHasImg(targetImg,isClick = True,stopTime = 4,offsetY=0):
+	return WaitToClickImg(targetImg,isClick,True,stopTime,offsetY= offsetY)
 
 #等待图片出现,低频率检测
 def WaitImgLongTime(targetImg):
@@ -267,11 +269,11 @@ def image_X():
 	return sp
 
 #点到消失为止
-def ClickUntilNul(path):
-	WaitToClickImg(path)
+def ClickUntilNul(path,offsetY=0):
+	WaitToClickImg(path,offsetY= offsetY)
 	time.sleep(0.5)
-	while(IsHasImg(path)):
-		IsHasImg(path)
+	while(IsHasImg(path,offsetY= offsetY)):
+		IsHasImg(path,offsetY= offsetY)
 
 # #点击然后exit消失为止
 # def ClickUntilNul2(path,exsitPath):
@@ -835,6 +837,7 @@ def ClickPlayer():
 			tuichuMaxTry =0
 
 def tuichu():
+	print("确保已经进入关卡地图")
 	ClickPlayer()
 	if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False)):
 		DoKeyDown(playerKey)
@@ -872,6 +875,47 @@ def OnHouDongHard():
 		DoKeyDown(groupKeys[0])
 	DoKeyDown(exitKey)
 	ExitSaoDang()
+
+
+
+def OnTuitu():
+
+
+	while(WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=25,isClick=False) == NULL):
+		ExitSaoDang()
+		print("No player")
+
+	ClickUntilNul('main/player'+mnqIndex+'.png',offsetY=25)
+
+	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
+		print("检测到不能扫荡 -> 新关卡")
+		time.sleep(1)
+
+		DoKeyDown(playerKey)
+		DoKeyDown(playerKey)
+		time.sleep(0.8)
+		DoKeyDown(playerKey)
+		DoKeyDown(playerKey)
+		DoKeyDown(playerKey)
+
+		print("sleep 10")
+		time.sleep(10)
+		WaitImgLongTime("main/next.png")
+
+		DoKeyDown(nextKey)
+		DoKeyDown(nextKey)
+		time.sleep(1.5)
+		DoKeyDown(nextKey)
+		DoKeyDown(nextKey)
+		DoKeyDown(nextKey)
+		OnTuitu()
+	else:
+		if( WaitToClickImg('tansuo/start1.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False) == False):
+			ExitSaoDang()
+			OnTuitu()
+			return
+		print("已经全部通关...")
+
 
 def MoveToLeft():
 	DoKeyDown('C')
@@ -931,8 +975,11 @@ def DailyTasks():
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
+	if(isTuitu):
+		tuichu()
 	if(isHomeTake):
 		TakeGift()
+
 
 def CloseMoniqi():
 	print("3 秒后关闭模拟器")
@@ -991,7 +1038,6 @@ def CheckEnd(_key):
 	while(True):
 		keyboard.wait(_key)
 		print(_key)
-		StopLoopKeyDown()
 		os._exit(0)
 
 #1-5是编组位置 6 是队伍
@@ -1039,6 +1085,7 @@ isNiuDanKey ='isNiuDan'
 LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ="isAutoClose"
+isTuituKey='isTuituKey'
 
 #newKey
 isXQBKey='isXQB'
@@ -1072,6 +1119,7 @@ isSend = GetBoolConfig(isSendKey)
 isNeedSeed= GetBoolConfig(isNeedSeedKey)
 isRunAndStart = GetBoolConfig(isRunAndStartKey)
 isAutoClose = GetBoolConfig(isAutoCloseKey)
+isTuitu = GetBoolConfig(isTuituKey)
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
@@ -1135,6 +1183,8 @@ def RunAutoPcr():
 
 	print('=== Start ===')
 	print('\n=== 按Exc退出程序 ===\n')
+
+	OnTuitu()
 #日常
 	DailyTasks()
 	# tuichu()
