@@ -8,7 +8,9 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
-# 更新5.5 可挂后台版本
+# 更新5.6 可挂后台版本
+
+自动推图
 
 跳过启动时生日
 
