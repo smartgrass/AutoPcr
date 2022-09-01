@@ -88,7 +88,7 @@ def WaitWin32Start():
 		window_title ="雷电模拟器-1"
 
 	if(isFor64):
-		window_title = window_title+"(64)"	
+		window_title = window_title+"(64)"
 	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称)" )
 
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
@@ -155,6 +155,7 @@ trueH=0
 trueW=0
 lastX=0
 lastY =0
+
 def Click(x=None, y=None):
 	try:
 		global Subhwnd,lastY,lastX,rect,trueH,trueW
@@ -202,8 +203,8 @@ def press_and_release_key(key_code):
 
 #region 图片检查&点击事件
 #快速检测图片
-def IsHasImg(targetImg,isClick = True,stopTime = 4,offsetY=0):
-	return WaitToClickImg(targetImg,isClick,True,stopTime,offsetY= offsetY)
+def IsHasImg(targetImg,isClick = True,stopTime = 4,offsetY=0,isRgb =False,match=minMatch):
+	return WaitToClickImg(targetImg,isClick,True,stopTime,offsetY= offsetY,isRgb=isRgb,match=match)
 
 #等待图片出现,低频率检测
 def WaitImgLongTime(targetImg):
@@ -244,7 +245,10 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 		waitTime = 0
 
 		if(isClick):
-			y1 = y1+offsetY
+			if(trueH==0):
+				Click(0,0)
+				print("TrueH = ",trueH)
+			y1 = y1+(offsetY*trueH/540)
 			time.sleep(0.1)
 			Click(x1,y1)
 			time.sleep(0.6)
@@ -272,11 +276,15 @@ def image_X():
 	return sp
 
 #点到消失为止
-def ClickUntilNul(path,offsetY=0):
-	WaitToClickImg(path,offsetY= offsetY)
+def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch):
+	WaitToClickImg(path,offsetY= offsetY,isRgb=  isRgb,match=match)
 	time.sleep(0.5)
-	while(IsHasImg(path,offsetY= offsetY)):
-		IsHasImg(path,offsetY= offsetY)
+	tryTime =0
+	while(IsHasImg(path,offsetY= offsetY,isRgb= isRgb,match=match)):
+		if(tryTime >maxTry):
+			break
+		tryTime = tryTime+1
+		IsHasImg(path,offsetY= offsetY,isRgb=  isRgb,match=match)
 
 # #点击然后exit消失为止
 # def ClickUntilNul2(path,exsitPath):
@@ -828,68 +836,14 @@ def ghHomeTake():
 tuichuMaxTry =0
 
 def ClickPlayer():
-	if(WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=55)):
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False,maxTry=6) == False):
-			print("没有出现挑战界面->重试")
-			tuichuMaxTry = tuichuMaxTry+1
-			if(tuichuMaxTry>4):
-				tuichuMaxTry =0
-				return
-			ClickPlayer()
-		else:
-			tuichuMaxTry =0
-
-def tuichu():
-	print("确保已经进入关卡地图")
-	ClickPlayer()
-	if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,isClick=False)):
-		DoKeyDown(playerKey)
-		DoKeyDown(playerKey)
-		DoKeyDown(playerKey)
-		LongTimeCheck("main/next.png","main/next.png")
-		DoKeyDown(exitKey)
-		DoKeyDown(nextKey)
-		time.sleep(0.3)
-		DoKeyDown(exitKey)
-		DoKeyDown(nextKey)
-		DoKeyDown(exitKey)
-		DoKeyDown(nextKey)
-		tuichu()
-	else:
-		print("end")
-	return
-
-def OnHouDongHard():
-	print('OnHouDongHard')
-	ToFightPage()
-	WaitToClickImg('main/dxc.png',False)
-	DoKeyDown(huodongKey)
-	time.sleep(0.5)
-	DoKeyDown(exitKey)
-	time.sleep(0.5)
-	DoKeyDown(exitKey)
-	WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=25)
-	for	i in range(5):
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
-			MoveToLeft()
-		SaoDang(2)
-		DoKeyDown(groupKeys[0])
-		DoKeyDown(groupKeys[0])
-		DoKeyDown(groupKeys[0])
-	DoKeyDown(exitKey)
-	ExitSaoDang()
-
-
+	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6) == NULL):
+		ExitSaoDang()
+		print("No player")
+	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 
 def OnTuitu():
 
-
-	while(WaitToClickImg('main/player'+mnqIndex+'.png',offsetY=25,isClick=False) == NULL):
-		ExitSaoDang()
-		print("No player")
-
-	ClickUntilNul('main/player'+mnqIndex+'.png',offsetY=25)
-
+	ClickPlayer()
 	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
 		time.sleep(1)
@@ -907,17 +861,46 @@ def OnTuitu():
 
 		DoKeyDown(nextKey)
 		DoKeyDown(nextKey)
-		time.sleep(1.5)
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
+		time.sleep(2)
+		if(WaitToClickImg("main/next.png") == False):
+			ExitSaoDang()
+			WaitToClickImg("main/next.png")
 		DoKeyDown(nextKey)
 		OnTuitu()
 	else:
-		if( WaitToClickImg('tansuo/start1.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False) == False):
+		if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False) == False):
 			ExitSaoDang()
 			OnTuitu()
 			return
-		print("已经全部通关...")
+		else:
+			print("已经全部通关...")
+			ExitSaoDang()
+
+
+
+
+def OnHouDongHard():
+	print('OnHouDongHard')
+	ToFightPage()
+	WaitToClickImg('main/dxc.png',False)
+	DoKeyDown(huodongKey)
+	time.sleep(0.5)
+	DoKeyDown(exitKey)
+	time.sleep(0.5)
+	DoKeyDown(exitKey)
+	WaitToClickImg('main/'+playerName+'.png',offsetY=45)
+	for	i in range(5):
+		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+			MoveToLeft()
+		SaoDang(2)
+		DoKeyDown(groupKeys[0])
+		DoKeyDown(groupKeys[0])
+		DoKeyDown(groupKeys[0])
+	DoKeyDown(exitKey)
+	ExitSaoDang()
+
+
+
 
 
 def MoveToLeft():
@@ -928,10 +911,8 @@ def UseAllPower():
 	ToFightPage()
 	WaitToClickImg('main/zhuXian.png',True)
 
-	while(WaitToClickImg('main/player'+mnqIndex+'.png')==False):
-		DoKeyDown(exitKey)
-		if(WaitToClickImg('main/player'+mnqIndex+'.png')):
-			break
+	ClickPlayer()
+
 	i = 0
 	isSaodang = True
 	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
@@ -979,7 +960,7 @@ def DailyTasks():
 		UseAllPower()
 		StartTakeAll()
 	if(isTuitu):
-		tuichu()
+		OnTuitu()
 	if(isHomeTake):
 		TakeGift()
 
@@ -1103,6 +1084,7 @@ isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
 needZbNameKey = 'needZbName'
+playerNameKey = 'playerName'
 
 dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
@@ -1130,7 +1112,7 @@ isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 needZbName = GetStrConfig(needZbNameKey)
-
+playerName = GetStrConfig(playerNameKey)
 
 dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
@@ -1189,7 +1171,6 @@ def RunAutoPcr():
 	print('=== Start ===')
 	print('\n=== 按Exc退出程序 ===\n')
 
-	OnTuitu()
 #日常
 	DailyTasks()
 	# tuichu()
