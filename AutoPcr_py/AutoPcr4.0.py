@@ -86,6 +86,9 @@ def WaitWin32Start():
 		window_title ="雷电模拟器"
 	elif(mnqIndex == "1"):
 		window_title ="雷电模拟器-1"
+
+	if(isFor64):
+		window_title = window_title+"(64)"	
 	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称)" )
 
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
@@ -1086,6 +1089,7 @@ LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ="isAutoClose"
 isTuituKey='isTuituKey'
+isFor64Key ='isFor64'
 
 #newKey
 isXQBKey='isXQB'
@@ -1120,6 +1124,7 @@ isNeedSeed= GetBoolConfig(isNeedSeedKey)
 isRunAndStart = GetBoolConfig(isRunAndStartKey)
 isAutoClose = GetBoolConfig(isAutoCloseKey)
 isTuitu = GetBoolConfig(isTuituKey)
+isFor64 = GetBoolConfig(isFor64Key)
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
