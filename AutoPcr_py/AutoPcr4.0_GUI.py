@@ -261,7 +261,7 @@ left_col = [
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey)],
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey),sg.Checkbox('普通关卡清空所有体力',isUseAllPower,key=isUseAllPowerKey)],
-[sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('推图',isTuitu,key = isTuituKey)],
+[sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
 [sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey)],
 
 [sg.Text('雷电模拟器文件夹:')],
