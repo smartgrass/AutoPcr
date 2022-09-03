@@ -94,6 +94,7 @@ isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
 needZbNameKey = 'needZbName'
 isTuituKey='isTuituKey'
+isAutoTaskKey='isAutoTask'
 playerNameKey = 'playerName'
 
 isJJC = GetBoolConfig(isJJCKey)
@@ -108,6 +109,7 @@ isSend = GetBoolConfig(isSendKey)
 isNeedSeed= GetBoolConfig(isNeedSeedKey)
 isAutoClose = GetBoolConfig(isAutoCloseKey)
 isTuitu = GetBoolConfig(isTuituKey)
+isAutoTask = GetBoolConfig(isAutoTaskKey)
 isFor64 = GetBoolConfig(isFor64Key)
 isRunAndStart = False
 
@@ -153,6 +155,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isNeedSeedKey,AllValues)
 	SetConfigAuto(dxcDropKey,AllValues)
 	SetConfigAuto(isTuituKey,AllValues)
+	SetConfigAuto(isAutoTaskKey,AllValues)
 
 	SetConfigAuto(isHomeTakeKey,AllValues)
 	SetConfigAuto(isUseAllPowerKey,AllValues)
@@ -192,6 +195,7 @@ def ReadConfig():
 	ReadBoolConfig(isUseAllPowerKey)
 	ReadBoolConfig(isHouDongHardKey)
 	ReadBoolConfig(isTuituKey)
+	ReadBoolConfig(isAutoTaskKey)
 
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
@@ -258,6 +262,7 @@ left_col = [
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey),sg.Checkbox('普通关卡清空所有体力',isUseAllPower,key=isUseAllPowerKey)],
 [sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('推图',isTuitu,key = isTuituKey)],
+[sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey)],
 
 [sg.Text('雷电模拟器文件夹:')],
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
@@ -303,7 +308,7 @@ def SetAllSelect2():
 	window[isSendKey].Update(isAllSelect2)
 	window[isHouDongHardKey].Update(isAllSelect2)
 	window[isUseAllPowerKey].Update(isAllSelect2)
-	window[isTuituKey].Update(isAllSelect2)
+	# window[isTuituKey].Update(isAllSelect2)
 	window[isXinSuiKey].Update(isAllSelect2)
 # sg.popup_get_folder('Enter the file you wish to process')
 # Event Loop to process "events" and get the "values" of the inputs

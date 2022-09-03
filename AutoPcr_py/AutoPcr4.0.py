@@ -718,6 +718,7 @@ def SaoDang(_time =4):
 	WaitToClickImg('tansuo/plus.png')
 	for i in range(_time):
 		Click()
+
 	WaitToClickImg('tansuo/start.png')
 	WaitToClickImg("main/sure.png")
 	time.sleep(0.2)
@@ -882,7 +883,50 @@ def OnTuitu():
 			ExitSaoDang()
 
 
+def OnAutoTaskStart():
+	print("AutoTask")
+	OnAutoTask()
 
+menuNofindTime=0
+
+def OnAutoTask():
+	print("AutoTask")
+	global menuNofindTime
+	#菜单存在时
+	if(WaitToClickImg('task/menu.png')):
+		menuNofindTime = 0
+		if(WaitToClickImg('task/skip.png') == False):
+			WaitToClickImg('task/menu.png')
+			WaitToClickImg('task/skip.png')
+		#蓝色按钮
+		WaitToClickImg('task/skipBtn.png')
+
+
+
+	if(WaitToClickImg('task/menu.png',isClick= False) == False):
+		#需要区分是视频还是 主页
+		if(IsHasImg('task/close.png') == False & IsHasImg('task/noSound.png') == False):
+			DoKeyDown(exitKey)
+			menuNofindTime=menuNofindTime+1
+
+		IsHasImg('task/skipBtn.png')
+		IsHasImg('task/noSound.png')
+
+
+
+	if(menuNofindTime >3):
+		if(IsHasImg("main/fight.png",False) & (~IsHasImg('task/skipBtn.png'))):
+			print("任务结束")
+			return
+		else:
+			print("清空====")
+			menuNofindTime = 0
+	print("=====Again======")
+	OnAutoTask()
+
+
+def CheckKasi():
+	print("防卡死检查")
 
 def OnHouDongHard():
 	print('OnHouDongHard')
@@ -928,7 +972,7 @@ def UseAllPower():
 			break
 
 	if(isSaodang):
-		SaoDang(60)
+		SaoDang(120)
 		ExitSaoDang()
 	ExitSaoDang()
 
@@ -968,6 +1012,8 @@ def DailyTasks():
 		OnTuitu()
 	if(isHomeTake):
 		TakeGift()
+	if(isAutoTask):
+		OnAutoTask()
 
 
 def CloseMoniqi():
@@ -1076,6 +1122,7 @@ isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ="isAutoClose"
 isTuituKey='isTuituKey'
 isFor64Key ='isFor64'
+isAutoTaskKey='isAutoTask'
 
 #newKey
 isXQBKey='isXQB'
@@ -1112,6 +1159,7 @@ isRunAndStart = GetBoolConfig(isRunAndStartKey)
 isAutoClose = GetBoolConfig(isAutoCloseKey)
 isTuitu = GetBoolConfig(isTuituKey)
 isFor64 = GetBoolConfig(isFor64Key)
+isAutoTask = GetBoolConfig(isAutoTaskKey)
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
@@ -1177,6 +1225,7 @@ def RunAutoPcr():
 	print('\n=== 按Exc退出程序 ===\n')
 
 #日常
+	# OnAutoTask()
 	DailyTasks()
 	# tuichu()
 	print('=== end ===')
