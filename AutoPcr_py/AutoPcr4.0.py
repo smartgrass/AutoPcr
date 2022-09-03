@@ -850,7 +850,7 @@ def ClickPlayer():
 def OnTuitu():
 
 	ClickPlayer()
-	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
+	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=36,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
 		time.sleep(1)
 
@@ -863,14 +863,14 @@ def OnTuitu():
 
 		print("sleep 10")
 		time.sleep(10)
-		WaitImgLongTime("main/next.png")
+		WaitImgLongTime("main/next2.png")
 
 		DoKeyDown(nextKey)
 		DoKeyDown(nextKey)
 		time.sleep(2)
-		if(WaitToClickImg("main/next.png") == False):
+		if(WaitToClickImg("main/next2.png") == False):
 			ExitSaoDang()
-			WaitToClickImg("main/next.png")
+			WaitToClickImg("main/next2.png")
 		DoKeyDown(nextKey)
 		OnTuitu()
 	else:
