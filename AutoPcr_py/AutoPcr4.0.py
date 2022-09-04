@@ -801,13 +801,13 @@ def needSeedZb():
 	if(isRetryNeedZb == False):
 		ToHomePage()
 		WaitToClickImg('other/hanghui.png')
-	time.sleep(0.8)
+	time.sleep(1)
 	WaitToClickImg('other/needSend.png')
 	Click()
 	if(WaitToClickImg('other/needSend2.png',False)==False):
 		print("上次捐赠确认->退出重试")
 		DoKeyDown(groupKeys[0])
-		time.sleep(0.5)
+		time.sleep(1)
 		WaitToClickImg('other/needSend.png')
 
 		if(isNeedSeed == False):
