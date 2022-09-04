@@ -892,34 +892,44 @@ menuNofindTime=0
 def OnAutoTask():
 	print("AutoTask")
 	global menuNofindTime
+
+	hasMenu = False
+
 	#菜单存在时
 	if(WaitToClickImg('task/menu.png')):
+		hasMenu = True
 		menuNofindTime = 0
-		if(WaitToClickImg('task/skip.png') == False):
-			WaitToClickImg('task/menu.png')
-			WaitToClickImg('task/skip.png')
+		if(IsHasImg('task/skip.png') == False):
+			IsHasImg('task/menu.png')
+			IsHasImg('task/skip.png')
 		#蓝色按钮
 		WaitToClickImg('task/skipBtn.png')
+		time.sleep(0.6)
 
 
-
-	if(WaitToClickImg('task/menu.png',isClick= False) == False):
+	#没有菜单
+	if((1-hasMenu) | (IsHasImg('task/menu.png',isClick= False) == False) ):
 		#需要区分是视频还是 主页
-		if(IsHasImg('task/close.png') == False & IsHasImg('task/noSound.png') == False):
+		if(IsHasImg('task/close.png',stopTime=6) == False & IsHasImg('task/noSound.png') == False):
 			DoKeyDown(exitKey)
+			time.sleep(0.6)
 			menuNofindTime=menuNofindTime+1
 
 		IsHasImg('task/skipBtn.png')
 		IsHasImg('task/noSound.png')
+	else:
+		menuNofindTime =0
 
 
 
-	if(menuNofindTime >2):
-		if(IsHasImg("main/fight.png",False) & (~IsHasImg('task/skipBtn.png'))):
-			print("任务结束")
-			return
+	if(menuNofindTime >1):
+		if((1-IsHasImg('task/skipBtn.png'))):
+			if(IsHasImg("main/fight.png",False)):
+				print("任务结束")
+				return
+			else:
+				menuNofindTime = 0
 		else:
-			print("清空====")
 			menuNofindTime = 0
 	print("=====Again======")
 	OnAutoTask()
