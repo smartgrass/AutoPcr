@@ -8,6 +8,10 @@ b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
+# 更新保留配置
+
+config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
+
 # 更新5.6 可挂后台版本
 
 自动推图, 自动剧情 (说明见 文件夹 运行说明/其他说明)
