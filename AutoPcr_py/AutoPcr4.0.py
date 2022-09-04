@@ -914,7 +914,7 @@ def OnAutoTask():
 
 
 
-	if(menuNofindTime >3):
+	if(menuNofindTime >2):
 		if(IsHasImg("main/fight.png",False) & (~IsHasImg('task/skipBtn.png'))):
 			print("任务结束")
 			return
