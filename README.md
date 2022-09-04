@@ -2,7 +2,7 @@
 
 git: https://github.com/smartgrass/AutoPcr
 
-b站: https://www.bilibili.com/video/BV14a411q7uA
+b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
 不会python的先看这里: https://github.com/smartgrass/AutoPcr/blob/main/png/python%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E.md
 
@@ -10,7 +10,7 @@ b站: https://www.bilibili.com/video/BV14a411q7uA
 
 # 更新5.6 可挂后台版本
 
-自动推图
+自动推图, 自动剧情 (说明见 文件夹 运行说明/其他说明)
 
 跳过启动时生日
 
