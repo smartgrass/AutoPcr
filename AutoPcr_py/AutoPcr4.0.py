@@ -795,7 +795,7 @@ def GetZBPath(name):
 
 isRetryNeedZb = False
 
-def needSeedZb():
+def needSeedZbStart():
 	global isRetryNeedZb
 	print('need Send ')
 	if(isRetryNeedZb == False):
@@ -804,17 +804,22 @@ def needSeedZb():
 	time.sleep(1)
 	WaitToClickImg('other/needSend.png')
 	Click()
-	if(WaitToClickImg('other/needSend2.png',False)==False):
-		print("上次捐赠确认->退出重试")
-		DoKeyDown(groupKeys[0])
-		time.sleep(1)
+
+	time.sleep(1)
+	DoKeyDown(groupKeys[0])
+	DoKeyDown(groupKeys[0])
+
+
+	if(IsHasImg('other/needSend.png',False)==False):
+		needSeedZb()
+	else:
+		print("确认上期")
 		WaitToClickImg('other/needSend.png')
+		time.sleep(1)
+		needSeedZb()
 
-		if(isNeedSeed == False):
-			isRetryNeedZb = True
-			needSeedZb()
-			return
 
+def needSeedZb():
 	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 8,match = 0.9) == False):
 		print("找不到装备->反转排序")
 		DoKeyDown(partyKey)
@@ -1012,7 +1017,7 @@ def DailyTasks():
 	if(isSend):
 		SendZb()
 	if(isNeedSeed):
-		needSeedZb()
+		needSeedZbStart()
 	if(isHouDongHard):
 		OnHouDongHard()
 	if(isUseAllPower):
