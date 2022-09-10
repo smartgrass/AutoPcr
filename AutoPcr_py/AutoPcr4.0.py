@@ -982,7 +982,7 @@ def UseAllPower():
 			break
 
 	if(isSaodang):
-		SaoDang(120)
+		SaoDang(60)
 		ExitSaoDang()
 	ExitSaoDang()
 
