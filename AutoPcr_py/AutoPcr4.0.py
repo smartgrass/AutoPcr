@@ -952,7 +952,8 @@ def OnHouDongHard():
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
-	WaitToClickImg('main/'+playerName+'.png',offsetY=45)
+	ClickPlayer()
+	
 	for	i in range(5):
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
