@@ -1,4 +1,4 @@
-pip install  -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+python.exe -m pip install --upgrade pip
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python
 
