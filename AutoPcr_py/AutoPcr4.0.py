@@ -89,7 +89,7 @@ def WaitWin32Start():
 
 	if(isFor64):
 		window_title = window_title+"(64)"
-	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称)" )
+	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称 和 序号)" )
 
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
 	while(MainhWnd ==0):
