@@ -4,7 +4,7 @@ git: https://github.com/smartgrass/AutoPcr
 
 b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
-不会python的先看这里: https://github.com/smartgrass/AutoPcr/blob/main/png/python%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E.md
+安装视频教程: https://share.weiyun.com/o80ZgPr0
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
