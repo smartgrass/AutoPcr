@@ -847,14 +847,44 @@ def ClickPlayer():
 		print("玩家角色 为空!")
 		playerName = "player0"
 
-	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6) == NULL):
+	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == NULL):
 		ExitSaoDang()
 		print("No player")
 	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 
+def ClickPlayer_Or_Next():
+	global playerName
+	if(playerName==""):
+		print("玩家角色 为空!")
+		playerName = "player0"
+
+	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == NULL):
+		if(IsHasImg('main/next2.png',False)):
+			FinghtNext()
+		ExitSaoDang()
+		print("No player")
+	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
+
+def FinghtNext():
+	WaitImgLongTime("main/next2.png")
+	DoKeyDown(nextKey)
+	DoKeyDown(nextKey)
+	time.sleep(2)
+	if(WaitToClickImg("main/next2.png") == False):
+		ExitSaoDang()
+		WaitToClickImg("main/next2.png")
+
+IsFirst = True
+
 def OnTuitu():
 
-	ClickPlayer()
+	global IsFirst
+	if(IsFirst):
+		ClickPlayer_Or_Next()
+		IsFirst = False
+	else:
+		ClickPlayer()
+
 	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
 		time.sleep(1)
@@ -953,7 +983,7 @@ def OnHouDongHard():
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
 	ClickPlayer()
-	
+
 	for	i in range(5):
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
