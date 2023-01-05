@@ -258,11 +258,11 @@ left_col = [
 [sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
 [sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('领取奖励',isHomeTake,key=isHomeTakeKey)],
-[sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey)],
+[sg.Checkbox('星球杯',isXQB,key = isXQBKey)],
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey),sg.Checkbox('普通关卡清空所有体力',isUseAllPower,key=isUseAllPowerKey)],
-[sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
-[sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey)],
+[sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey),sg.Checkbox('赠送礼物',isSend,key=isSendKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey)],
+[sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
 
 [sg.Text('雷电模拟器文件夹:')],
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
@@ -302,9 +302,9 @@ def SetAllSelect1():
 	window[isExpKey].Update(isAllSelect1)
 	window[isNiuDanKey].Update(isAllSelect1)
 	window[isHomeTakeKey].Update(isAllSelect1)
-	window[isNeedSeedKey].Update(isAllSelect1)
 	window[isXQBKey].Update(isAllSelect1)
 def SetAllSelect2():
+	window[isNeedSeedKey].Update(isAllSelect2)
 	window[isSendKey].Update(isAllSelect2)
 	window[isHouDongHardKey].Update(isAllSelect2)
 	window[isUseAllPowerKey].Update(isAllSelect2)
