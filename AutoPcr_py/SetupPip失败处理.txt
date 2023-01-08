@@ -1,0 +1,3 @@
+一般是网络问题.
+使用 SetupPip_1.cmd 试试
+或者 翻墙 加 SetupPip_1.cmd
