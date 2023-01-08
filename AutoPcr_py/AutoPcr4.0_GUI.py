@@ -9,6 +9,7 @@ from re import A
 import os
 from ctypes import *
 import win32api
+import win32gui, win32ui, win32con,win32api
 
 #Glabol
 print("path " ,os.path.dirname(sys.executable))
@@ -43,6 +44,18 @@ def ReadStrConfig(key):
 def ReadBoolConfig(key):
 	window[key].Update(GetBoolConfig(key))
 
+def GetStrConfigDefault(key,defautValu):
+	tmpV = GetStrConfig_Main(key)
+	if(tmpV == ''):
+		tmpV = defautValu
+		print(key," setDefaut =>",defautValu)
+	return tmpV
+def GetStrConfig_Main(key):
+	try:
+		return cfg.get("MainSetting",key)
+	except :
+		return ""
+
 def GetStrConfig(key):
 	try:
 		return cfg.get(MainSettingKey,key)
@@ -57,6 +70,7 @@ def GetBoolConfig(boolKey):
 
 def SetCurMnqIndex():
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
+	cfg.set('MainSetting',moniqTimeKey,moniqTime)
 def SetMnqDir():
 	print(LeiDianDir)
 	cfg.set('MainSetting',LeiDianDirKey,LeiDianDir)
@@ -96,6 +110,7 @@ needZbNameKey = 'needZbName'
 isTuituKey='isTuituKey'
 isAutoTaskKey='isAutoTask'
 playerNameKey = 'playerName'
+moniqTimeKey = 'moniqTime'
 
 isJJC = GetBoolConfig(isJJCKey)
 isTansuo =GetBoolConfig(isTansuoKey)
@@ -119,7 +134,7 @@ isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 
 
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
-
+moniqTime =GetStrConfigDefault(moniqTimeKey,'20')
 
 dxcStartLevel=GetStrConfig(dxcStartLevelKey)
 dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
@@ -203,6 +218,7 @@ def ReadConfig():
 	ReadStrConfig(dxcGroupDaoZhongKey)
 	ReadStrConfig(dxcGroupBossKey)
 	ReadStrConfig(playerNameKey)
+	ReadStrConfig(moniqTimeKey)
 	# ReadStrConfig(mnqIndexKey,AllValues)
 
 
@@ -266,10 +282,11 @@ left_col = [
 
 [sg.Text('雷电模拟器文件夹:')],
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
-[sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('test')]]
+[sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('检查模拟器')]]
 right_col = [[sg.Text('其他配置                  ')],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(8,None),key =mnqIndexKey),
 sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ,sg.Checkbox('64位',isFor64,key=isFor64Key)],
+[sg.Text('模拟器启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
@@ -290,9 +307,10 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
+	moniqTime = values[moniqTimeKey]
 	print('MainSettingKey = ',MainSettingKey)
 
 def SetAllSelect1():
@@ -315,9 +333,23 @@ def SetAllSelect2():
 while True:
 	event, values = window.read()
 	print(event)
-	if event == 'test':
-		print("==============")
-		print("Values = ",values["isJJC"])
+	if event == '检查模拟器':
+		MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame',None)
+		if(MainhWnd == 0):
+			print("没有检测到雷电模拟器启动")
+			continue
+		winName = win32gui.GetWindowText(MainhWnd)
+		print("Find",MainhWnd ,winName)
+		if(values[mnqIndexKey] == "0"):
+			if(winName == "雷电模拟器"):
+				print("模拟器名字正确√")
+			else:
+				print("模拟器名字错误,请修改为'雷电模拟器'")
+		elif(values[mnqIndexKey] == "1"):
+			if(winName == "雷电模拟器-1"):
+				print("模拟器名字正确√")
+			else:
+				print("模拟器名字错误,当前模拟器序号为",values[mnqIndexKey],"修改请为'雷电模拟器-1'")
 
 	if event ==  isAllSelectKey_1:
 		isAllSelect1 = bool(1-isAllSelect1)

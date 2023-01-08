@@ -46,6 +46,7 @@ t1 = threading.Thread()
 
 #region 读取配置
 #其他页面
+moniqTimeKey = 'moniqTime'
 dxcDropKey ='dxcDrop'
 mnqIndexKey ='mnqDrop'
 dxcDropValue =["炸脖龙","绿龙"]
@@ -54,8 +55,13 @@ mnqIndexDropValue=["1","0"]
 cfg = ConfigParser()
 configPath = GetFullPath('config.ini')
 cfg.read(configPath,encoding='utf-8')
-mnqIndex = cfg.get('MainSetting',mnqIndexKey)
-MainSettingKey='MainSetting_'+mnqIndex
+try:
+	mnqIndex = cfg.get('MainSetting',mnqIndexKey)
+	moniqTime = float(cfg.get('MainSetting',moniqTimeKey))
+except :
+	mnqIndex = '0'
+	moniqTime = 20
+MainSettingKey='MainSetting_'+str(mnqIndex)
 
 
 #region win32初始化
@@ -92,6 +98,7 @@ def WaitWin32Start():
 	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称 和 序号)" )
 
 	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
+
 	while(MainhWnd ==0):
 		print("等待模拟器启动中...")
 		time.sleep(1.5)
@@ -101,7 +108,7 @@ def WaitWin32Start():
 	print("Find MainhWnd",MainhWnd)
 	win32gui.EnumChildWindows(MainhWnd, winfun, None)
 	while(Subhwnd == None):
-		time.sleep(1)
+		time.sleep(1.5)
 		print("wait subHwnd...")
 		win32gui.EnumChildWindows(MainhWnd, winfun, None)
 
@@ -1261,8 +1268,8 @@ def RunAutoPcr():
 	# test()
 	time.sleep(0.5)
 	if(isRunAndStart):
-		print('Wait Start... 20s ')
-		time.sleep(20)
+		print('Wait Start... ',moniqTime,"s")
+		time.sleep(moniqTime)
 		WaitStart()
 	else:
 		time.sleep(2)
