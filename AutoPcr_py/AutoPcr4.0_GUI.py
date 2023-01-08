@@ -338,18 +338,40 @@ while True:
 		if(MainhWnd == 0):
 			print("没有检测到雷电模拟器启动")
 			continue
+		isFor64 = values[isFor64Key]
 		winName = win32gui.GetWindowText(MainhWnd)
+		isCur64 = False
+		if(winName.endswith("(64)")):
+			isCur64 = True
+
+		targetName = "雷电模拟器"
+		cmpName =""
 		print("Find",MainhWnd ,winName)
 		if(values[mnqIndexKey] == "0"):
-			if(winName == "雷电模拟器"):
-				print("模拟器名字正确√")
-			else:
-				print("模拟器名字错误,请修改为'雷电模拟器'")
+			targetName = "雷电模拟器"
 		elif(values[mnqIndexKey] == "1"):
-			if(winName == "雷电模拟器-1"):
-				print("模拟器名字正确√")
-			else:
-				print("模拟器名字错误,当前模拟器序号为",values[mnqIndexKey],"修改请为'雷电模拟器-1'")
+			targetName = "雷电模拟器-1"
+
+		weiShu = "32"
+		cmpName = targetName
+		if(isFor64):
+			cmpName = targetName+"(64)"
+			weiShu = "64"
+
+		moniqWeiShu = "32"
+		if(isCur64):
+			moniqWeiShu ="64"
+
+		if(isCur64 != isFor64):
+			print("设置位数错误,设置位数:",weiShu, "应该设置为:",moniqWeiShu)
+			continue
+
+		if(cmpName == winName):
+			print("模拟器名字正确")
+		else:
+			print("模拟器名字或序号错误! 请求目标模拟器名为",targetName,"而正运行的模拟器名为",winName)
+
+
 
 	if event ==  isAllSelectKey_1:
 		isAllSelect1 = bool(1-isAllSelect1)
