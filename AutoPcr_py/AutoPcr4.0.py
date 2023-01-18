@@ -1099,6 +1099,12 @@ def WaitStart():
 		time.sleep(2)
 		DoKeyDown(exitKey)
 		time.sleep(3)
+		#更新
+		if(IsHasImg("main/sure.png",True)):
+			Click()
+			time.sleep(10)
+			print('=== Update sleep 10 ===')
+		#跳过生日
 		if(IsHasImg("main/skipIco.png",True)):
 			Click()
 			time.sleep(2)
