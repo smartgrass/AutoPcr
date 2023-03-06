@@ -77,6 +77,13 @@ saveDC = None
 mfcDC = None
 saveBitMap = None
 
+#获取真正的大小
+rect=None
+trueH=0
+trueW=0
+lastX=0
+lastY =0
+
 def winfun(hwnd, lparam):
 	global Subhwnd
 	subtitle = win32gui.GetWindowText(hwnd)
@@ -88,6 +95,7 @@ def winfun(hwnd, lparam):
 def WaitWin32Start():
 	#如果Main为0则等待
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	global rect,trueH,trueW
 	if(mnqIndex == "0"):
 		window_title ="雷电模拟器"
 	elif(mnqIndex == "1"):
@@ -112,6 +120,14 @@ def WaitWin32Start():
 		print("wait subHwnd...")
 		win32gui.EnumChildWindows(MainhWnd, winfun, None)
 
+	#获取窗口大小
+	rect = win32gui.GetClientRect(Subhwnd)
+	trueH = rect[3]
+	trueW = rect[2]
+
+	print("TrueH ",trueH, "TrueW",trueW)
+
+
 	hWndDC = win32gui.GetWindowDC(Subhwnd)
 	#创建设备描述表
 	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
@@ -119,7 +135,7 @@ def WaitWin32Start():
 	saveDC = mfcDC.CreateCompatibleDC()
 	#创建位图对象准备保存图片
 	saveBitMap = win32ui.CreateBitmap()
-	saveBitMap.CreateCompatibleBitmap(mfcDC,width,height)
+	saveBitMap.CreateCompatibleBitmap(mfcDC,trueW,trueH)
 	#将截图保存到saveBitMap中
 	saveDC.SelectObject(saveBitMap)
 
@@ -127,12 +143,17 @@ def WaitWin32Start():
 def SavaShoot():
 	#保存bitmap到内存设备描述表
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
-	saveDC.BitBlt((0,0), (width,height), mfcDC, (0, 0), win32con.SRCCOPY)
+	#saveDC.BitBlt((0,0), (width,height), mfcDC, (0, 0), win32con.SRCCOPY)
+	saveDC.BitBlt((0,0), (trueW,trueH), mfcDC, (0, 0), win32con.SRCCOPY)
 	bmpinfo = saveBitMap.GetInfo()
 	bmpstr = saveBitMap.GetBitmapBits(True)
 
 	im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
-	im_PIL.save(GetFullPath("temp.png")) #保存
+
+	newImg = im_PIL.resize((width,height),Image.ANTIALIAS)
+
+	newImg.save(GetFullPath("temp.png")) #保存
+
 	return GetFullPath("temp.png")
 	# im_PIL.show() #显示
 
@@ -157,11 +178,6 @@ key_map = {
 def GetWinPos():
 	print("")
 
-rect=None
-trueH=0
-trueW=0
-lastX=0
-lastY =0
 
 def Click(x=None, y=None):
 	try:
@@ -172,11 +188,6 @@ def Click(x=None, y=None):
 		else:
 			lastX = x
 			lastY = y
-
-		if(rect==None):
-			rect = win32gui.GetClientRect(Subhwnd)
-			trueH = rect[3]
-			trueW = rect[2]
 
 		tx = int(x * trueW/960)
 		ty = int(y * trueH/540)
