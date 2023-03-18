@@ -150,7 +150,7 @@ def SavaShoot():
 
 	im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
 
-	newImg = im_PIL.resize((width,height),Image.ANTIALIAS)
+	newImg = im_PIL.resize((width,height),Image.LANCZOS)
 
 	newImg.save(GetFullPath("temp.png")) #保存
 
