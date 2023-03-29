@@ -16,7 +16,7 @@ from PIL import ImageGrab
 from PIL import Image
 import aircv as ac
 import keyboard
-import win32gui, win32ui, win32con,win32api
+import win32gui, win32ui, win32con,win32api,win32print
 #region 获取当前路径
 print("path " ,os.path.dirname(sys.executable))
 
@@ -73,14 +73,18 @@ MainhWnd =  0
 Subhwnd = None
 width = 960
 height = 540
+Scale = 1
 saveDC = None
 mfcDC = None
 saveBitMap = None
+
 
 #获取真正的大小
 rect=None
 trueH=0
 trueW=0
+SaveH=0
+SaveW=0
 lastX=0
 lastY =0
 
@@ -92,9 +96,32 @@ def winfun(hwnd, lparam):
 		print("Find Subhwnd",Subhwnd)
 
 
+def get_real_resolution():
+    """获取真实的分辨率"""
+    hDC = win32gui.GetDC(0)
+    wide = win32print.GetDeviceCaps(hDC, win32con.DESKTOPHORZRES)
+    high = win32print.GetDeviceCaps(hDC, win32con.DESKTOPVERTRES)
+    return {"wide": wide, "high": high}
+
+
+def get_screen_size():
+    """获取缩放后的分辨率"""
+    wide = win32api.GetSystemMetrics(0)
+    high = win32api.GetSystemMetrics(1)
+    return {"wide": wide, "high": high}
+
+
+def get_scaling():
+    '''获取屏幕的缩放比例'''
+    real_resolution = get_real_resolution()
+    screen_size = get_screen_size()
+    proportion = round(real_resolution['wide'] / screen_size['wide'], 2)
+    return proportion
+
+
 def WaitWin32Start():
 	#如果Main为0则等待
-	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,Scale,SaveH,SaveW
 	global rect,trueH,trueW
 	if(mnqIndex == "0"):
 		window_title ="雷电模拟器"
@@ -124,9 +151,12 @@ def WaitWin32Start():
 	rect = win32gui.GetClientRect(Subhwnd)
 	trueH = rect[3]
 	trueW = rect[2]
+	Scale = get_scaling()
 
-	print("TrueH ",trueH, "TrueW",trueW)
-
+	print("TrueH ",trueH, "TrueW",trueW ,"Scale",Scale)
+	SaveW = int(trueW * Scale)
+	SaveH = int(trueH * Scale)
+	print("SaveH ",SaveH, "SaveW",SaveW)
 
 	hWndDC = win32gui.GetWindowDC(Subhwnd)
 	#创建设备描述表
@@ -135,7 +165,9 @@ def WaitWin32Start():
 	saveDC = mfcDC.CreateCompatibleDC()
 	#创建位图对象准备保存图片
 	saveBitMap = win32ui.CreateBitmap()
-	saveBitMap.CreateCompatibleBitmap(mfcDC,trueW,trueH)
+	#saveBitMap.CreateCompatibleBitmap(mfcDC,trueW,trueH)
+	#saveBitMap.CreateCompatibleBitmap(mfcDC,width,height)
+	saveBitMap.CreateCompatibleBitmap(mfcDC,SaveW,SaveH)
 	#将截图保存到saveBitMap中
 	saveDC.SelectObject(saveBitMap)
 
@@ -144,13 +176,15 @@ def SavaShoot():
 	#保存bitmap到内存设备描述表
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
 	#saveDC.BitBlt((0,0), (width,height), mfcDC, (0, 0), win32con.SRCCOPY)
-	saveDC.BitBlt((0,0), (trueW,trueH), mfcDC, (0, 0), win32con.SRCCOPY)
+	win32con.SRCINVERT
+	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
 	bmpinfo = saveBitMap.GetInfo()
 	bmpstr = saveBitMap.GetBitmapBits(True)
 
-	im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+	#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+	im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
 
-	newImg = im_PIL.resize((width,height),Image.LANCZOS)
+	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
 
 	newImg.save(GetFullPath("temp.png")) #保存
 
@@ -263,9 +297,6 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 		waitTime = 0
 
 		if(isClick):
-			if(trueH==0):
-				Click(0,0)
-				print("TrueH = ",trueH)
 			y1 = y1+(offsetY*trueH/540)
 			time.sleep(0.1)
 			Click(x1,y1)
