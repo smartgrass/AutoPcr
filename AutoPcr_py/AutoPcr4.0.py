@@ -740,12 +740,14 @@ def BuyExp():
 		buyTime = 5
 
 	for i in range(buyTime):
-		if(IsHasImg('shop/exp2.png',False) == False):
+		if(i==0 & IsHasImg('shop/exp2.png',False) == False):
 			# ToHomePage()
 			print('no to buy->update')
 			WaitToClickImg('shop/update.png')
 			WaitToClickImg('main/sure.png')
-
+		if(i>0):
+			WaitToClickImg('shop/update.png')
+			WaitToClickImg('main/sure.png')
 		expCounter = 1
 		while((expCounter < 4) & (IsHasImg('shop/exp.png'))):
 			expCounter = expCounter+1
