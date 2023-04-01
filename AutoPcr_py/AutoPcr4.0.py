@@ -734,19 +734,28 @@ def BuyExp():
 	ToHomePage()
 	ToShopPage()
 	WaitToClickImg('shop/shopTop.png',False)
-	if(IsHasImg('shop/exp2.png',False) == False):
-		ToHomePage()
-		print('no to buy')
-		return
-	expCounter = 1
-	while((expCounter < 4) & (IsHasImg('shop/exp.png'))):
-		expCounter = expCounter+1
-		print('IsHasImg' ,expCounter)
-	WaitToClickImg('shop/buyBtn.png')
-	WaitToClickImg('shop/buyTitle.png',False)
-	WaitToClickImg('main/sure.png')
-	time.sleep(0.5)
-	WaitToClickImg('main/sure.png')
+
+	buyTime = 1
+	if(isBuyMoreExp):
+		buyTime = 5
+
+	for i in range(buyTime):
+		if(IsHasImg('shop/exp2.png',False) == False):
+			# ToHomePage()
+			print('no to buy->update')
+			WaitToClickImg('shop/update.png')
+			WaitToClickImg('main/sure.png')
+
+		expCounter = 1
+		while((expCounter < 4) & (IsHasImg('shop/exp.png'))):
+			expCounter = expCounter+1
+			print('IsHasImg' ,expCounter)
+		WaitToClickImg('shop/buyBtn.png')
+		WaitToClickImg('shop/buyTitle.png',False)
+		WaitToClickImg('main/sure.png')
+		time.sleep(0.5)
+		WaitToClickImg('main/sure.png')
+
 	ToHomePage()
 
 def NiuDan():
@@ -1243,7 +1252,9 @@ dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
 dxcBossLoopRoleKey ='dxcBossLoopRole'
 dxcStartLevelKey ='dxcStartLevel'
+isBuyMoreExpKey = 'isBuyMoreExp'
 
+isBuyMoreExp = GetBoolConfig(isBuyMoreExpKey)
 isJJC = GetBoolConfig(isJJCKey)
 isTansuo =GetBoolConfig(isTansuoKey)
 isDxc = GetBoolConfig(isDxcKey)

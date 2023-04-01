@@ -107,6 +107,7 @@ isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
 needZbNameKey = 'needZbName'
+isBuyMoreExpKey = 'isBuyMoreExp'
 isTuituKey='isTuituKey'
 isAutoTaskKey='isAutoTask'
 playerNameKey = 'playerName'
@@ -126,6 +127,7 @@ isAutoClose = GetBoolConfig(isAutoCloseKey)
 isTuitu = GetBoolConfig(isTuituKey)
 isAutoTask = GetBoolConfig(isAutoTaskKey)
 isFor64 = GetBoolConfig(isFor64Key)
+isBuyMoreExp = GetBoolConfig(isBuyMoreExpKey)
 isRunAndStart = False
 
 isHomeTake= GetBoolConfig(isHomeTakeKey)
@@ -171,6 +173,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(dxcDropKey,AllValues)
 	SetConfigAuto(isTuituKey,AllValues)
 	SetConfigAuto(isAutoTaskKey,AllValues)
+	SetConfigAuto(isBuyMoreExpKey,AllValues)
 
 	SetConfigAuto(isHomeTakeKey,AllValues)
 	SetConfigAuto(isUseAllPowerKey,AllValues)
@@ -211,6 +214,7 @@ def ReadConfig():
 	ReadBoolConfig(isHouDongHardKey)
 	ReadBoolConfig(isTuituKey)
 	ReadBoolConfig(isAutoTaskKey)
+	ReadBoolConfig(isBuyMoreExpKey)
 
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
@@ -288,7 +292,7 @@ right_col = [[sg.Text('其他配置                  ')],
 sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ,sg.Checkbox('64位',isFor64,key=isFor64Key)],
 [sg.Text('模拟器启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
-[sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
+[sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png'),sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
 [sg.Text('编组-队伍 编组:1~5 队伍:1~3')],
 [sg.Text('道中队:'),sg.InputText(dxcGroupDaoZhong,size =(35,None),key= dxcGroupDaoZhongKey)],
