@@ -309,7 +309,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 			time.sleep(0.18)
 			if(isShip == False):
 				time.sleep(3)
-			if(waitTime < maxTry & autoExit):
+			if(waitTime < maxTry and autoExit):
 				DoKeyDown(exitKey)
 			return WaitToClickImg(targetImg,isClick,isShip,maxTry,autoExit,match,isRgb)
 		else:
@@ -740,7 +740,7 @@ def BuyExp():
 		buyTime = 5
 
 	for i in range(buyTime):
-		if(i==0 & IsHasImg('shop/exp2.png',False) == False):
+		if(i==0 and (IsHasImg('shop/exp2.png',False) == False)):
 			# ToHomePage()
 			print('no to buy->update')
 			WaitToClickImg('shop/update.png')
@@ -749,7 +749,7 @@ def BuyExp():
 			WaitToClickImg('shop/update.png')
 			WaitToClickImg('main/sure.png')
 		expCounter = 1
-		while((expCounter < 4) & (IsHasImg('shop/exp.png'))):
+		while((expCounter <= 4) and (IsHasImg('shop/exp.png'))):
 			expCounter = expCounter+1
 			print('IsHasImg' ,expCounter)
 		WaitToClickImg('shop/buyBtn.png')
@@ -1003,9 +1003,9 @@ def OnAutoTask():
 
 
 	#没有菜单
-	if((1-hasMenu) | (IsHasImg('task/menu.png',isClick= False) == False) ):
+	if((1-hasMenu) or (IsHasImg('task/menu.png',isClick= False) == False) ):
 		#需要区分是视频还是 主页
-		if(IsHasImg('task/close.png',stopTime=6) == False & IsHasImg('task/noSound.png') == False):
+		if(IsHasImg('task/close.png',stopTime=6) == False and IsHasImg('task/noSound.png') == False):
 			DoKeyDown(exitKey)
 			time.sleep(0.6)
 			menuNofindTime=menuNofindTime+1
@@ -1161,8 +1161,9 @@ def WaitStart():
 		if(IsHasImg("main/skipIco.png",True)):
 			Click()
 			time.sleep(2)
-		if(IsHasImg("other/brithDay.png")):
 			ClickCenter()
+		# if(IsHasImg("other/brithDay.png")):
+		# 	ClickCenter()
 
 		if(IsHasImg("main/home.png",stopTime=3)):
 			print("find home")
