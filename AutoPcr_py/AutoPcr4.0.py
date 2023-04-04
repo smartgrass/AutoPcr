@@ -663,6 +663,7 @@ def DxcBoxFightWait():
 	WaitImgLongTime(dxcDir + "/win.png")
 	time.sleep(2)
 	DoKeyDown(nextKey) #返回
+	DoKeyDown(nextKey) #返回
 	time.sleep(3)
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
@@ -994,11 +995,17 @@ def OnAutoTask():
 	if(WaitToClickImg('task/menu.png')):
 		hasMenu = True
 		menuNofindTime = 0
-		if(IsHasImg('task/skip.png') == False):
-			IsHasImg('task/menu.png')
-			IsHasImg('task/skip.png')
-		#蓝色按钮
-		WaitToClickImg('task/skipBtn.png')
+		# if(IsHasImg('task/skip.png') == False):
+		# IsHasImg('task/menu.png')
+		if(IsHasImg('task/skip.png')):
+			#蓝色按钮
+			WaitToClickImg('task/skipBtn.png')
+		else:
+			#出现选项时
+			if(IsHasImg("task/menu_black.png",False,isRgb=True)):
+				ClickCenter()
+				OnAutoTask()
+				return
 		time.sleep(0.6)
 
 
@@ -1029,9 +1036,9 @@ def OnAutoTask():
 	print("=====Again======")
 	OnAutoTask()
 
+#跳过对话
+# def SkipDuiHua():
 
-def CheckKasi():
-	print("防卡死检查")
 
 def OnHouDongHard():
 	print('OnHouDongHard')
@@ -1141,9 +1148,12 @@ def _async_raise(tid, exctype):
 
 def ClickCenter():
 	print("Center")
-	Click(x = width/2,y=height*0.4)
+	Click(x = width/2,y=height*0.55)
+	Click(x = width/2,y=height*0.53)
+	Click(x = width/2,y=height*0.50)
 	Click(x = width/2,y=height*0.45)
-	Click(x = width/2,y=height*0.35)
+	Click(x = width/2,y=height*0.43)
+	Click(x = width/2,y=height*0.40)
 
 def WaitStart():
 	print('=== WaitStart ===')
@@ -1162,8 +1172,16 @@ def WaitStart():
 			Click()
 			time.sleep(2)
 			ClickCenter()
+
+
+		if(IsHasImg("task/menu.png",True)):
+			if(IsHasImg("task/skip.png",True)):
+				WaitToClickImg("main/sure.png",True)
+			else:
+				if(IsHasImg("task/menu_black.png",False,isRgb=True)):
+					ClickCenter()
 		# if(IsHasImg("other/brithDay.png")):
-		# 	ClickCenter()
+
 
 		if(IsHasImg("main/home.png",stopTime=3)):
 			print("find home")
