@@ -1,0 +1,19 @@
+{
+    "reduceInertia": true,
+    "keyboardShowGreet": true,
+    "joystickShowGreet": true,
+    "keyboardFirstGreet": true,
+    "joystickFirstGreet": true,
+    "keyboardShowHints": true,
+    "joystickShowHints": true,
+    "keyboardIgnoreVersion": 0,
+    "joystickIgnoreVersion": 0,
+    "noticeTimes": 3,
+    "noticeHash": 2052801830,
+    "resolutionRelatives": {
+        "960x540": {
+            "keyboardId": "",
+            "joystickId": ""
+        }
+    }
+}
