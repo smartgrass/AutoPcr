@@ -1,0 +1,23 @@
+{
+    "reduceInertia": false,
+    "keyboardShowGreet": false,
+    "joystickShowGreet": true,
+    "keyboardFirstGreet": true,
+    "joystickFirstGreet": true,
+    "keyboardShowHints": false,
+    "joystickShowHints": true,
+    "keyboardIgnoreVersion": 0,
+    "joystickIgnoreVersion": 0,
+    "noticeTimes": 2,
+    "noticeHash": 960983029,
+    "resolutionRelatives": {
+        "900x506": {
+            "keyboardId": "com.bilibili.priconne_900x506(公主连结).kmp",
+            "joystickId": ""
+        },
+        "960x540": {
+            "keyboardId": "com.bilibili.priconne_960x540.kmp",
+            "joystickId": ""
+        }
+    }
+}
