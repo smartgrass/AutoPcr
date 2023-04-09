@@ -1,6 +1,13 @@
 @echo off
 
 echo. 建立临时文件夹
+
+set pathDir=%~dp0
+
+echo %pathDir%
+
+cd /d %pathDir%
+
 md TMP
 md TMP\dxc\
 md TMP\dxc_ex3\
@@ -34,13 +41,21 @@ XCOPY  .\tansuo .\TMP\tansuo\ /q /e /r /S /Y
 XCOPY  .\task .\TMP\task\ /q /e /r /S /Y
 
 echo. 打包cmd
+
 cd .\TMP
+
+echo %cd%
+
 pyinstaller  .\AutoPcr4.0.spec
 MOVE .\dist\AutoPcrCmd.exe .\
+
+pause
 
 echo. 打包exe
 pyinstaller   .\AutoPcr4.0_GUI.spec
 MOVE .\dist\AutoPcr.exe .\
+
+pause
 
 echo. 打包zip
 rd /s /q .\build
