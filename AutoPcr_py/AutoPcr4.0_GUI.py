@@ -18,8 +18,9 @@ print("path " ,os.path.dirname(sys.executable))
 curDir = os.path.dirname(__file__)
 #图片路径拼接
 def GetFullPath(pngName):
-	global curDir
-	return os.path.join(curDir,pngName)
+    # global curDir
+    # return os.path.join(curDir, pngName)
+    return '.\\' + pngName
 #======读取配置======
 mnqIndexKey ='mnqDrop'
 dxcDropKey ='dxcDrop'
@@ -266,9 +267,14 @@ def CallLeiDian():
 		win32api.ShellExecute(0, 'open', GetFullPath('StartLeiDian.cmd'), '', '', 1)
 	if(index=='1'):
 		win32api.ShellExecute(0, 'open', GetFullPath('StartLeiDian1.cmd'), '', '', 1)
+  
 def CallPy():
-	win32api.ShellExecute(0, 'open',  GetFullPath('AutoPcr4.0.py'), '', '', 1)          # 运行程序
-
+    # 运行程序
+	if os.path.exists(GetFullPath('AutoPcr4.0.py')):
+		win32api.ShellExecute(0, 'open', GetFullPath('AutoPcr4.0.py'), '', '', 1)
+	else:
+		win32api.ShellExecute(0, 'open', GetFullPath('AutoPcrCmd.exe'), '', '', 1)
+        
 def StartPcr():
 	CallLeiDian()
 	CallPy()

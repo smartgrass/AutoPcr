@@ -23,8 +23,9 @@ print("path " ,os.path.dirname(sys.executable))
 curDir = os.path.dirname(__file__)
 #图片路径拼接
 def GetFullPath(pngName):
-	global curDir
-	return os.path.join(curDir,pngName)
+    # global curDir
+    # return os.path.join(curDir, pngName)
+    return '.\\' + pngName
 
 #利用文件是否存在判断是Exe 还是 Py文件
 if(os.path.exists(GetFullPath('config.ini')) == False):
