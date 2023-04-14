@@ -1,13 +1,6 @@
-from asyncio.windows_events import NULL
-from operator import ne
-import sys
-from tkinter import E
-from xmlrpc.client import Boolean
-import PySimpleGUI as sg
 from configparser import ConfigParser
 import ctypes
 import inspect
-from re import A
 import threading
 import time
 import os
@@ -17,6 +10,7 @@ from PIL import Image
 import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
+import sys
 #region 获取当前路径
 curDir = os.path.dirname(__file__)
 
@@ -25,8 +19,11 @@ print(os.path.dirname(__file__),"\ncwd",os.getcwd())
 os.chdir(curDir)
 
 if(os.path.exists('.\\config.ini') == False):
-	print('no config ?? ->Exe Run')
-	curDir =os.getcwd()
+	print('no config ->Exe Run')
+	# log = curDir+" os.path.dirname(sys.executable) "+os.path.dirname(sys.executable)
+	# sg.popup(log)
+	time.sleep(0.5)
+	curDir =os.path.dirname(sys.executable)
 	os.chdir(curDir)
 
 #图片路径拼接
@@ -130,17 +127,14 @@ def WaitWin32Start():
 	if(isFor64):
 		window_title = window_title+"(64)"
 
-	whileTime = 0
 	MainhWnd = 0
 	while(MainhWnd ==0):
+		print("等待模拟器启动中...:")
 		if(isMult):
 			MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
 		else:
 			MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame',None)
 		time.sleep(1.5)
-		if(whileTime != 0):
-			whileTime = whileTime+1
-			print("等待模拟器启动中...: " + whileTime)
 
 
 	#已打开雷电
@@ -749,7 +743,7 @@ def ClickPlayer():
 		print("玩家角色 为空!")
 		playerName = "player0"
 
-	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == NULL):
+	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == None):
 		ExitSaoDang()
 		print("No player")
 	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
@@ -760,7 +754,7 @@ def ClickPlayer_Or_Next():
 		print("玩家角色 为空!")
 		playerName = "player0"
 
-	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == NULL):
+	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == None):
 		if(IsHasImg('main/next2.png',False)):
 			FinghtNext()
 		ExitSaoDang()
@@ -1071,16 +1065,10 @@ RunName = "运行"
 
 
 def GetStrConfig(key):
-	try:
-		return cfg.get(MainSettingKey,key)
-	except :
-		return ""
+	return cfg.get(MainSettingKey,key,fallback='')
 
 def GetBoolConfig(boolKey):
-	try:
-		return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
-	except :
-		return False
+	return cfg.getboolean(MainSettingKey,boolKey,fallback=False)
 
 isRunAndStart = False
 

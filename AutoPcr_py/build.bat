@@ -51,7 +51,6 @@ echo. 打包exe
 pyinstaller   .\AutoPcr4.0_GUI.spec
 MOVE .\dist\AutoPcr.exe .\
 
-pause
 
 echo. 打包zip
 rd /s /q .\build

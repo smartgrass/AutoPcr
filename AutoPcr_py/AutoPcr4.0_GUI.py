@@ -1,20 +1,15 @@
-
 import sys
-from sysconfig import get_path
 import time
-from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
-from importlib.resources import path
-from re import A
 import os
 from ctypes import *
 import win32api
-import win32gui, win32ui, win32con,win32api
+import win32gui,win32api
 
-# os.path.dirname(sys.executable) python.exe 目录
+# os.path.dirname(sys.executable) python.exe 目录 exe时使用
 # os.path.dirname(__file__)   .py文件 目录
-# os.getcwd()  cmd 目录 ->exe时使用
+# os.getcwd()  cmd 目录,当前?
 
 curDir = os.path.dirname(__file__)
 
@@ -23,8 +18,11 @@ print(os.path.dirname(__file__),"\ncwd",os.getcwd())
 os.chdir(curDir)
 
 if(os.path.exists('.\\config.ini') == False):
-	print('no config ?? ->Exe Run')
-	curDir =os.getcwd()
+	print('no config ->Exe Run')
+	# log = curDir+" os.path.dirname(sys.executable) "+os.path.dirname(sys.executable)
+	# sg.popup(log)
+	time.sleep(0.5)
+	curDir =os.path.dirname(sys.executable)
 	os.chdir(curDir)
 
 #图片路径拼接
