@@ -6,6 +6,8 @@ b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
 安装视频教程: https://share.weiyun.com/o80ZgPr0
 
+Exe版本(v5.6): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
+
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
 # 更新保留配置
@@ -39,7 +41,7 @@ config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把�
 
 2.安装py第三方库: 运行 SetupPip.cmd (管理员
 
-3.设置管理员权限 : (把python.exe的启动改为管理员模式)
+3.设置管理员权限 : python.exe启动改为管理员模式 (雷电模拟器最好也设置)
 
 4.配好雷电模拟器路径, 配好模拟器快捷按钮
 
