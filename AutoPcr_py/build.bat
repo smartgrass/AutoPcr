@@ -28,7 +28,6 @@ XCOPY  .\运行说明\模拟器配置\com.bilibili.priconne_960x540.kmp .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置\com.android.launcher3.smp .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置\com.bilibili.priconne.smp .\TMP\ /Y
 XCOPY  .\dxc .\TMP\dxc\ /q /e /r /S /Y
-XCOPY  .\dxc_ex3 .\TMP\dxc_ex3\ /q /e /r /S /Y
 XCOPY  .\jjc .\TMP\jjc\ /q /e /r /S /Y
 XCOPY  .\main .\TMP\main\ /q /e /r /S /Y
 XCOPY  .\other .\TMP\other\ /q /e /r /S /Y
@@ -45,8 +44,6 @@ echo %cd%
 pyinstaller  .\AutoPcr4.0.spec
 MOVE .\dist\AutoPcrCmd.exe .\
 
-pause
-
 echo. 打包exe
 pyinstaller   .\AutoPcr4.0_GUI.spec
 MOVE .\dist\AutoPcr.exe .\
@@ -61,7 +58,7 @@ del .\AutoPcr4.0.spec
 del .\AutoPcr4.0.py
 
 cd ..
-python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\dxc_ex3\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\
+python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\
 
 echo. 删除临时文件夹
 rd /s /q .\TMP
