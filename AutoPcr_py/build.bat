@@ -23,11 +23,7 @@ XCOPY  .\AutoPcr4.0.py .\TMP\ /Y
 XCOPY  .\AutoPcr4.0_GUI.py .\TMP\ /Y
 XCOPY  .\AutoPcr4.0_GUI.spec .\TMP\ /Y
 XCOPY  .\AutoPcr4.0.spec .\TMP\ /Y
-XCOPY  .\CloseLeiDian.cmd .\TMP\ /Y
 XCOPY  .\config.ini .\TMP\ /Y
-XCOPY  .\StartCmd.cmd .\TMP\ /Y
-XCOPY  .\StartLeiDian.cmd .\TMP\ /Y
-XCOPY  .\StartLeiDian1.cmd .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置\com.bilibili.priconne_960x540.kmp .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置\com.android.launcher3.smp .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置\com.bilibili.priconne.smp .\TMP\ /Y
@@ -66,7 +62,7 @@ del .\AutoPcr4.0.spec
 del .\AutoPcr4.0.py
 
 cd ..
-python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe .\TMP\CloseLeiDian.cmd .\TMP\config.ini .\TMP\StartCmd.cmd .\TMP\StartLeiDian.cmd .\TMP\StartLeiDian1.cmd .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\dxc_ex3\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\
+python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\dxc_ex3\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\
 
 echo. 删除临时文件夹
 rd /s /q .\TMP

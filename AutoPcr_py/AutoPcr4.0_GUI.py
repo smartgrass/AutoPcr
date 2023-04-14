@@ -1,6 +1,7 @@
 
 import sys
 from sysconfig import get_path
+import time
 from xmlrpc.client import Boolean
 import PySimpleGUI as sg
 from configparser import ConfigParser
@@ -11,27 +12,43 @@ from ctypes import *
 import win32api
 import win32gui, win32ui, win32con,win32api
 
-#Glabol
-print("path " ,os.path.dirname(sys.executable))
-# print("path " , os.getcwd())
+# os.path.dirname(sys.executable) python.exe 目录
+# os.path.dirname(__file__)   .py文件 目录
+# os.getcwd()  cmd 目录 ->exe时使用
 
 curDir = os.path.dirname(__file__)
+
+print(os.path.dirname(__file__),"\ncwd",os.getcwd())
+
+os.chdir(curDir)
+
+if(os.path.exists('.\\config.ini') == False):
+	print('no config ?? ->Exe Run')
+	curDir =os.getcwd()
+	os.chdir(curDir)
+
 #图片路径拼接
 def GetFullPath(pngName):
-    # global curDir
-    # return os.path.join(curDir, pngName)
     return '.\\' + pngName
+
 #======读取配置======
+LeiDianDirKey ='LeiDianDir'
 mnqIndexKey ='mnqDrop'
+isMultKey ='isMult'
 dxcDropKey ='dxcDrop'
-dxcDropValue =["炸脖龙","绿龙"]
-mnqIndexDropValue=["1","0"]
+moniqTimeKey = 'moniqTime'
+dxcDropValue =["炸脖龙","绿龙","Ex4"]
+mnqIndexDropValue=["0","1"]
 
 
 cfg = ConfigParser()
 configPath = GetFullPath('config.ini')
 cfg.read(configPath,'utf-8')
-mnqIndex = cfg.get('MainSetting',mnqIndexKey)
+mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
+LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
+isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
+moniqTime = float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+
 MainSettingKey='MainSetting_'+mnqIndex
 
 def SetConfigAuto(key,AllValues):
@@ -45,33 +62,18 @@ def ReadStrConfig(key):
 def ReadBoolConfig(key):
 	window[key].Update(GetBoolConfig(key))
 
-def GetStrConfigDefault(key,defautValu):
-	tmpV = GetStrConfig_Main(key)
-	if(tmpV == ''):
-		tmpV = defautValu
-		print(key," setDefaut =>",defautValu)
-	return tmpV
-def GetStrConfig_Main(key):
-	try:
-		return cfg.get("MainSetting",key)
-	except :
-		return ""
 
 def GetStrConfig(key):
-	try:
-		return cfg.get(MainSettingKey,key)
-	except :
-		return ""
+	return cfg.get(MainSettingKey,key,fallback='')
 
 def GetBoolConfig(boolKey):
-	try:
-		return Boolean(cfg.get(MainSettingKey,boolKey)=='True')
-	except :
-		return False
+	return cfg.getboolean(MainSettingKey,boolKey,fallback=False)
+
 
 def SetCurMnqIndex():
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 	cfg.set('MainSetting',moniqTimeKey,moniqTime)
+	cfg.set('MainSetting',isMultKey,str(isMult))
 def SetMnqDir():
 	print(LeiDianDir)
 	cfg.set('MainSetting',LeiDianDirKey,LeiDianDir)
@@ -87,22 +89,21 @@ isTansuoKey ='isTansuo'
 isDxcKey = 'isDxc'
 isExpKey = 'isExp'
 isNiuDanKey ='isNiuDan'
-LeiDianDirKey ='LeiDianDir'
+
 isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ='isAutoClose'
 isFor64Key ='isFor64'
 
-dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
-dxcGroupBossKey ='DxcGroupBoss'
-dxcBossLoopRoleKey ='dxcBossLoopRole'
-dxcStartLevelKey ='dxcStartLevel'
+# dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
+# dxcGroupBossKey ='DxcGroupBoss'
+# dxcBossLoopRoleKey ='dxcBossLoopRole'
+#dxcStartLevelKey ='dxcStartLevel'
 
 #newKey
 isXQBKey='isXQB'
 isXinSuiKey='isXinSui'
 isSendKey='isSend'
 isNeedSeedKey ='isNeedSeed'
-isKillBossKey ='isKillBoss'
 
 isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
@@ -112,14 +113,13 @@ isBuyMoreExpKey = 'isBuyMoreExp'
 isTuituKey='isTuituKey'
 isAutoTaskKey='isAutoTask'
 playerNameKey = 'playerName'
-moniqTimeKey = 'moniqTime'
+
 
 isJJC = GetBoolConfig(isJJCKey)
 isTansuo =GetBoolConfig(isTansuoKey)
 isDxc = GetBoolConfig(isDxcKey)
 isExp = GetBoolConfig(isExpKey)
 isNiuDan =GetBoolConfig(isNiuDanKey)
-isKillBoss = GetBoolConfig(isKillBossKey)
 isXinSui =GetBoolConfig(isXinSuiKey)
 isXQB = GetBoolConfig(isXQBKey)
 isSend = GetBoolConfig(isSendKey)
@@ -128,6 +128,7 @@ isAutoClose = GetBoolConfig(isAutoCloseKey)
 isTuitu = GetBoolConfig(isTuituKey)
 isAutoTask = GetBoolConfig(isAutoTaskKey)
 isFor64 = GetBoolConfig(isFor64Key)
+
 isBuyMoreExp = GetBoolConfig(isBuyMoreExpKey)
 isRunAndStart = False
 
@@ -136,13 +137,10 @@ isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 
 
-LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
-moniqTime =GetStrConfigDefault(moniqTimeKey,'20')
-
-dxcStartLevel=GetStrConfig(dxcStartLevelKey)
-dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
-dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
-dxcBossLoopRole =GetStrConfig(dxcBossLoopRoleKey)
+#dxcStartLevel=GetStrConfig(dxcStartLevelKey)
+# dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
+# dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
+# dxcBossLoopRole =GetStrConfig(dxcBossLoopRoleKey)
 playerName =GetStrConfig(playerNameKey)
 dxcBoss=GetStrConfig(dxcDropKey)
 needZbName = GetStrConfig(needZbNameKey)
@@ -168,7 +166,6 @@ def SavaConfig(AllValues):
 
 	SetConfigAuto(isXQBKey,AllValues)
 	SetConfigAuto(isXinSuiKey,AllValues)
-	SetConfigAuto(isKillBossKey,AllValues)
 	SetConfigAuto(isSendKey,AllValues)
 	SetConfigAuto(isNeedSeedKey,AllValues)
 	SetConfigAuto(dxcDropKey,AllValues)
@@ -182,10 +179,10 @@ def SavaConfig(AllValues):
 
 	SetConfigAuto(needZbNameKey,AllValues)
 	SetConfigAuto(playerNameKey,AllValues)
-	SetConfigAuto(dxcGroupBossKey,AllValues)
-	SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
-	SetConfigAuto(dxcBossLoopRoleKey,AllValues)
-	SetConfigAuto(dxcStartLevelKey,AllValues)
+	# SetConfigAuto(dxcGroupBossKey,AllValues)
+	# SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
+	# SetConfigAuto(dxcBossLoopRoleKey,AllValues)
+	#SetConfigAuto(dxcStartLevelKey,AllValues)
 
 	# SetConfigAuto(LeiDianDirKey,AllValues)
 	global LeiDianDir
@@ -207,7 +204,6 @@ def ReadConfig():
 	#new
 	ReadBoolConfig(isXQBKey)
 	ReadBoolConfig(isXinSuiKey)
-	ReadBoolConfig(isKillBossKey)
 	ReadBoolConfig(isSendKey)
 	ReadBoolConfig(isNeedSeedKey)
 	ReadBoolConfig(isHomeTakeKey)
@@ -220,18 +216,18 @@ def ReadConfig():
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
 
-	ReadStrConfig(dxcGroupDaoZhongKey)
-	ReadStrConfig(dxcGroupBossKey)
+	# ReadStrConfig(dxcGroupDaoZhongKey)
+	# ReadStrConfig(dxcGroupBossKey)
 	ReadStrConfig(playerNameKey)
 	ReadStrConfig(moniqTimeKey)
 	# ReadStrConfig(mnqIndexKey,AllValues)
 
 
-def WriteCmds():
-	path = str(LeiDianDir)
-	index = str(mnqIndex)
-	WriteLeiDian(path,index)
-	WriteCloseLeidian(path)
+# def WriteCmds():
+# 	path = str(LeiDianDir)
+# 	index = str(mnqIndex)
+# 	WriteLeiDian(path,index)
+# 	WriteCloseLeidian(path)
 	# WirteStartPy()
 
 def WriteCloseLeidian(path):
@@ -261,20 +257,29 @@ def WriteLeiDian(path,index):
 # 		cmdStr  = "start call "+curDir+"\startPy.cmd\n\n"+"cd /d "+ path+"\n\ndnconsole.exe launchex --index 0 --packagename com.bilibili.priconne\n\nexit"
 # 		f.write(cmdStr)
 
+
+from subprocess import run
+
 def CallLeiDian():
+	cmdStr = "cd /d "+LeiDianDir+" & dnconsole.exe"+"  launchex --index " + str(mnqIndex) + " --packagename com.bilibili.priconne\n"
+	print("cmdstr",cmdStr)
+	os.system(cmdStr)
+
+'''
 	index = str(mnqIndex)
 	if(index=='0'):
 		win32api.ShellExecute(0, 'open', GetFullPath('StartLeiDian.cmd'), '', '', 1)
 	if(index=='1'):
 		win32api.ShellExecute(0, 'open', GetFullPath('StartLeiDian1.cmd'), '', '', 1)
-  
+'''
+
 def CallPy():
     # 运行程序
 	if os.path.exists(GetFullPath('AutoPcr4.0.py')):
 		win32api.ShellExecute(0, 'open', GetFullPath('AutoPcr4.0.py'), '', '', 1)
 	else:
 		win32api.ShellExecute(0, 'open', GetFullPath('AutoPcrCmd.exe'), '', '', 1)
-        
+
 def StartPcr():
 	CallLeiDian()
 	CallPy()
@@ -294,17 +299,18 @@ left_col = [
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('检查模拟器')]]
 right_col = [[sg.Text('其他配置                  ')],
-[sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(8,None),key =mnqIndexKey),
-sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey) ,sg.Checkbox('64位',isFor64,key=isFor64Key)],
-[sg.Text('模拟器启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey)],
+[sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(4,None),key =mnqIndexKey),
+sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor64Key)],
+[sg.Text('启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
-[sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png'),sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
-[sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None)),sg.Text('进度'),sg.InputText(dxcStartLevel,size =(2,None),key= dxcStartLevelKey),sg.Checkbox('击杀boss',isKillBoss,key=isKillBossKey)],
-[sg.Text('编组-队伍 编组:1~5 队伍:1~3')],
-[sg.Text('道中队:'),sg.InputText(dxcGroupDaoZhong,size =(35,None),key= dxcGroupDaoZhongKey)],
-[sg.Text('Boss队:'),sg.InputText(dxcGroupBoss,size =(35,None),key= dxcGroupBossKey)],
-[sg.Text('boss连点位:0~5')],
-[sg.Text('连点位:'),sg.InputText(dxcBossLoopRole,size =(35,None),key= dxcBossLoopRoleKey)],
+[sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
+[sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
+[sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
+
+# [sg.Text('道中队:'),sg.InputText(dxcGroupDaoZhong,size =(35,None),key= dxcGroupDaoZhongKey)],
+# [sg.Text('Boss队:'),sg.InputText(dxcGroupBoss,size =(35,None),key= dxcGroupBossKey)],
+# [sg.Text('boss连点位:0~5')],
+# [sg.Text('连点位:'),sg.InputText(dxcBossLoopRole,size =(35,None),key= dxcBossLoopRoleKey)],
 ]
 
 layout = [
@@ -317,10 +323,11 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	moniqTime = values[moniqTimeKey]
+	isMult = values[isMultKey]
 	print('MainSettingKey = ',MainSettingKey)
 
 def SetAllSelect1():
@@ -335,7 +342,7 @@ def SetAllSelect2():
 	# window[isNeedSeedKey].Update(isAllSelect2)
 	# window[isSendKey].Update(isAllSelect2)
 	# window[isHouDongHardKey].Update(isAllSelect2)
-	window[isUseAllPowerKey].Update(isAllSelect2)
+	#window[isUseAllPowerKey].Update(isAllSelect2)
 	window[isXQBKey].Update(isAllSelect2)
 	# window[isTuituKey].Update(isAllSelect2)
 	window[isXinSuiKey].Update(isAllSelect2)
@@ -401,7 +408,7 @@ while True:
 	if event == '保存配置':
 		print('初始化配置')
 		SavaConfig(values)
-		WriteCmds()
+		# WriteCmds()
 	if ((event == RunName) | (event == StartRunName)):
 		SetConfig(isRunAndStartKey,str(event == StartRunName))
 		SavaConfig(values)

@@ -18,19 +18,20 @@ import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 #region 获取当前路径
-print("path " ,os.path.dirname(sys.executable))
-
 curDir = os.path.dirname(__file__)
+
+print(os.path.dirname(__file__),"\ncwd",os.getcwd())
+
+os.chdir(curDir)
+
+if(os.path.exists('.\\config.ini') == False):
+	print('no config ?? ->Exe Run')
+	curDir =os.getcwd()
+	os.chdir(curDir)
+
 #图片路径拼接
 def GetFullPath(pngName):
-    # global curDir
-    # return os.path.join(curDir, pngName)
     return '.\\' + pngName
-
-#利用文件是否存在判断是Exe 还是 Py文件
-if(os.path.exists(GetFullPath('config.ini')) == False):
-	print('Exe Run')
-	curDir =os.getcwd()
 
 #endregion
 
@@ -38,8 +39,6 @@ waitTime = 0
 minMatch = 0.7 #最低相似度匹配
 hightMatch = 0.90
 warnMatch = 0.85 #相似度小于此时, 打印黄字
-nextDxcLevel=1
-StartBossIndex = 0
 
 tMain = threading.Thread()
 t0 =threading.Thread()
@@ -50,20 +49,19 @@ t1 = threading.Thread()
 moniqTimeKey = 'moniqTime'
 dxcDropKey ='dxcDrop'
 mnqIndexKey ='mnqDrop'
-dxcDropValue =["炸脖龙","绿龙"]
+isMultKey ='isMult'
+dxcDropValue =["炸脖龙","绿龙","ex4"]
 mnqIndexDropValue=["1","0"]
 
 cfg = ConfigParser()
 configPath = GetFullPath('config.ini')
 cfg.read(configPath,encoding='utf-8')
-try:
-	mnqIndex = cfg.get('MainSetting',mnqIndexKey)
-	moniqTime = float(cfg.get('MainSetting',moniqTimeKey))
-except :
-	mnqIndex = '0'
-	moniqTime = 20
-MainSettingKey='MainSetting_'+str(mnqIndex)
 
+isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
+mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
+moniqTime = float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+
+MainSettingKey='MainSetting_'+str(mnqIndex)
 
 #region win32初始化
 #获取后台窗口的句柄，注意后台窗口不能最小化
@@ -131,14 +129,19 @@ def WaitWin32Start():
 
 	if(isFor64):
 		window_title = window_title+"(64)"
-	print("当前请求模拟器名称: " + window_title +" (如启动失败则检查多开器中的模拟器名称 和 序号)" )
 
-	MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
-
+	whileTime = 0
+	MainhWnd = 0
 	while(MainhWnd ==0):
-		print("等待模拟器启动中...")
+		if(isMult):
+			MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
+		else:
+			MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame',None)
 		time.sleep(1.5)
-		MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame', window_title)
+		if(whileTime != 0):
+			whileTime = whileTime+1
+			print("等待模拟器启动中...: " + whileTime)
+
 
 	#已打开雷电
 	print("Find MainhWnd",MainhWnd)
@@ -544,48 +547,13 @@ def TakeGift():
 StartBossIndex = 0
 lastGroup =""
 
-def StartDxc(index =1):
-	print("===地下城==")
-	global nextDxcLevel
-	nextDxcLevel = index
+#跳过地下城
+def StartDxcSkip():
+	print("===地下城== ",dxcBoss)
 	ToFightPage()
 	#进入地下城
 	EnterDxc()
-	if(IsHasImg(dxcDir + "/ex.png",False)):
-		print('今天打完了')
-		ToHomePage()
-		return
-	if(isKillBoss==False):
-		time.sleep(1)
-		if(WaitToClickImg(dxcDir+"/box5.png",False,True,4)):
-			WaitToClickImg(dxcDir + "/run.png")
-			WaitToClickImg("main/sure.png")
-			StartDxc()
-			return
-	if(nextDxcLevel <= 1):
-		print('wait box1...')
-		WaitToClickImg(dxcDir + "/box1.png",False)
-		print('found box1 => start')
-	if(nextDxcLevel <= 0):
-		nextDxcLevel = 1
 
-	if(nextDxcLevel <= 1):
-		DxcBoxFight(1)
-		time.sleep(4)
-		CheckAuto()
-		DxcBoxFightWait() 	#1战中
-	if(nextDxcLevel <= 2):
-		DxcBoxFight(2)
-		DxcBoxFightWait() #2
-	if(nextDxcLevel <= 3):
-		DxcBoxFight(3)
-		DxcBoxFightWait() #3
-	if(nextDxcLevel <= 4):
-		DxcBoxFight(4)
-		DxcBoxFightWait()  #4
-	if(nextDxcLevel <= 5):
-		if(isKillBoss):
-			StartBoss()
 
 def CheckAuto():
 	if(WaitToClickImg('Main/auto2.png',True,match=0.93,isRgb=True,maxTry=40)):
@@ -596,138 +564,11 @@ def CheckAuto():
 def EnterDxc():
 	WaitToClickImg("main/dxc.png")
 	time.sleep(1.5)
-	IsHasImg(dxcDir + "/ex.png")
+	IsHasImg("dxc/ex"+str(dxcBossNum)+".png")
 	time.sleep(1)
+	IsHasImg("main/dxcSkip.png")
 	IsHasImg("main/sure.png")
-	time.sleep(2)
-
-def GetBossLoopKey(level):
-	rawValue = dxcBossLoopRole
-	values = rawValue.split(",")
-	listLen = len(values)
-	if(rawValue == ""):
-		return '0'
-	if(listLen > level):
-		return values[level]
-	return '0'
-
-def GetGroupInfo(level,isBoss):
-	rawValue = ""
-	if(isBoss):
-		rawValue = dxcGroupBoss
-	else:
-		rawValue =dxcGroupDaoZhong
-	values = rawValue.split(",")
-	listLen = len(values)
-	if(rawValue == ""):
-		return "5-1"
-	if(listLen >= level):
-		return values[level-1]
-	else:
-		return values[listLen-1]
-
-
-def CheckSelectGroup(level,isBoss):
-	global lastGroup
-	curGroup= GetGroupInfo(level,isBoss)
-	#如果上一个队伍和下一个队伍相同 则什么都不做
-	if(lastGroup!= curGroup):
-		time.sleep(1)
-		lastGroup =curGroup
-		infos = curGroup.split("-")
-		SelectParty(int(infos[0]),int(infos[1]))
-		time.sleep(1)
-
-
-def DxcBoxFight(level):
-	global nextDxcLevel
-	nextDxcLevel = level+1
-	#自动取消关闭奖励界面
-	if(level == 1):
-		ClickUntilNul(dxcDir + "/box1.png")
-	elif(level == 2):
-		ClickUntilNul(dxcDir + "/box2.png")
-	elif(level == 3):
-		ClickUntilNul(dxcDir + "/box3.png")
-	elif(level == 4):
-		ClickUntilNul(dxcDir + "/box4.png")
-
-	time.sleep(1)
-	DoKeyDown(playerKey)
-	time.sleep(1.5)
-	CheckSelectGroup(level,False)
-
-	DoKeyDown(playerKey)
-
-def DxcBoxFightWait():
-	time.sleep(2.5)
-	WaitImgLongTime(dxcDir + "/win.png")
-	time.sleep(2)
-	DoKeyDown(nextKey) #返回
-	DoKeyDown(nextKey) #返回
-	time.sleep(3)
-	DoKeyDown(exitKey)
-	time.sleep(0.5)
-	DoKeyDown(exitKey) #跳过宝箱
-	time.sleep(0.5)
-	DoKeyDown(exitKey)
-	time.sleep(0.5)
-
-def StartBoss():
-
-	global StartBossIndex #0开始计数
-	values = dxcGroupBoss.split(",")
-	listLen = len(values)
-	if(StartBossIndex >= listLen): #0开始计数
-		print("===Boss 挑战 失败==='")
-		return
-
-	print('===StartBoss===')
-	ClickUntilNul(dxcDir + "/box5.png")
-	time.sleep(1)
-	DoKeyDown(playerKey)
-
-	time.sleep(0.4)
-
-	CheckSelectGroup(StartBossIndex+1,True)
-	time.sleep(0.4)
-
-	DoKeyDown(playerKey)
-	time.sleep(0.4)
-	DoKeyDown(playerKey)
-
-	roleLoop = GetBossLoopKey(StartBossIndex)
-	print('roleLoop ',roleLoop)
-	if(roleLoop != '0'):
-		StartLoopKeyDown(roleLoop)
-
-	StartBossIndex = StartBossIndex+1
-	WaitBossFight()
-
-def WaitBossFight():
-	if(LongTimeCheck('dxc/win.png',dxcDir+'/lose.png')):
-		#win
-		print('win')
-		StopLoopKeyDown()
-		time.sleep(2.5)
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
-		time.sleep(3)
-		DoKeyDown(exitKey)
-		time.sleep(0.5)
-		DoKeyDown(exitKey)
-		time.sleep(0.5)
-		DoKeyDown(exitKey)
-		ToHomePage()
-		print('end')
-	else:
-		#lose
-		StopLoopKeyDown()
-		time.sleep(2)
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
-		time.sleep(1)
-		StartBoss()
+	ToHomePage()
 
 #endregion
 
@@ -745,16 +586,15 @@ def BuyExp():
 		if(i==0 and (IsHasImg('shop/exp2.png',False) == False)):
 			# ToHomePage()
 			print('no to buy->update')
-			WaitToClickImg('shop/update.png')
+			WaitToClickImg('shop/update.png',isRgb= True)
 			WaitToClickImg('main/sure.png')
 		if(i>0):
-			WaitToClickImg('shop/update.png')
+			WaitToClickImg('shop/update.png',isRgb= True)
 			WaitToClickImg('main/sure.png')
 		expCounter = 1
-		while((expCounter <= 4) and (IsHasImg('shop/exp.png'))):
-			expCounter = expCounter+1
-			print('IsHasImg' ,expCounter)
-		WaitToClickImg('shop/buyBtn.png')
+		WaitToClickImg('shop/all.png')
+
+		WaitToClickImg('shop/buyBtn.png',isRgb= True)
 		WaitToClickImg('shop/buyTitle.png',False)
 		WaitToClickImg('main/sure.png')
 		time.sleep(0.5)
@@ -1102,7 +942,7 @@ def DailyTasks():
 		StartJJC()
 		StartPJJC()
 	if(isDxc):
-		StartDxc(int(dxcStartLevel))
+		StartDxcSkip()
 	if(isHomeTake):
 		ghHomeTake()
 		StartTakeAll()
@@ -1133,7 +973,10 @@ def DailyTasks():
 def CloseMoniqi():
 	print("3 秒后关闭模拟器")
 	time.sleep(3)
-	win32api.ShellExecute(0, 'open', GetFullPath('CloseLeiDian.cmd'), '', '', 1)
+	cmdStr = "cd /d "+LeiDianDir+" & dnconsole.exe quitall"
+	print("cmdstr",cmdStr)
+	os.system(cmdStr)
+	# win32api.ShellExecute(0, 'open', GetFullPath('CloseLeiDian.cmd'), '', '', 1)
 
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
@@ -1273,7 +1116,6 @@ playerNameKey = 'playerName'
 dxcGroupDaoZhongKey ='DxcGroupDaoZhong'
 dxcGroupBossKey ='DxcGroupBoss'
 dxcBossLoopRoleKey ='dxcBossLoopRole'
-dxcStartLevelKey ='dxcStartLevel'
 isBuyMoreExpKey = 'isBuyMoreExp'
 
 isBuyMoreExp = GetBoolConfig(isBuyMoreExpKey)
@@ -1304,18 +1146,17 @@ playerName = GetStrConfig(playerNameKey)
 dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
 dxcBossLoopRole = GetStrConfig(dxcBossLoopRoleKey)
-dxcStartLevel = GetStrConfig(dxcStartLevelKey)
-if(dxcStartLevel==""):
-	dxcStartLevel = "1"
+
 
 dxcBoss=GetStrConfig(dxcDropKey)
-dxcDir = ''
+
 if(dxcBoss =="炸脖龙"):
-	dxcBossNum =1
-	dxcDir ="dxc"
+	dxcBossNum =2
 elif(dxcBoss =="绿龙"):
-	dxcBossNum = 2
-	dxcDir = "dxc_ex3"
+	dxcBossNum = 3
+else:
+	dxcBossNum = 4
+
 
 #endregion
 def test():
@@ -1355,8 +1196,7 @@ def RunAutoPcr():
 	else:
 		time.sleep(2)
 
-	print('=== Start ===')
-	print('\n=== 按Exc退出程序 ===\n')
+	print('=== 开始 按Exc退出程序 ===\n')
 
 #日常
 	# OnAutoTask()
