@@ -13,7 +13,9 @@ Exe版本(v5.6): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
 # 更新保留配置
 
 config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
-# 小更新
+# 更新 三周年版本 6.0
+
+扫荡地下城
 
 买多次购买经验药
 
