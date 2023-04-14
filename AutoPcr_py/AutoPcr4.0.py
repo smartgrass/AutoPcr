@@ -566,7 +566,7 @@ def EnterDxc():
 	time.sleep(1.5)
 	IsHasImg("dxc/ex"+str(dxcBossNum)+".png")
 	time.sleep(1)
-	IsHasImg("main/dxcSkip.png")
+	IsHasImg("dxc/dxcSkip.png")
 	IsHasImg("main/sure.png")
 	ToHomePage()
 
