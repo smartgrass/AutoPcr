@@ -13,7 +13,7 @@ Exe版本(v5.6): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
 # 更新保留配置
 
 config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
-# 更新 三周年版本 6.0
+# 更新6.0 三周年版本
 
 扫荡地下城
 
@@ -28,12 +28,6 @@ config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把�
 使用win32gui代替鼠标点击, 运行时可挂后台,但不能最小化
 
 如果小号启动失败 ,则需要检查模拟器名称是否为"雷电模拟器-1"
-
-# 更新5.0绿龙自动刀版本(仅限Windows) 
-
-功能渐渐花里胡哨了起来...
-
-<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/GUIWindow.png" width= "500"/>
 
 运行配置见'运行说明'文件夹
 
