@@ -449,7 +449,7 @@ def StartJJC():
 		WaitToClickImg('jjc/ship.png',maxTry=25)
 	Click()
 	time.sleep(2)
-	LongTimeCheck("dxc/win.png","jjc/lose.png")
+	LongTimeCheck("jjc/win.png","jjc/lose.png")
 	time.sleep(1.5)
 	DoKeyDown(nextKey)
 	time.sleep(1.5)
