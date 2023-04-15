@@ -6,7 +6,7 @@ b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
 安装视频教程: https://share.weiyun.com/o80ZgPr0
 
-Exe版本(v5.6): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
+Exe版本(v6.0): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
