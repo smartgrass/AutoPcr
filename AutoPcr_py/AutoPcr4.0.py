@@ -615,12 +615,17 @@ def SaoDang(_time =4):
 	for i in range(_time):
 		Click()
 
-	WaitToClickImg('tansuo/start.png')
-	WaitToClickImg("main/sure.png")
-	time.sleep(0.2)
-	WaitToClickImg("main/skip.png")
-	time.sleep(0.3)
-	Click()
+	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+		WaitToClickImg('tansuo/start.png')
+		WaitToClickImg("main/sure.png")
+		time.sleep(0.2)
+		WaitToClickImg("main/skip.png")
+		time.sleep(0.3)
+		Click()
+		return True
+	else:
+		print("没体力- > 结束")
+		return False
 
 
 def ExitSaoDang():
@@ -883,7 +888,7 @@ def OnAutoTask():
 def OnHouDongHard():
 	print('OnHouDongHard')
 	ToFightPage()
-	WaitToClickImg('main/dxc.png',False)
+	WaitToClickImg('main/dxc.png',False) #地下城入口存在->达到Fight界面
 	DoKeyDown(huodongKey)
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
@@ -894,10 +899,13 @@ def OnHouDongHard():
 	for	i in range(5):
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
-		SaoDang(2)
-		DoKeyDown(groupKeys[0])
-		DoKeyDown(groupKeys[0])
-		DoKeyDown(groupKeys[0])
+		if(SaoDang(2)):
+			DoKeyDown(groupKeys[0])  #小退出,Q
+			DoKeyDown(groupKeys[0])
+			DoKeyDown(groupKeys[0])
+		else:
+			print("没体力 ->结束")
+			break
 	DoKeyDown(exitKey)
 	ExitSaoDang()
 
