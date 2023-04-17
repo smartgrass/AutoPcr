@@ -748,7 +748,7 @@ def ClickPlayer():
 		DoKeyDown(exitKey)
 		DoKeyDown(exitKey)
 		time.sleep(0.2)
-	time.sleep(0.3)
+	time.sleep(0.2)
 	if(IsHasImg('main/'+playerName+'.png',False)):
 		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
