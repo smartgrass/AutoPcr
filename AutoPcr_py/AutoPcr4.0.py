@@ -744,11 +744,11 @@ def ClickPlayer():
 		playerName = "player0"
 
 	while (WaitToClickImg('main/'+playerName+'.png',False,True) == False):
-		time.sleep(0.5)
 		DoKeyDown(exitKey)
 		DoKeyDown(exitKey)
 		DoKeyDown(exitKey)
-	time.sleep(0.4)
+		time.sleep(0.2)
+	time.sleep(0.3)
 	if(IsHasImg('main/'+playerName+'.png',False)):
 		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
