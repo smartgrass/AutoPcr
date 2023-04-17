@@ -639,20 +639,17 @@ def Xqb():
 		ExitSaoDang()
 		WaitToClickImg('tansuo/xqbEnter.png')
 
-
 	WaitToClickImg('tansuo/xqbTop.png',False)
 	DoKeyDown(listSelectKeys[0])
-
-
-	SaoDang()
-	ExitSaoDang()
-
-	DoKeyDown(exitKey)
-	DoKeyDown(exitKey)
-	WaitToClickImg('tansuo/xqbTop.png',False)
-
-	DoKeyDown(listSelectKeys[1])
-	SaoDang()
+	for i in range(2):
+		if(SaoDang()):
+			SmallExit()
+			SmallExit()
+			SmallExit()
+			MoveToLeft()
+		else:
+			ExitSaoDang()
+			return
 	ExitSaoDang()
 
 
@@ -663,18 +660,17 @@ def xinSui():
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
 	DoKeyDown(listSelectKeys[0])
-
-	SaoDang()
+	for i in range(3):
+		print(i)
+		if(SaoDang()):
+			SmallExit()
+			SmallExit()
+			SmallExit()
+			MoveToLeft()
+		else:
+			ExitSaoDang()
+			return
 	ExitSaoDang()
-
-	DoKeyDown(exitKey)
-	DoKeyDown(exitKey)
-	WaitToClickImg('tansuo/xinSuiTop.png',False)
-
-	DoKeyDown(listSelectKeys[1])
-	SaoDang()
-	ExitSaoDang()
-
 
 def SendZb():
 	ToHomePage()
@@ -900,9 +896,9 @@ def OnHouDongHard():
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
 		if(SaoDang(2)):
-			DoKeyDown(groupKeys[0])  #小退出,Q
-			DoKeyDown(groupKeys[0])
-			DoKeyDown(groupKeys[0])
+			SmallExit()
+			SmallExit()
+			SmallExit()
 		else:
 			print("没体力 ->结束")
 			break
@@ -911,7 +907,8 @@ def OnHouDongHard():
 
 
 
-
+def SmallExit():
+	DoKeyDown(groupKeys[0])  #小退出,Q
 
 def MoveToLeft():
 	DoKeyDown('C')
