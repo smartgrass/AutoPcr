@@ -774,9 +774,11 @@ def OnTuituStart():
 
 	if(IsHasImg("main/home.png",False)):
 		#在外面
+		print("非战斗状态->点击玩家")
 		OnTuituLoop()
 	else:
 		#在里面
+		print("在战斗中->等待战斗结束")
 		WaitFinghtEndNext()
 		OnTuituLoop()
 
