@@ -758,10 +758,10 @@ def WaitFinghtEndNext():
 	print('>>WaitFinghtEndNext')
 
 	while (WaitToClickImg("main/next2.png",False,True) == False):
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
 		time.sleep(1)
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
 
 	ClickUntilNul("main/next2.png")
 	ClickUntilNul("main/next2.png")
@@ -769,6 +769,8 @@ def WaitFinghtEndNext():
 	#最后一次检查
 	if(IsHasImg("main/next2.png")):
 		DoKeyDown(nextKey)
+
+
 
 def OnTuituStart():
 
@@ -794,9 +796,16 @@ def OnTuituLoop():
 		DoKeyDown(playerKey)
 		DoKeyDown(playerKey)
 		DoKeyDown(playerKey)
+		print("enterFight sleep 4")
+		time.sleep(4)
 
-		print("enterFight sleep 12")
-		time.sleep(12)
+		if(IsHasImg('main/sure.png',False)):
+			print("没有体力了-> 结束")
+			ExitSaoDang()
+			return
+		print("enterFight sleep 8")
+		time.sleep(8)
+
 		WaitFinghtEndNext()
 		time.sleep(1.5)  #过渡
 		OnTuituLoop()
