@@ -1,3 +1,5 @@
+%1 start "" mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
+
 python.exe -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple opencv-python
@@ -14,16 +16,14 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pypiwin32
 
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple PySimpleGUI
 
-set path=%~dp0xiaocao.vbs
+@echo off
 
-cd %~dp0
+if %errorlevel% == 0 ( echo successfully ) else ( 
 
-echo %path%
+echo failed Ê§°Ü,ÖØÐÂ³¢ÊÔ SetupPip_1
 
-start %path%
+start %~dp0/SetupPip_1.cmd
 
-echo create lnk
-
-echo OK!!
+)
 
 pause

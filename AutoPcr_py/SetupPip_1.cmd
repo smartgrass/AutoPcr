@@ -1,3 +1,5 @@
+%1 start "" mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
+
 python.exe -m pip install --upgrade pip
 
 pip install opencv-python
@@ -14,16 +16,10 @@ pip install pypiwin32
 
 pip install PySimpleGUI
 
-set path=%~dp0xiaocao.vbs
+if %errorlevel% == 0 ( echo successfully ) else ( 
 
-cd %~dp0
+echo failed  ß∞‹,ºÏ≤ÈÕ¯¬ÁŒ Ã‚?
 
-echo %path%
-
-start %path%
-
-echo create lnk
-
-echo OK!!
+)
 
 pause

@@ -256,11 +256,11 @@ def press_and_release_key(key_code):
 def IsHasImg(targetImg,isClick = True,stopTime = 4,offsetY=0,isRgb =False,match=minMatch):
 	return WaitToClickImg(targetImg,isClick,True,stopTime,offsetY= offsetY,isRgb=isRgb,match=match)
 
-#等待图片出现,低频率检测
-def WaitImgLongTime(targetImg):
+#等待图片出现,低频率检测, 但不点击
+def WaitImgLongTime(targetImg,autoExit = False):
 	maxTryTime = 30*4  #4分钟 最大等待上限
 	longTimer = 0
-	while (WaitToClickImg(targetImg,False,True) == False):
+	while (WaitToClickImg(targetImg,False,True,autoExit=autoExit) == False):
 		time.sleep(2)
 		longTimer = longTimer+1
 		if(longTimer > maxTryTime):
@@ -324,7 +324,7 @@ def image_X():
 
 #点到消失为止
 def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch):
-	WaitToClickImg(path,offsetY= offsetY,isRgb=  isRgb,match=match)
+	WaitToClickImg(path,offsetY= offsetY,isRgb= isRgb,match=match)
 	time.sleep(0.5)
 	tryTime =0
 	while(IsHasImg(path,offsetY= offsetY,isRgb= isRgb,match=match)):
@@ -743,48 +743,49 @@ def ClickPlayer():
 		print("玩家角色 为空!")
 		playerName = "player0"
 
-	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == None):
-		ExitSaoDang()
-		print("No player")
-	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
-
-def ClickPlayer_Or_Next():
-	global playerName
-	if(playerName==""):
-		print("玩家角色 为空!")
-		playerName = "player0"
-
-	while(WaitToClickImg('main/'+playerName+'.png',isClick = False,isRgb= True,match=0.6,maxTry=8) == None):
-		if(IsHasImg('main/next2.png',False)):
-			FinghtNext()
-		ExitSaoDang()
-		print("No player")
-	ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
-
-def FinghtNext():
-	WaitImgLongTime("main/next2.png")
-	DoKeyDown(nextKey)
-	DoKeyDown(nextKey)
-	time.sleep(2)
-	if(WaitToClickImg("main/next2.png") == False):
-		ExitSaoDang()
-		WaitToClickImg("main/next2.png")
-
-IsFirst = True
-
-def OnTuitu():
-
-	global IsFirst
-	if(IsFirst):
-		ClickPlayer_Or_Next()
-		IsFirst = False
+	while (WaitToClickImg('main/'+playerName+'.png',False,True) == False):
+		time.sleep(0.5)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+	time.sleep(0.4)
+	if(IsHasImg('main/'+playerName+'.png',False)):
+		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
 		ClickPlayer()
 
+def WaitFinghtEndNext():
+	print('>>WaitFinghtEndNext')
+
+	while (WaitToClickImg("main/next2.png",False,True) == False):
+		time.sleep(1)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+
+	ClickUntilNul("main/next2.png")
+	ClickUntilNul("main/next2.png")
+
+	#最后一次检查
+	if(IsHasImg("main/next2.png")):
+		DoKeyDown(nextKey)
+
+def OnTuituStart():
+
+	if(IsHasImg("main/home.png",False)):
+		#在外面
+		OnTuituLoop()
+	else:
+		#在里面
+		WaitFinghtEndNext()
+		OnTuituLoop()
+
+def OnTuituLoop():
+	print('>>OnTuituLoop')
+	ClickPlayer()
 	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
-		time.sleep(1)
-
+		time.sleep(0.2)
 		DoKeyDown(playerKey)
 		DoKeyDown(playerKey)
 		time.sleep(0.8)
@@ -792,27 +793,20 @@ def OnTuitu():
 		DoKeyDown(playerKey)
 		DoKeyDown(playerKey)
 
-		print("sleep 10")
-		time.sleep(10)
-		WaitImgLongTime("main/next2.png")
-
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
-		time.sleep(2)
-		if(WaitToClickImg("main/next2.png") == False):
-			ExitSaoDang()
-			WaitToClickImg("main/next2.png")
-		DoKeyDown(nextKey)
-		OnTuitu()
+		print("enterFight sleep 12")
+		time.sleep(12)
+		WaitFinghtEndNext()
+		time.sleep(1.5)  #过渡
+		OnTuituLoop()
 	else:
-		if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
-			ExitSaoDang()
-			OnTuitu()
-			return
-		else:
+		if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			print("已经全部通关...")
 			ExitSaoDang()
-
+		else:
+			#意外弹出->退出重来
+			ExitSaoDang()
+			OnTuituLoop()
+			return
 
 def OnAutoTaskStart():
 	print("AutoTask")
@@ -957,7 +951,7 @@ def DailyTasks():
 		UseAllPower()
 		StartTakeAll()
 	if(isTuitu):
-		OnTuitu()
+		OnTuituStart()
 	if(isHomeTake):
 		TakeGift()
 	if(isAutoTask):
