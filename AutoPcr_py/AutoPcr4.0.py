@@ -329,9 +329,9 @@ def image_X():
 	return sp
 
 #点到消失为止
-def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch):
+def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch,nullWait =0.5):
 	WaitToClickImg(path,offsetY= offsetY,isRgb= isRgb,match=match)
-	time.sleep(0.5)
+	time.sleep(nullWait)
 	tryTime =0
 	while(IsHasImg(path,offsetY= offsetY,isRgb= isRgb,match=match)):
 		if(tryTime >maxTry):
@@ -759,7 +759,16 @@ def ClickPlayer():
 	if(IsHasImg('main/'+playerName+'.png',False)):
 		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
-		ClickPlayer()
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+		DoKeyDown(exitKey)
+		if(IsHasImg("main/home.png",False)):
+			ClickPlayer()
+		else:
+			#在里面
+			print("在战斗中->等待战斗结束")
+			WaitToClickImg("main/next2.png")
+
 
 def WaitFinghtEndNext():
 	print('>>WaitFinghtEndNext')
@@ -770,11 +779,17 @@ def WaitFinghtEndNext():
 		DoKeyDown(exitKey)
 		time.sleep(1)
 
-	ClickUntilNul("main/next2.png")
+	WaitToClickImg("main/next2.png")
+	DoKeyDown(exitKey)
+	time.sleep(0.2)
+	DoKeyDown(exitKey)
+	time.sleep(0.2)
+	DoKeyDown(exitKey)
 	ClickUntilNul("main/next2.png")
 
 	#最后一次检查
 	if(IsHasImg("main/next2.png")):
+		DoKeyDown(nextKey)
 		DoKeyDown(nextKey)
 
 
