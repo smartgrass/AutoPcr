@@ -45,9 +45,17 @@ cfg.read(configPath,'utf-8')
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
-moniqTime = float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+
+def string_to_float(str):
+	try:
+		return float(str)
+	except:
+		return 20
+
+moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
 
 MainSettingKey='MainSetting_'+mnqIndex
+
 
 def SetConfigAuto(key,AllValues):
 	SetConfig(key,str(AllValues[key]))

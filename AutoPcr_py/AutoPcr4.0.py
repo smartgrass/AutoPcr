@@ -56,7 +56,13 @@ cfg.read(configPath,encoding='utf-8')
 
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
-moniqTime = float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+
+def string_to_float(str):
+	try:
+		return float(str)
+	except:
+		return 20
+moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
 
 MainSettingKey='MainSetting_'+str(mnqIndex)
 
@@ -828,17 +834,12 @@ menuNofindTime=0
 
 def OnAutoTask():
 	print("AutoTask")
-	global menuNofindTime
-
-	hasMenu = False
+	isNoAct = True
 
 	#菜单存在时
-	if(WaitToClickImg('task/menu.png')):
-		hasMenu = True
-		menuNofindTime = 0
-		# if(IsHasImg('task/skip.png') == False):
-		# IsHasImg('task/menu.png')
-		if(IsHasImg('task/skip.png')):
+	if(IsHasImg('task/menu.png')):
+		isNoAct = False
+		if(IsHasImg('task/skip.png',match=0.8)):
 			#蓝色按钮
 			WaitToClickImg('task/skipBtn.png')
 		else:
@@ -849,37 +850,42 @@ def OnAutoTask():
 				return
 		time.sleep(0.6)
 
+	#优先级 菜单 > 蓝色或关闭 按钮 > 什么都没有
+	#优先级 noSound > skipBtn > close
 
-	#没有菜单
-	if((1-hasMenu) or (IsHasImg('task/menu.png',isClick= False) == False) ):
-		#需要区分是视频还是 主页
-		if(IsHasImg('task/close.png',stopTime=6) == False and IsHasImg('task/noSound.png') == False):
-			DoKeyDown(exitKey)
-			time.sleep(0.6)
-			menuNofindTime=menuNofindTime+1
-
-		IsHasImg('task/skipBtn.png')
+	if(IsHasImg('task/noSound.png')):
+		isNoAct = False
+		time.sleep(0.6)
+	if(IsHasImg('task/skipBtn.png')):
+		isNoAct = False
+	if(IsHasImg('task/close.png',stopTime=6)):
+		isNoAct = False
+		time.sleep(0.4)
 		IsHasImg('task/noSound.png')
-	else:
-		menuNofindTime =0
+		time.sleep(0.8)
 
-
-
-	if(menuNofindTime >1):
-		if((1-IsHasImg('task/skipBtn.png'))):
-			if(IsHasImg("main/fight.png",False)):
+	if(isNoAct):
+		if(IsHasImg('main/home.png',False)):
+			time.sleep(0.6)
+			if(IsHasImg('main/home.png',False,match=0.9)):
 				print("任务结束")
+				#NextChapter()
 				return
-			else:
-				menuNofindTime = 0
 		else:
-			menuNofindTime = 0
+			ClickCenter()
 	print("=====Again======")
 	OnAutoTask()
 
-#跳过对话
-# def SkipDuiHua():
-
+#下一章节
+def NextChapter():
+	print('切换下章节')
+	WaitToClickImg('main/back.png')
+	DoKeyDown(listSelectKeys[0]) #i
+	DoKeyDown(listSelectKeys[0]) #i
+	WaitToClickImg('main/back.png',False)
+	DoKeyDown(listSelectKeys[1]) #i
+	WaitToClickImg('task/noSound.png')
+	OnAutoTask()
 
 def OnHouDongHard():
 	print('OnHouDongHard')
