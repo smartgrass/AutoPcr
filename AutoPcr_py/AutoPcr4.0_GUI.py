@@ -46,6 +46,8 @@ mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
 
+
+
 def string_to_float(str):
 	try:
 		return float(str)
@@ -53,6 +55,8 @@ def string_to_float(str):
 		return 20
 
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+
+print("moniqTime",moniqTime)
 
 MainSettingKey='MainSetting_'+mnqIndex
 
@@ -222,10 +226,8 @@ def ReadConfig():
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
 
-	# ReadStrConfig(dxcGroupDaoZhongKey)
-	# ReadStrConfig(dxcGroupBossKey)
 	ReadStrConfig(playerNameKey)
-	ReadStrConfig(moniqTimeKey)
+
 	# ReadStrConfig(mnqIndexKey,AllValues)
 
 
@@ -335,6 +337,7 @@ def RunTimeValue():
 	moniqTime = values[moniqTimeKey]
 	isMult = values[isMultKey]
 	print('MainSettingKey = ',MainSettingKey)
+
 
 def SetAllSelect1():
 	window[isJJCKey].Update(isAllSelect1)
