@@ -757,6 +757,8 @@ def ClickPlayer():
 	# 	time.sleep(0.2)
 	time.sleep(0.1)
 	if(WaitToClickImg('main/'+playerName+'.png',False)):
+		time.sleep(0.1)
+		DoKeyDown(exitKey)
 		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
 		DoKeyDown(exitKey)
@@ -777,7 +779,7 @@ def WaitFinghtEndNext():
 		DoKeyDown(exitKey)
 		DoKeyDown(exitKey)
 		DoKeyDown(exitKey)
-		time.sleep(0.3)
+		time.sleep(0.4)
 
 	WaitToClickImg("main/next2.png")
 	DoKeyDown(exitKey)
@@ -932,6 +934,8 @@ def SmallExit():
 	DoKeyDown(groupKeys[0])  #小退出,Q
 
 def MoveToLeft():
+	if(WaitToClickImg('tansuo/saodang.png',False)==False):
+		DoKeyDown(exitKey)
 	DoKeyDown('C')
 
 def UseAllPower():
