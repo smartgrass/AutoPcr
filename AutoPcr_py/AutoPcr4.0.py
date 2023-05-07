@@ -617,11 +617,17 @@ def EnterDiaoCha():
 	WaitToClickImg('main/diaoCha.png')
 
 def SaoDang(_time =4):
-	WaitToClickImg('tansuo/plus.png')
-	for i in range(_time):
-		Click()
+
+
+	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
+		MoveToLeft()
+		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+			MoveToLeft()
 
 	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+		if(WaitToClickImg('tansuo/plus.png')):
+			for i in range(_time):
+				Click()
 		WaitToClickImg('tansuo/start.png')
 		WaitToClickImg("main/sure.png")
 		time.sleep(0.2)
@@ -916,12 +922,11 @@ def OnHouDongHard():
 	ClickPlayer()
 
 	for	i in range(5):
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
-			MoveToLeft()
 		if(SaoDang(2)):
 			SmallExit()
 			SmallExit()
 			SmallExit()
+			MoveToLeft()
 		else:
 			print("没体力 ->结束")
 			break
@@ -938,6 +943,10 @@ def MoveToLeft():
 		DoKeyDown(exitKey)
 	DoKeyDown('C')
 
+def CurSaodang():
+	ClickPlayer()
+	SaoDang()
+
 def UseAllPower():
 	print('OnHouDongHard')
 	ToFightPage()
@@ -947,12 +956,12 @@ def UseAllPower():
 
 	i = 0
 	isSaodang = True
-	while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
-		MoveToLeft()
-		i=i+1
-		if(i>3):
-			isSaodang =False
-			break
+	# while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
+	# 	MoveToLeft()
+	# 	i=i+1
+	# 	if(i>3):
+	# 		isSaodang =False
+	# 		break
 
 	if(isSaodang):
 		SaoDang(60)
@@ -1211,6 +1220,8 @@ def RunAutoPcr():
 	t0.start()
 	WaitWin32Start()
 	# test()
+	#CurSaodang()
+
 	time.sleep(0.5)
 	if(isRunAndStart):
 		print('Wait Start... ',moniqTime,"s")
