@@ -14,7 +14,9 @@ Exe版本(v6.0): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
 
 config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
 
-# 6.1 小更新  2023/4/18
+# 6.2 小更新  2023/5/7
+扫荡弹出经验药处理
+
 自动推图优化, 好感度,升级窗口,boss对话跳过
 
 
