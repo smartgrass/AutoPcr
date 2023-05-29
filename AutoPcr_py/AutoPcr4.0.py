@@ -684,6 +684,16 @@ def xinSui():
 			return
 	ExitSaoDang()
 
+def DianZan():
+	print()
+	ToHomePage()
+	WaitToClickImg('other/hanghui.png')
+	time.sleep(0.1)
+	WaitToClickImg('other/menber.png')
+	WaitToClickImg('other/dianzan.png')
+	WaitToClickImg('main/sure.png')
+
+
 def SendZb():
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
@@ -730,15 +740,12 @@ def needSeedZbStart():
 
 def needSeedZb():
 	if(WaitToClickImg(GetZBPath(needZbName),False,maxTry = 8,match = 0.9) == False):
-		print("找不到装备->反转排序")
-		DoKeyDown(partyKey)
-	if(WaitToClickImg(GetZBPath(needZbName),maxTry = 8,match = 0.9)):
-		WaitToClickImg('other/needSend2.png')
-		WaitToClickImg('main/sure.png')
-		WaitToClickImg('main/sure.png')
-	else:
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
+		print("找不到装备->选第一个")
+		# DoKeyDown(partyKey)
+	WaitToClickImg('other/needSend2.png')
+	WaitToClickImg('main/sure.png')
+	WaitToClickImg('main/sure.png')
+
 
 def ghHomeTake():
 	WaitToClickImg('main/ghHome.png')
@@ -991,6 +998,8 @@ def DailyTasks():
 	if(isXinSui):
 		EnterDiaoCha()
 		xinSui()
+	if(isDianZan):
+		DianZan()
 	if(isSend):
 		SendZb()
 	if(isNeedSeed):
@@ -1139,6 +1148,7 @@ isSendKey='isSend'
 isNeedSeedKey ='isNeedSeed'
 isKillBossKey ='isKillBoss'
 
+isDianZanKey='isDianZan'
 isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
@@ -1169,6 +1179,7 @@ isTuitu = GetBoolConfig(isTuituKey)
 isFor64 = GetBoolConfig(isFor64Key)
 isAutoTask = GetBoolConfig(isAutoTaskKey)
 
+isDianZan = GetBoolConfig(isDianZanKey)
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)

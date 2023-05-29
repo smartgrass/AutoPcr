@@ -115,6 +115,7 @@ isXinSuiKey='isXinSui'
 isSendKey='isSend'
 isNeedSeedKey ='isNeedSeed'
 
+isDianZanKey='isDianZan'
 isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
@@ -142,6 +143,7 @@ isFor64 = GetBoolConfig(isFor64Key)
 isBuyMoreExp = GetBoolConfig(isBuyMoreExpKey)
 isRunAndStart = False
 
+isDianZan = GetBoolConfig(isDianZanKey)
 isHomeTake= GetBoolConfig(isHomeTakeKey)
 isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)
@@ -183,6 +185,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(isAutoTaskKey,AllValues)
 	SetConfigAuto(isBuyMoreExpKey,AllValues)
 
+	SetConfigAuto(isDianZanKey,AllValues)
 	SetConfigAuto(isHomeTakeKey,AllValues)
 	SetConfigAuto(isUseAllPowerKey,AllValues)
 	SetConfigAuto(isHouDongHardKey,AllValues)
@@ -216,6 +219,7 @@ def ReadConfig():
 	ReadBoolConfig(isXinSuiKey)
 	ReadBoolConfig(isSendKey)
 	ReadBoolConfig(isNeedSeedKey)
+	ReadBoolConfig(isDianZanKey)
 	ReadBoolConfig(isHomeTakeKey)
 	ReadBoolConfig(isUseAllPowerKey)
 	ReadBoolConfig(isHouDongHardKey)
@@ -297,6 +301,8 @@ left_col = [
 [sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
 [sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('领取奖励',isHomeTake,key=isHomeTakeKey)],
+[sg.Checkbox('点赞',isDianZan,key=isDianZanKey)],
+
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey)],
 [sg.Checkbox('普通本清空体力',isUseAllPower,key=isUseAllPowerKey),sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey)],
@@ -346,6 +352,7 @@ def SetAllSelect1():
 	window[isExpKey].Update(isAllSelect1)
 	window[isNiuDanKey].Update(isAllSelect1)
 	window[isHomeTakeKey].Update(isAllSelect1)
+	window[isDianZanKey].Update(isAllSelect1)
 
 def SetAllSelect2():
 	# window[isNeedSeedKey].Update(isAllSelect2)
