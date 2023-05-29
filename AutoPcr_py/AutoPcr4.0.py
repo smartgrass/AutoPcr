@@ -43,6 +43,7 @@ t1 = threading.Thread()
 
 #region 读取配置
 #其他页面
+useAllMoveTimeKey = "useAllMoveTime"
 moniqTimeKey = 'moniqTime'
 dxcDropKey ='dxcDrop'
 mnqIndexKey ='mnqDrop'
@@ -55,6 +56,7 @@ configPath = GetFullPath('config.ini')
 cfg.read(configPath,encoding='utf-8')
 
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
+
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 
 def string_to_float(str):
@@ -62,6 +64,14 @@ def string_to_float(str):
 		return float(str)
 	except:
 		return 20
+def string_to_Int(str):
+	try:
+		return int(str)
+	except:
+		return 0
+
+useAllMoveTime =string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='0'))
+
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
 
 MainSettingKey='MainSetting_'+str(mnqIndex)
@@ -961,18 +971,12 @@ def UseAllPower():
 
 	ClickPlayer()
 
-	i = 0
-	isSaodang = True
-	# while(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=6,isClick=False)):
-	# 	MoveToLeft()
-	# 	i=i+1
-	# 	if(i>3):
-	# 		isSaodang =False
-	# 		break
+	for	i in range(useAllMoveTime):
+		MoveToLeft()
 
-	if(isSaodang):
-		SaoDang(60)
-		ExitSaoDang()
+
+	SaoDang(60)
+	ExitSaoDang()
 	ExitSaoDang()
 
 #日常任务

@@ -35,6 +35,7 @@ mnqIndexKey ='mnqDrop'
 isMultKey ='isMult'
 dxcDropKey ='dxcDrop'
 moniqTimeKey = 'moniqTime'
+useAllMoveTimeKey = 'useAllMoveTime'
 dxcDropValue =["炸脖龙","绿龙","Ex4"]
 mnqIndexDropValue=["0","1"]
 
@@ -54,7 +55,14 @@ def string_to_float(str):
 	except:
 		return 20
 
+def string_to_Int(str):
+	try:
+		return int(str)
+	except:
+		return 0
+
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
+useAllMoveTime = string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='0'))
 
 print("moniqTime",moniqTime)
 
@@ -81,6 +89,7 @@ def GetBoolConfig(boolKey):
 
 
 def SetCurMnqIndex():
+	cfg.set('MainSetting',useAllMoveTimeKey,str(useAllMoveTime))
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 	cfg.set('MainSetting',moniqTimeKey,moniqTime)
 	cfg.set('MainSetting',isMultKey,str(isMult))
@@ -318,6 +327,7 @@ sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor
 [sg.Text('启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
+[sg.Text('清空体力左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey)],
 [sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
 
@@ -337,10 +347,11 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	moniqTime = values[moniqTimeKey]
+	useAllMoveTime = values[useAllMoveTimeKey]
 	isMult = values[isMultKey]
 	print('MainSettingKey = ',MainSettingKey)
 
