@@ -941,11 +941,14 @@ def OnHouDongHard():
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
-	time.sleep(3)
 	print('Check HuoDong!')
+
 	if(WaitToClickImg('task/task.png',False) == True):
-		Click(0.58,0.24)
 		print('EnterHuoDong!')
+		ClickXYRatio(0.58,0.24)
+		time.sleep(0.5)
+		ClickXYRatio(0.58,0.24)
+		time.sleep(1)
 
 	ClickPlayer()
 
@@ -1060,6 +1063,11 @@ def ClickCenter():
 	Click(x = width/2,y=height*0.45)
 	Click(x = width/2,y=height*0.43)
 	Click(x = width/2,y=height*0.40)
+
+#按屏幕比例
+def ClickXYRatio(Rx,Ry):
+	Click(x = width*Rx,y=height*Ry)
+
 
 def WaitStart():
 	print('=== WaitStart ===')
