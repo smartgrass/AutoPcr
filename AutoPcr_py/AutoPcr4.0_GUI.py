@@ -314,7 +314,7 @@ left_col = [
 
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey)],
-[sg.Checkbox('普通本清空体力',isUseAllPower,key=isUseAllPowerKey),sg.Checkbox('活动困难本',isHouDongHard,key=isHouDongHardKey)],
+[sg.Checkbox('普通清空体力',isUseAllPower,key=isUseAllPowerKey),sg.Checkbox('活动困难+VH',isHouDongHard,key=isHouDongHardKey)],
 [sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey),sg.Checkbox('赠送礼物',isSend,key=isSendKey)],
 [sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
 
