@@ -937,10 +937,16 @@ def OnHouDongHard():
 	ToFightPage()
 	WaitToClickImg('main/dxc.png',False) #地下城入口存在->达到Fight界面
 	DoKeyDown(huodongKey)
-	time.sleep(0.5)
+	time.sleep(1)
 	DoKeyDown(exitKey)
 	time.sleep(0.5)
 	DoKeyDown(exitKey)
+	time.sleep(3)
+	print('Check HuoDong!')
+	if(WaitToClickImg('task/task.png',False) == True):
+		Click(0.58,0.24)
+		print('EnterHuoDong!')
+
 	ClickPlayer()
 
 	for	i in range(5):
