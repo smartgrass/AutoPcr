@@ -628,7 +628,6 @@ def EnterDiaoCha():
 
 def SaoDang(_time =4):
 
-
 	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
 		MoveToLeft()
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
@@ -951,7 +950,6 @@ def OnHouDongHard():
 		time.sleep(1)
 
 	ClickPlayer()
-
 	for	i in range(5):
 		if(SaoDang(2)):
 			SmallExit()
@@ -964,6 +962,24 @@ def OnHouDongHard():
 	DoKeyDown(exitKey)
 	ExitSaoDang()
 
+	HuoDongVHBoss()
+
+
+
+def HuoDongVHBoss():
+	print("VHBoss")
+	ClickXYRatio(0.9,0.5)
+	if(WaitToClickImg('main/fightBtn.png',maxTry=20)):
+		DoKeyDown(playerKey)
+		time.sleep(0.5)
+		DoKeyDown(playerKey)
+		time.sleep(0.5)
+		DoKeyDown(playerKey)
+		print("sleep 8...")
+		time.sleep(8)
+		WaitFinghtEndNext()
+	else:
+		print('no vhBoss skip!')
 
 
 def SmallExit():
@@ -1226,14 +1242,9 @@ else:
 
 #endregion
 def test():
-	time.sleep(1)
-	for i in range(100):
-		time.sleep(0.5)
-		testWin(i,i)
-
-	print("testend")
 	time.sleep(40)
 	return
+
 def testWin(x,y):
 	ret = win32gui.GetWindowRect(Subhwnd)
 	ret2 = win32gui.GetClientRect(Subhwnd)
@@ -1253,6 +1264,7 @@ def RunAutoPcr():
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
 	WaitWin32Start()
+	# HuoDongVHBoss()
 	# test()
 	#CurSaodang()
 
