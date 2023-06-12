@@ -698,11 +698,11 @@ def DianZan():
 	print()
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
-	time.sleep(0.1)
-	if(WaitToClickImg('other/menber.png')==False):
+	time.sleep(0.8)
+	if(WaitToClickImg('other/menber.png',maxTry=25)==False):
 		SmallExit()
 		WaitToClickImg('other/menber.png')
-	else
+	else:
 		WaitToClickImg('other/menber.png')
 
 	WaitToClickImg('other/dianzan.png')
