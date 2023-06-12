@@ -14,8 +14,10 @@ Exe版本(v6.0): https://github.com/smartgrass/AutoPcr/releases/tag/Exe
 
 config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
 
-# 6.3 小更新  2023/5/29
-点赞
+# 6.4 小更新  2023/6/12
+活动VHboss
+
+行会点赞
 
 清空体力左移选项
 
