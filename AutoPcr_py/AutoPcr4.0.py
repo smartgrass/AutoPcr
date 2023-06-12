@@ -702,7 +702,7 @@ def DianZan():
 	WaitToClickImg('other/menber.png')
 	WaitToClickImg('other/dianzan.png')
 	WaitToClickImg('main/sure.png')
-
+	ToHomePage()
 
 def SendZb():
 	ToHomePage()
