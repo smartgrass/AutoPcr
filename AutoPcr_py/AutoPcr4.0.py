@@ -699,6 +699,8 @@ def DianZan():
 	ToHomePage()
 	WaitToClickImg('other/hanghui.png')
 	time.sleep(0.1)
+	if(WaitToClickImg('other/menber.png')==False):
+		SmallExit()
 	WaitToClickImg('other/menber.png')
 	WaitToClickImg('other/dianzan.png')
 	WaitToClickImg('main/sure.png')
