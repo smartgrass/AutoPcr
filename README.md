@@ -19,7 +19,11 @@ config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把�
 
 行会点赞
 
-清空体力左移选项
+清空体力左移选项: 
+
+用于指定清空体力的目标关卡,比如写1则对应倒数第二个关卡
+
+<img src="https://github.com/smartgrass/AutoPcr/blob/main/png/MoveLeft.png" width= "300"/>
 
 # 6.2 小更新  2023/5/7
 扫荡弹出经验药处理
