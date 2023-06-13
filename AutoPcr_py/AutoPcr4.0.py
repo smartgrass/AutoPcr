@@ -345,10 +345,10 @@ def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch,nullWai
 	tryTime =0
 	while(IsHasImg(path,offsetY= offsetY,isRgb= isRgb,match=match)):
 		if(tryTime >maxTry):
-			break
+			return False
 		tryTime = tryTime+1
 		IsHasImg(path,offsetY= offsetY,isRgb=  isRgb,match=match)
-
+	return True
 # #点击然后exit消失为止
 # def ClickUntilNul2(path,exsitPath):
 # 	WaitToClickImg(path)
@@ -763,8 +763,8 @@ def needSeedZb():
 
 def ghHomeTake():
 	WaitToClickImg('main/ghHome.png')
-	time.sleep(1)
-	WaitToClickImg('main/ghHome_take.png')
+	time.sleep(1.5)
+	WaitToClickImg('main/ghHome_take.png',maxTry=20)
 	DoKeyDown(exitKey)
 	WaitToClickImg('task/close.png')
 	DoKeyDown(exitKey)
@@ -777,11 +777,7 @@ def ClickPlayer():
 		print("玩家角色 为空!")
 		playerName = "player0"
 
-	# if (WaitToClickImg('main/'+playerName+'.png',False,True) == False):
-	# 	DoKeyDown(exitKey)
-	# 	DoKeyDown(exitKey)
-	# 	DoKeyDown(exitKey)
-	# 	time.sleep(0.2)
+
 	time.sleep(0.1)
 	if(WaitToClickImg('main/'+playerName+'.png',False)):
 		time.sleep(0.1)
@@ -934,35 +930,38 @@ def NextChapter():
 def OnHouDongHard():
 	print('OnHouDongHard')
 	ToFightPage()
-	WaitToClickImg('main/dxc.png',False) #地下城入口存在->达到Fight界面
-	DoKeyDown(huodongKey)
-	time.sleep(1)
-	DoKeyDown(exitKey)
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
-	print('Check HuoDong!')
-
-	if(WaitToClickImg('task/task.png',False) == True):
-		print('EnterHuoDong!')
-		ClickXYRatio(0.58,0.24)
-		time.sleep(0.5)
-		ClickXYRatio(0.58,0.24)
+	#地下城入口存在->达到Fight界面
+	if(WaitToClickImg('main/dxc.png',False,maxTry=20)):
+		DoKeyDown(huodongKey)
 		time.sleep(1)
+		DoKeyDown(exitKey)
+		time.sleep(0.5)
+		DoKeyDown(exitKey)
+		print('Check HuoDong!')
 
-	ClickPlayer()
-	for	i in range(5):
-		if(SaoDang(2)):
-			SmallExit()
-			SmallExit()
-			SmallExit()
-			MoveToLeft()
-		else:
-			print("没体力 ->结束")
-			break
-	DoKeyDown(exitKey)
-	ExitSaoDang()
+		if(WaitToClickImg('task/task.png',False) == True):
+			print('EnterHuoDong!')
+			ClickXYRatio(0.58,0.24)
+			time.sleep(0.5)
+			ClickXYRatio(0.58,0.24)
+			time.sleep(1)
 
-	HuoDongVHBoss()
+		ClickPlayer()
+
+		for	i in range(5):
+			if(SaoDang(2)):
+				SmallExit()
+				SmallExit()
+				SmallExit()
+				MoveToLeft()
+			else:
+				print("没体力 ->结束")
+				break
+		DoKeyDown(exitKey)
+		ExitSaoDang()
+
+		HuoDongVHBoss()
 
 
 
