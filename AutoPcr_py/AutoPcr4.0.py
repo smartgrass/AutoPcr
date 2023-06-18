@@ -615,9 +615,9 @@ def BuyExp():
 def NiuDan():
 	WaitToClickImg('main/niuDan.png')
 	time.sleep(2)
-	DoKeyDown(partyKey)
-	DoKeyDown(partyKey)
-
+	ClickXYRatio(0.94,0.15)
+	ClickXYRatio(0.94,0.15)
+	time.sleep(0.3)
 	if(IsHasImg('other/niu1.png')):
 		WaitToClickImg('main/sure.png')
 	ToHomePage()
