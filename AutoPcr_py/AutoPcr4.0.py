@@ -324,7 +324,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 			if(isShip == False):
 				time.sleep(3)
 			if(waitTime < maxTry and autoExit):
-				DoKeyDown(exitKey)
+				ZExit()
 			return WaitToClickImg(targetImg,isClick,isShip,maxTry,autoExit,match,isRgb)
 		else:
 			print("Ship >> ",targetImg)
@@ -353,7 +353,7 @@ def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch,nullWai
 # def ClickUntilNul2(path,exsitPath):
 # 	WaitToClickImg(path)
 # 	while(IsHasImg(exsitPath,False) == False):
-# 		DoKeyDown(exitKey)
+# 		ZExit()
 # 		ClickUntilNul2(path,exsitPath)
 # 		break
 
@@ -415,16 +415,16 @@ def StopLoopKeyDown():
 def ToFightPage():
 	if(IsHasImg("main/fight2.png")==False):
 		if(WaitToClickImg("main/fight.png",True,True,5,True) == False):
-			DoKeyDown(exitKey)
-			DoKeyDown(exitKey)
+			ZExit()
+			ZExit()
 			print('re to Fight')
 			ToFightPage()
 	time.sleep(1)
 def ToHomePage():
 	if(IsHasImg("main/home2.png")==False):
 		if(WaitToClickImg("main/home.png",True,True,5) == False):
-			DoKeyDown(exitKey)
-			DoKeyDown(exitKey)
+			ZExit()
+			ZExit()
 			print('re to Fight')
 			ToHomePage()
 	time.sleep(1)
@@ -433,17 +433,6 @@ def ToShopPage():
 	time.sleep(1)
 #endregion
 
-#选择队伍
-def SelectParty(x,y):
-	time.sleep(1)
-	DoKeyDown(partyKey)
-	time.sleep(0.4)
-	x= x-1
-	y= y-1
-	DoKeyDown(groupKeys[x])
-	time.sleep(0.1)
-	DoKeyDown(duiKeys[y])
-	time.sleep(0.1)
 
 def StartJJC():
 	print("===竞技场==")
@@ -451,14 +440,14 @@ def StartJJC():
 	WaitToClickImg("jjc/jjc.png")
 	# WaitToClickImg("jjc/get.png")
 	time.sleep(1)
-	DoKeyDown(exitKey)
+	ZExit()
 	WaitToClickImg("jjc/jjcTop.png",False)
-	DoKeyDown(exitKey)
-	DoKeyDown(exitKey)
-	DoKeyDown(listSelectKeys[0])
+	ZExit()
+	ZExit()
+	RightSelct(0)
 	time.sleep(1)
-	DoKeyDown(playerKey)
-	DoKeyDown(playerKey)
+	ClickPlay()
+	ClickPlay()
 	time.sleep(7)
 	print("sleep...")
 	if(WaitToClickImg('jjc/ship.png',maxTry=25) == False):
@@ -467,27 +456,27 @@ def StartJJC():
 	time.sleep(2)
 	LongTimeCheck("jjc/win.png","jjc/lose.png")
 	time.sleep(1.5)
-	DoKeyDown(nextKey)
+	ClickNext()
 	time.sleep(1.5)
-	DoKeyDown(nextKey)
+	ClickNext()
 
 def StartPJJC():
 	ToFightPage()
 	WaitToClickImg("jjc/pjjc.png")
 	# WaitToClickImg("jjc/get.png")
 	time.sleep(1)
-	DoKeyDown(exitKey)
+	ZExit()
 	WaitToClickImg("jjc/pjjcTop.png",False)
-	DoKeyDown(exitKey) #关掉提示框
-	DoKeyDown(listSelectKeys[0]) #选择
+	ZExit() #关掉提示框
+	RightSelct(0) #选择
 	time.sleep(1.5)
-	DoKeyDown(playerKey)
+	ClickPlay()
 	time.sleep(0.3)
-	DoKeyDown(playerKey)
+	ClickPlay()
 	time.sleep(0.3)
-	DoKeyDown(playerKey)
+	ClickPlay()
 	time.sleep(0.3)
-	DoKeyDown(playerKey)
+	ClickPlay()
 	print("sleep for 5s...")
 	time.sleep(6)
 	if(WaitToClickImg('jjc/ship.png',maxTry=20) == False):
@@ -497,7 +486,7 @@ def StartPJJC():
 	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
-	DoKeyDown(nextKey)
+	ClickNext()
 	time.sleep(2)
 
 def StartTanSuo():
@@ -508,17 +497,17 @@ def StartTanSuo():
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/mana.png")
 	WaitToClickImg("tansuo/topMana.png",False)
-	DoKeyDown(listSelectKeys[0])
+	RightSelct(0)
 	if(IsHasImg("tansuo/topMana.png",False)):
-		DoKeyDown(listSelectKeys[0])
+		RightSelct(0)
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/start.png")
 	WaitToClickImg("main/sure.png")
 	WaitToClickImg("tansuo/return.png")
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
+	ZExit()
 	print("===exit===")
-	DoKeyDown(exitKey)
+	ZExit()
 	#exp
 	if(IsHasImg("tansuo/topExp.png",False) == False):
 		ToFightPage()
@@ -528,16 +517,16 @@ def StartTanSuo():
 		WaitToClickImg("tansuo/exp.png")
 
 	WaitToClickImg("tansuo/topExp.png",False)
-	DoKeyDown(listSelectKeys[0])
+	RightSelct(0)
 	if(IsHasImg("tansuo/topExp.png",False)):
-		DoKeyDown(listSelectKeys[0])
+		RightSelct(0)
 	time.sleep(0.5)
 	WaitToClickImg("tansuo/start.png")
 	WaitToClickImg("main/sure.png")
 	WaitToClickImg("tansuo/return.png")
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
-	DoKeyDown(exitKey)
+	ZExit()
+	ZExit()
 	time.sleep(1.5)
 
 def StartTakeAll():
@@ -651,9 +640,9 @@ def SaoDang(_time =4):
 
 def ExitSaoDang():
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
+	ZExit()
 	time.sleep(0.3)
-	DoKeyDown(exitKey)
+	ZExit()
 
 def Xqb():
 	if(WaitToClickImg('tansuo/xqbEnter.png')==False):
@@ -661,7 +650,7 @@ def Xqb():
 		WaitToClickImg('tansuo/xqbEnter.png')
 
 	WaitToClickImg('tansuo/xqbTop.png',False)
-	DoKeyDown(listSelectKeys[0])
+	RightSelct(0)
 	for i in range(2):
 		if(SaoDang()):
 			SmallExit()
@@ -680,7 +669,7 @@ def xinSui():
 		WaitToClickImg('tansuo/xinSuiEnter.png')
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
-	DoKeyDown(listSelectKeys[0])
+	RightSelct(0)
 	for i in range(3):
 		print(i)
 		if(SaoDang()):
@@ -719,8 +708,8 @@ def SendZb():
 			WaitToClickImg('other/sendMax.png',True,True,7,False,0.85)
 			WaitToClickImg('main/sure.png')
 			time.sleep(0.2)
-			DoKeyDown(exitKey)
-			DoKeyDown(exitKey)
+			ZExit()
+			ZExit()
 
 
 def GetZBPath(name):
@@ -739,8 +728,8 @@ def needSeedZbStart():
 	Click()
 
 	time.sleep(1)
-	DoKeyDown(groupKeys[0])
-	DoKeyDown(groupKeys[0])
+	SmallExit()
+	SmallExit()
 
 
 	if(IsHasImg('other/needSend.png',False)==False):
@@ -765,9 +754,9 @@ def ghHomeTake():
 	WaitToClickImg('main/ghHome.png')
 	time.sleep(1.5)
 	WaitToClickImg('main/ghHome_take.png',maxTry=20)
-	DoKeyDown(exitKey)
+	ZExit()
 	WaitToClickImg('task/close.png')
-	DoKeyDown(exitKey)
+	ZExit()
 
 tuichuMaxTry =0
 
@@ -781,12 +770,12 @@ def ClickPlayer():
 	time.sleep(0.1)
 	if(WaitToClickImg('main/'+playerName+'.png',False)):
 		time.sleep(0.1)
-		DoKeyDown(exitKey)
+		ZExit()
 		ClickUntilNul('main/'+playerName+'.png',offsetY=50,maxTry=8,isRgb= True,match=0.6)
 	else:
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
+		ZExit()
+		ZExit()
+		ZExit()
 		if(IsHasImg("main/home.png",False)):
 			ClickPlayer()
 		else:
@@ -799,23 +788,23 @@ def WaitFinghtEndNext():
 	print('>>WaitFinghtEndNext')
 
 	while (WaitToClickImg("main/next2.png",False,True) == False):
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
-		DoKeyDown(exitKey)
+		ZExit()
+		ZExit()
+		ZExit()
 		time.sleep(0.4)
 
 	WaitToClickImg("main/next2.png")
-	DoKeyDown(exitKey)
+	ZExit()
 	time.sleep(0.2)
-	DoKeyDown(exitKey)
+	ZExit()
 	time.sleep(0.2)
-	DoKeyDown(exitKey)
+	ZExit()
 	ClickUntilNul("main/next2.png")
 
 	#最后一次检查
 	if(IsHasImg("main/next2.png")):
-		DoKeyDown(nextKey)
-		DoKeyDown(nextKey)
+		ClickNext()
+		ClickNext()
 
 
 
@@ -837,12 +826,12 @@ def OnTuituLoop():
 	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
 		time.sleep(0.2)
-		DoKeyDown(playerKey)
-		DoKeyDown(playerKey)
+		ClickPlay()
+		ClickPlay()
 		time.sleep(0.8)
-		DoKeyDown(playerKey)
-		DoKeyDown(playerKey)
-		DoKeyDown(playerKey)
+		ClickPlay()
+		ClickPlay()
+		ClickPlay()
 		print("enterFight sleep 4")
 		time.sleep(4)
 
@@ -920,10 +909,10 @@ def OnAutoTask():
 def NextChapter():
 	print('切换下章节')
 	WaitToClickImg('main/back.png')
-	DoKeyDown(listSelectKeys[0]) #i
-	DoKeyDown(listSelectKeys[0]) #i
+	RightSelct(0) #i
+	RightSelct(0) #i
 	WaitToClickImg('main/back.png',False)
-	DoKeyDown(listSelectKeys[1]) #i
+	RightSelct(1) #i
 	WaitToClickImg('task/noSound.png')
 	OnAutoTask()
 
@@ -935,9 +924,9 @@ def OnHouDongHard():
 	if(WaitToClickImg('main/dxc.png',False,maxTry=20)):
 		DoKeyDown(huodongKey)
 		time.sleep(1)
-		DoKeyDown(exitKey)
+		ZExit()
 		time.sleep(0.5)
-		DoKeyDown(exitKey)
+		ZExit()
 		print('Check HuoDong!')
 
 		if(WaitToClickImg('task/task.png',False) == True):
@@ -958,7 +947,7 @@ def OnHouDongHard():
 			else:
 				print("没体力 ->结束")
 				break
-		DoKeyDown(exitKey)
+		ZExit()
 		ExitSaoDang()
 
 		HuoDongVHBoss()
@@ -969,25 +958,43 @@ def HuoDongVHBoss():
 	print("VHBoss")
 	ClickXYRatio(0.9,0.5)
 	if(WaitToClickImg('main/fightBtn.png',maxTry=20)):
-		DoKeyDown(playerKey)
+		ClickPlay()
 		time.sleep(0.5)
-		DoKeyDown(playerKey)
+		ClickPlay()
 		time.sleep(0.5)
-		DoKeyDown(playerKey)
+		ClickPlay()
 		print("sleep 8...")
 		time.sleep(8)
 		WaitFinghtEndNext()
 	else:
 		print('no vhBoss skip!')
 
+def ClickNext():
+	ClickXYRatioWait(0.893,0.973)
+
+def ClickPlay():
+	ClickXYRatioWait(0.893,0.859)
+
+#右边选项栏
+def RightSelct(i):
+	if(i==0):
+		ClickXYRatioWait(0.92,0.293)
+	elif(i==1):
+		ClickXYRatioWait(0.92,0.513)
+	elif(i==2):
+		ClickXYRatioWait(0.92,0.701)
+	return
+
+def ZExit():
+	ClickXYRatioWait(0.017,0.17)
 
 def SmallExit():
-	DoKeyDown(groupKeys[0])  #小退出,Q
+	ClickXYRatioWait(0.12,0.15)
 
 def MoveToLeft():
 	if(WaitToClickImg('tansuo/saodang.png',False)==False):
-		DoKeyDown(exitKey)
-	DoKeyDown('C')
+		ZExit()
+	ClickXYRatioWait(0.0395,0.49)
 
 def CurSaodang():
 	ClickPlayer()
@@ -1083,13 +1090,17 @@ def ClickCenter():
 def ClickXYRatio(Rx,Ry):
 	Click(x = width*Rx,y=height*Ry)
 
+#按屏幕比例
+def ClickXYRatioWait(Rx,Ry):
+	Click(x = width*Rx,y=height*Ry)
+	time.sleep(0.5)
 
 def WaitStart():
 	print('=== WaitStart ===')
 	while(IsHasImg("main/fight.png",False,stopTime=3) == False):
-		DoKeyDown(exitKey)
+		ZExit()
 		time.sleep(2)
-		DoKeyDown(exitKey)
+		ZExit()
 		time.sleep(3)
 		#更新
 		if(IsHasImg("main/sure.png",True)):
@@ -1117,13 +1128,13 @@ def WaitStart():
 
 
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
+	ZExit()
 	time.sleep(0.5)
-	DoKeyDown(exitKey)
+	ZExit()
 	while(IsHasImg("main/fight.png",False) == False):
-		DoKeyDown(exitKey)
+		ZExit()
 		time.sleep(1)
-		DoKeyDown(exitKey)
+		ZExit()
 		time.sleep(1)
 	time.sleep(0.5)
 	ToHomePage()
@@ -1137,18 +1148,12 @@ def CheckEnd(_key):
 
 #1-5是编组位置 6 是队伍
 #num1-3 队伍位置
-partyKey ='Y'
-exitKey ='Z'
+# partyKey ='Y'
+# exitKey ='Z'
 huodongKey='X'
-playerKey = 'P'	#p是挑战位置
-nextKey = 'L' #n 是下一步
+# nextKey = 'L' #n 是下一步
 endKey ='Esc'
 #roleKey 123
-listSelectKeys=['I','J','N']
-roleKeys = ['1','2','3','4','5']
-groupKeys = ['Q','W','E','R','T']
-duiKeys =['U','H','B']
-
 
 StartRunName = "启动模拟器并运行"
 RunName = "运行"
@@ -1241,6 +1246,10 @@ else:
 
 #endregion
 def test():
+	for i in range(10):
+		ZExit()
+
+	os._exit(0)
 	time.sleep(40)
 	return
 

@@ -14,6 +14,10 @@ Exe版本(v6.4): https://share.weiyun.com/otsYmFrk
 
 config.ini是配置文件, 如果想保留配置, 可以在更新代码后, 把这个文件放回原位
 
+#6.5  2023/6/18
+
+按键配置简化
+
 # 6.4 小更新  2023/6/12
 活动VHboss
 
