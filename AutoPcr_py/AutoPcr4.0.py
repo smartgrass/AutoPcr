@@ -986,7 +986,7 @@ def RightSelct(i):
 	return
 
 def ZExit():
-	ClickXYRatioWait(0.017,0.17)
+	ClickXYRatioWait(0.017,0.133)
 
 def SmallExit():
 	ClickXYRatioWait(0.12,0.15)
