@@ -458,7 +458,7 @@ def StartJJC():
 	LongTimeCheck("jjc/win.png","jjc/lose.png")
 	time.sleep(1.5)
 	ClickNext()
-	time.sleep(1.5)
+	time.sleep(0.2)
 	ClickNext()
 
 def StartPJJC():
@@ -488,6 +488,8 @@ def StartPJJC():
 	time.sleep(1.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
+	ClickNext()
+	time.sleep(0.2)
 	ClickNext()
 	time.sleep(2)
 
@@ -933,9 +935,8 @@ def OnHouDongHard():
 
 		if(WaitToClickImg('task/task.png',False) == True):
 			print('EnterHuoDong!')
-			ClickXYRatio(0.58,0.24)
-			time.sleep(0.5)
-			ClickXYRatio(0.58,0.24)
+			ClickXYRatioWait(0.58,0.24)
+			ClickXYRatioWait(0.58,0.24)
 			time.sleep(1)
 
 		ClickPlayer()
