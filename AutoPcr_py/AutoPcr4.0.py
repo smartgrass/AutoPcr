@@ -242,7 +242,7 @@ def Click(x=None, y=None):
 		# print(trueH,trueW,"simPos:",x,y,"truePos:",tx,ty)
 		positon = win32api.MAKELONG(int(tx), int(ty))
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, positon)
-		time.sleep(0.02)
+		time.sleep(0.015)
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON,positon)
 		time.sleep(0.1)
 	except Exception as e:
@@ -445,6 +445,7 @@ def StartJJC():
 	ZExit()
 	ZExit()
 	RightSelct(0)
+
 	time.sleep(1)
 	ClickPlay()
 	ClickPlay()
@@ -469,6 +470,7 @@ def StartPJJC():
 	WaitToClickImg("jjc/pjjcTop.png",False)
 	ZExit() #关掉提示框
 	RightSelct(0) #选择
+
 	time.sleep(1.5)
 	ClickPlay()
 	time.sleep(0.3)
@@ -970,7 +972,7 @@ def HuoDongVHBoss():
 		print('no vhBoss skip!')
 
 def ClickNext():
-	ClickXYRatioWait(0.893,0.973)
+	ClickXYRatioWait(0.893,0.92)
 
 def ClickPlay():
 	ClickXYRatioWait(0.893,0.859)
@@ -978,11 +980,11 @@ def ClickPlay():
 #右边选项栏
 def RightSelct(i):
 	if(i==0):
-		ClickXYRatioWait(0.92,0.293)
+		ClickXYRatioWait(0.91,0.293)
 	elif(i==1):
-		ClickXYRatioWait(0.92,0.513)
+		ClickXYRatioWait(0.91,0.513)
 	elif(i==2):
-		ClickXYRatioWait(0.92,0.701)
+		ClickXYRatioWait(0.91,0.701)
 	return
 
 def ZExit():
@@ -1246,8 +1248,9 @@ else:
 
 #endregion
 def test():
-	for i in range(10):
-		ZExit()
+	RightSelct(0)
+	# for i in range(10):
+
 
 	os._exit(0)
 	time.sleep(40)
