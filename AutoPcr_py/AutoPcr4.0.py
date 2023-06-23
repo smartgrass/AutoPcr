@@ -927,17 +927,20 @@ def OnHouDongHard():
 	#地下城入口存在->达到Fight界面
 	if(WaitToClickImg('main/dxc.png',False,maxTry=20)):
 		DoKeyDown(huodongKey)
-		time.sleep(1)
+		time.sleep(1.5)
 		ZExit()
-		time.sleep(0.5)
 		ZExit()
 		print('Check HuoDong!')
 
-		if(WaitToClickImg('task/task.png',False) == True):
-			print('EnterHuoDong!')
-			ClickXYRatioWait(0.58,0.24)
-			ClickXYRatioWait(0.58,0.24)
-			time.sleep(1)
+		if(WaitToClickImg('task/task.png',False,maxTry=25) == True):
+			if(IsHasImg('other/box.png',False) == True):
+				time.sleep(0.5)
+				ZExit()
+				ZExit()
+				print('EnterHuoDong!')
+				ClickXYRatioWait(0.58,0.24)
+				ClickXYRatioWait(0.58,0.24)
+				time.sleep(1)
 
 		ClickPlayer()
 
@@ -955,7 +958,7 @@ def OnHouDongHard():
 
 		HuoDongVHBoss()
 
-
+#主要按键设置
 
 def HuoDongVHBoss():
 	print("VHBoss")
