@@ -418,8 +418,11 @@ def ToFightPage():
 			ZExit()
 			ZExit()
 			print('re to Fight')
-			ToFightPage()
+	if(IsHasImg('main/zhuXian.png',False) == False):
+		ToFightPage()
+
 	time.sleep(1)
+
 def ToHomePage():
 	if(IsHasImg("main/home2.png")==False):
 		if(WaitToClickImg("main/home.png",True,True,5) == False):
@@ -460,6 +463,7 @@ def StartJJC():
 	ClickNext()
 	time.sleep(0.2)
 	ClickNext()
+	time.sleep(1.5)
 
 def StartPJJC():
 	ToFightPage()
