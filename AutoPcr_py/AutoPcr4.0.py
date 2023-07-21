@@ -614,8 +614,9 @@ def NiuDan():
 	time.sleep(2)
 	ClickXYRatio(0.94,0.15)
 	ClickXYRatio(0.94,0.15)
-	time.sleep(0.3)
+	time.sleep(0.35)
 	if(IsHasImg('other/niu1.png')):
+		Click()
 		WaitToClickImg('main/sure.png')
 	ToHomePage()
 
