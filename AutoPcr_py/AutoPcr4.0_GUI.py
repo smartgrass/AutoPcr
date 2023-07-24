@@ -31,6 +31,7 @@ def GetFullPath(pngName):
 
 #======读取配置======
 LeiDianDirKey ='LeiDianDir'
+isForCompatibilityKey ='isForCompatibility' #兼容模式
 mnqIndexKey ='mnqDrop'
 isMultKey ='isMult'
 dxcDropKey ='dxcDrop'
@@ -46,7 +47,7 @@ cfg.read(configPath,'utf-8')
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
-
+isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
 
 
 def string_to_float(str):
@@ -88,11 +89,12 @@ def GetBoolConfig(boolKey):
 	return cfg.getboolean(MainSettingKey,boolKey,fallback=False)
 
 
-def SetCurMnqIndex():
+def SetMnqSetting():
 	cfg.set('MainSetting',useAllMoveTimeKey,str(useAllMoveTime))
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 	cfg.set('MainSetting',moniqTimeKey,moniqTime)
 	cfg.set('MainSetting',isMultKey,str(isMult))
+	cfg.set('MainSetting',isForCompatibilityKey,str(isForCompatibility))
 def SetMnqDir():
 	print(LeiDianDir)
 	cfg.set('MainSetting',LeiDianDirKey,LeiDianDir)
@@ -209,7 +211,7 @@ def SavaConfig(AllValues):
 	# SetConfigAuto(LeiDianDirKey,AllValues)
 	global LeiDianDir
 	LeiDianDir = AllValues[LeiDianDirKey]
-	SetCurMnqIndex()
+	SetMnqSetting()
 	SetMnqDir()
 
 	with open(configPath, "w+",encoding='utf-8') as f:
@@ -322,6 +324,7 @@ left_col = [
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('检查模拟器')]]
 right_col = [[sg.Text('其他配置                  ')],
+[sg.Checkbox('兼容模式',isForCompatibility,key = isForCompatibilityKey)],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(4,None),key =mnqIndexKey),
 sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor64Key)],
 [sg.Text('启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey)],
@@ -347,12 +350,13 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime,isForCompatibility
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	moniqTime = values[moniqTimeKey]
 	useAllMoveTime = values[useAllMoveTimeKey]
 	isMult = values[isMultKey]
+	isForCompatibility = values[isForCompatibilityKey]
 	print('MainSettingKey = ',MainSettingKey)
 
 

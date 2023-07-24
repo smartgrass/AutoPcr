@@ -59,6 +59,9 @@ isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
 
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 
+isForCompatibilityKey ='isForCompatibility'
+isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
+
 def string_to_float(str):
 	try:
 		return float(str)
@@ -175,21 +178,29 @@ def WaitWin32Start():
 	hWndDC = win32gui.GetWindowDC(Subhwnd)
 	#创建设备描述表
 	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
+	
+	CreatSaveMap()
+
+
+def CreatSaveMap():
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
 	#创建内存设备描述表
 	saveDC = mfcDC.CreateCompatibleDC()
 	#创建位图对象准备保存图片
 	saveBitMap = win32ui.CreateBitmap()
-	#saveBitMap.CreateCompatibleBitmap(mfcDC,trueW,trueH)
-	#saveBitMap.CreateCompatibleBitmap(mfcDC,width,height)
+
 	saveBitMap.CreateCompatibleBitmap(mfcDC,SaveW,SaveH)
-	#将截图保存到saveBitMap中
+
 	saveDC.SelectObject(saveBitMap)
 
 
 def SavaShoot():
 	#保存bitmap到内存设备描述表
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
-	#saveDC.BitBlt((0,0), (width,height), mfcDC, (0, 0), win32con.SRCCOPY)
+	
+	if(isForCompatibility):
+		CreatSaveMap()
+
 	win32con.SRCINVERT
 	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
 	bmpinfo = saveBitMap.GetInfo()
@@ -201,10 +212,10 @@ def SavaShoot():
 	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
 
 	newImg.save(GetFullPath("temp.png")) #保存
+	# newImg.show() #显示
 
 	return GetFullPath("temp.png")
-	# im_PIL.show() #显示
-
+	# 
 key_map = {
     "0": 48, "1": 49, "2": 50, "3": 51, "4": 52, "5": 53, "6": 54, "7": 55, "8": 56, "9": 57,
     'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116, 'F6': 117, 'F7': 118, 'F8': 119,
@@ -1222,6 +1233,7 @@ isExp = GetBoolConfig(isExpKey)
 isNiuDan =GetBoolConfig(isNiuDanKey)
 isKillBoss = GetBoolConfig(isKillBossKey)
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
+
 
 isXinSui =GetBoolConfig(isXinSuiKey)
 isXQB = GetBoolConfig(isXQBKey)

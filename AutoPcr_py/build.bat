@@ -27,6 +27,7 @@ XCOPY  .\config.ini .\TMP\ /Y
 XCOPY  .\运行说明\模拟器配置 .\TMP\运行说明\ /q /e /r /S /Y
 
 XCOPY  .\运行说明\其他说明(可跳过) .\TMP\其他说明(可跳过)\ /q /e /r /S /Y
+XCOPY  .\运行说明\运行失败原因.txt .\TMP\ /Y
 
 XCOPY  .\dxc .\TMP\dxc\ /q /e /r /S /Y
 XCOPY  .\jjc .\TMP\jjc\ /q /e /r /S /Y
