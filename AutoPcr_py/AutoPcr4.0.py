@@ -62,6 +62,8 @@ mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 isForCompatibilityKey ='isForCompatibility'
 isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
 
+isMumu = False
+
 def string_to_float(str):
 	try:
 		return float(str)
@@ -78,6 +80,7 @@ useAllMoveTime =string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
 
 MainSettingKey='MainSetting_'+str(mnqIndex)
+
 
 #region win32初始化
 #获取后台窗口的句柄，注意后台窗口不能最小化
@@ -102,14 +105,6 @@ SaveH=0
 SaveW=0
 lastX=0
 lastY =0
-
-def winfun(hwnd, lparam):
-	global Subhwnd
-	subtitle = win32gui.GetWindowText(hwnd)
-	if subtitle == 'TheRender':
-		Subhwnd = hwnd
-		print("Find Subhwnd",Subhwnd)
-
 
 def get_real_resolution():
     """获取真实的分辨率"""
@@ -138,6 +133,49 @@ def WaitWin32Start():
 	#如果Main为0则等待
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,Scale,SaveH,SaveW
 	global rect,trueH,trueW
+
+	if(isMumu):
+		GetMumuWin()
+	else:
+		GetLeiDianWin()
+	
+
+	#查找渲染句柄
+	def FindWinFun(hwnd,lParam):
+		global Subhwnd,isMumu
+		subtitle = win32gui.GetWindowText(hwnd)
+		print("cur title",subtitle)
+		targetTitle = 'TheRender'
+		if(isMumu):
+			targetTitle ="Theder"
+			print("sub = ",subtitle)
+		if subtitle == targetTitle:
+			Subhwnd = hwnd
+
+
+	#已打开雷电
+	print("Find MainhWnd",MainhWnd)
+	win32gui.EnumChildWindows(MainhWnd, FindWinFun, None)
+	while(Subhwnd == None):
+		time.sleep(1.5)
+		print("wait subHwnd...")
+		win32gui.EnumChildWindows(MainhWnd, FindWinFun, None)
+
+	#获取窗口大小
+	rect = win32gui.GetClientRect(Subhwnd)
+	trueH = rect[3]
+	trueW = rect[2]
+	Scale = get_scaling()
+
+	print("TrueH ",trueH, "TrueW",trueW ,"Scale",Scale)
+	SaveW = int(trueW * Scale)
+	SaveH = int(trueH * Scale)
+	print("SaveH ",SaveH, "SaveW",SaveW)
+	
+	CreatSaveMap()
+
+def GetLeiDianWin():
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,Scale,SaveH,SaveW
 	if(mnqIndex == "0"):
 		window_title ="雷电模拟器"
 	elif(mnqIndex == "1"):
@@ -156,34 +194,30 @@ def WaitWin32Start():
 		time.sleep(1.5)
 
 
-	#已打开雷电
-	print("Find MainhWnd",MainhWnd)
-	win32gui.EnumChildWindows(MainhWnd, winfun, None)
-	while(Subhwnd == None):
-		time.sleep(1.5)
-		print("wait subHwnd...")
-		win32gui.EnumChildWindows(MainhWnd, winfun, None)
+def GetMumuWin():
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,Scale,SaveH,SaveW
+	# while(MainhWnd ==0):
+	# 	print("等待模拟器启动中...:")
+	# 	MainhWnd =  win32gui.FindWindow('Qt5QWindowIcon',None)
+	# 	time.sleep(1.5)
 
-	#获取窗口大小
-	rect = win32gui.GetClientRect(Subhwnd)
-	trueH = rect[3]
-	trueW = rect[2]
-	Scale = get_scaling()
+	t = "nemudispaly"
+	classN = "nemuwin"
+	return
 
-	print("TrueH ",trueH, "TrueW",trueW ,"Scale",Scale)
-	SaveW = int(trueW * Scale)
-	SaveH = int(trueH * Scale)
-	print("SaveH ",SaveH, "SaveW",SaveW)
 
-	hWndDC = win32gui.GetWindowDC(Subhwnd)
-	#创建设备描述表
-	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
-	
-	CreatSaveMap()
+def get_window_pos(handle):
+	if handle == 0:
+		return
+	return win32gui.GetWindowRect(handle)
 
 
 def CreatSaveMap():
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+
+	hWndDC = win32gui.GetWindowDC(Subhwnd)
+	#创建设备描述表
+	mfcDC = win32ui.CreateDCFromHandle(hWndDC)
 	#创建内存设备描述表
 	saveDC = mfcDC.CreateCompatibleDC()
 	#创建位图对象准备保存图片
@@ -193,28 +227,35 @@ def CreatSaveMap():
 
 	saveDC.SelectObject(saveBitMap)
 
+	# result = windll.user32.PrintWindow(Subhwnd, saveDC.GetSafeHdc(), 0)
+	# if result == 0:
+	# 	print("截图失败")
+	# 	return
 
 def SavaShoot():
 	#保存bitmap到内存设备描述表
-	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,isOnce
 	
+	tempPath = GetFullPath("temp.png")
+
 	if(isForCompatibility):
-		CreatSaveMap()
-
-	win32con.SRCINVERT
-	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
-	bmpinfo = saveBitMap.GetInfo()
-	bmpstr = saveBitMap.GetBitmapBits(True)
-
-	#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
-	im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
+		x1, y1, x2, y2 = get_window_pos(Subhwnd)
+		print(x1, y1, x2, y2)
+		im_PIL = ImageGrab.grab((x1, y1, x2, y2),all_screens = True )
+	else:
+		saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
+		# bmpinfo = saveBitMap.GetInfo()
+		bmpstr = saveBitMap.GetBitmapBits(True)
+		#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+		im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
 
 	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
 
-	newImg.save(GetFullPath("temp.png")) #保存
+	newImg.save(tempPath) #保存
+
 	# newImg.show() #显示
 
-	return GetFullPath("temp.png")
+	return tempPath
 	# 
 key_map = {
     "0": 48, "1": 49, "2": 50, "3": 51, "4": 52, "5": 53, "6": 54, "7": 55, "8": 56, "9": 57,

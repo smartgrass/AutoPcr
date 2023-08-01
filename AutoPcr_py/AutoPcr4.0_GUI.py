@@ -35,9 +35,11 @@ isForCompatibilityKey ='isForCompatibility' #兼容模式
 mnqIndexKey ='mnqDrop'
 isMultKey ='isMult'
 dxcDropKey ='dxcDrop'
+curMnqKey ='curMnq'
 moniqTimeKey = 'moniqTime'
 useAllMoveTimeKey = 'useAllMoveTime'
 dxcDropValue =["炸脖龙","绿龙","Ex4"]
+mnqDropValue =["雷电","Mumu(开发中...)"]
 mnqIndexDropValue=["0","1"]
 
 
@@ -48,6 +50,7 @@ mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
 isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
+curMnq =cfg.get('MainSetting',curMnqKey,fallback='雷电')
 
 
 def string_to_float(str):
@@ -320,7 +323,7 @@ left_col = [
 [sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey),sg.Checkbox('赠送礼物',isSend,key=isSendKey)],
 [sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
 
-[sg.Text('雷电模拟器文件夹:')],
+[sg.Text('模拟器文件夹:'),sg.DropDown(mnqDropValue, curMnq ,key=curMnqKey,size=(15,None))],
 [sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('检查模拟器')]]
 right_col = [[sg.Text('其他配置                  ')],
