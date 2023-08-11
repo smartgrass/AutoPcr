@@ -60,7 +60,7 @@ del .\AutoPcr4.0.spec
 del .\AutoPcr4.0.py
 
 cd ..
-python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\ .\TMP\运行说明\ .\TMP\其他说明(可跳过)
+python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\ .\TMP\运行说明\ .\TMP\其他说明(可跳过) .\TMP\运行失败原因.txt
 
 echo. 删除临时文件夹
 rd /s /q .\TMP
