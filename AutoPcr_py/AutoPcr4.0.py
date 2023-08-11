@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 import ctypes
 import inspect
+import subprocess
 import threading
 import time
 import os
@@ -11,6 +12,7 @@ import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 import sys
+
 #region 获取当前路径
 curDir = os.path.dirname(__file__)
 
@@ -27,8 +29,9 @@ if(os.path.exists('.\\config.ini') == False):
 	os.chdir(curDir)
 
 #图片路径拼接
-def GetFullPath(pngName):
-    return '.\\' + pngName
+def GetFullPath(pngName):	
+	return os.path.join(curDir,pngName)
+    # return '.\\' + pngName
 
 #endregion
 
@@ -62,7 +65,24 @@ mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 isForCompatibilityKey ='isForCompatibility'
 isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
 
-isMumu = False
+LeiDianDirKey ='LeiDianDir' #也作为dir的gui的key
+MumuDirKey ='MunuDir'
+curMnqKey ='curMnq'
+curMnq =cfg.get('MainSetting',curMnqKey,fallback='雷电')
+
+isMumu =False
+MnqDir=""
+def GetMnq():
+	global isMumu,MnqDir,curMnq
+	isMumu = curMnq != "雷电"
+	if(isMumu):
+		MnqDir = cfg.get('MainSetting',MumuDirKey,fallback="")
+	else:
+		MnqDir = cfg.get('MainSetting',LeiDianDirKey,fallback="")
+GetMnq()	
+
+
+print("模拟器:",curMnq)
 
 def string_to_float(str):
 	try:
@@ -128,6 +148,25 @@ def get_scaling():
     proportion = round(real_resolution['wide'] / screen_size['wide'], 2)
     return proportion
 
+def get_win_title():
+	if(isMumu):
+		return "nemudisplay"
+	else:
+		return 'TheRender'
+
+def CallCMD(cmd_command):
+	try:
+		completed_process = subprocess.check_output(
+			cmd_command, 
+			shell=True,
+			text=True  # 让输出以文本形式返回而不是字节形式
+		)
+
+		return completed_process
+	except subprocess.CalledProcessError as e:
+		print("命令执行失败:", e)
+		return "error"
+	
 
 def WaitWin32Start():
 	#如果Main为0则等待
@@ -144,22 +183,23 @@ def WaitWin32Start():
 	def FindWinFun(hwnd,lParam):
 		global Subhwnd,isMumu
 		subtitle = win32gui.GetWindowText(hwnd)
-		print("cur title",subtitle)
-		targetTitle = 'TheRender'
-		if(isMumu):
-			targetTitle ="Theder"
-			print("sub = ",subtitle)
-		if subtitle == targetTitle:
+
+		if subtitle == get_win_title():
 			Subhwnd = hwnd
 
-
-	#已打开雷电
-	print("Find MainhWnd",MainhWnd)
+	print("Find MainhWnd",MainhWnd,win32gui.GetWindowText(MainhWnd))
+	
 	win32gui.EnumChildWindows(MainhWnd, FindWinFun, None)
 	while(Subhwnd == None):
 		time.sleep(1.5)
 		print("wait subHwnd...")
 		win32gui.EnumChildWindows(MainhWnd, FindWinFun, None)
+
+	#模拟器已经启动
+	#雷电不需要等待 , 而mumu需要等待app启动
+	if(isMumu):
+		WaitMumuStartAPP()
+
 
 	#获取窗口大小
 	rect = win32gui.GetClientRect(Subhwnd)
@@ -196,13 +236,51 @@ def GetLeiDianWin():
 
 def GetMumuWin():
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,Scale,SaveH,SaveW
-	# while(MainhWnd ==0):
-	# 	print("等待模拟器启动中...:")
-	# 	MainhWnd =  win32gui.FindWindow('Qt5QWindowIcon',None)
-	# 	time.sleep(1.5)
+	print("Wait Mumu")
+	while(MainhWnd ==0):
+		print("等待模拟器启动中...:")
+		MainhWnd =  win32gui.FindWindow('Qt5156QWindowIcon',None)
+		time.sleep(1.5)
 
 	t = "nemudispaly"
 	classN = "nemuwin"
+	return
+
+def WaitMumuStartAPP():
+	#获取模拟器状态
+	#获取APP状态即可
+
+	cmd0 =MnqDir
+	os.chdir(cmd0)
+	# os.system(cmd0)
+	# CallCMD(cmd0)
+
+	if(isRunAndStart):
+		cmd1="MuMuManager.exe api -v 0 player_state"
+		state = CallCMD(cmd1)
+		while(1-("start_finished" in state)):
+			time.sleep(0.2)
+			print("Wait...",state)
+			state = CallCMD(cmd1)
+
+		print("模拟器启动完成->启动Pcr")
+		cmd2="MuMuManager.exe api -v 0 launch_app com.bilibili.priconne"
+		CallCMD(cmd2)
+
+	
+	#连接
+	print("连接 adb")
+	cmd3 = "MuMuManager.exe adb -v 0 connect"
+	CallCMD(cmd3)
+
+	cmd4 ="MuMuManager.exe api -v 0 show_player_window"
+	CallCMD(cmd4)
+
+	#返回路径
+	# os.chdir(curDir)
+	return
+
+def CallPcrStart():
 	return
 
 
@@ -238,16 +316,17 @@ def SavaShoot():
 	
 	tempPath = GetFullPath("temp.png")
 
-	if(isForCompatibility):
-		x1, y1, x2, y2 = get_window_pos(Subhwnd)
-		print(x1, y1, x2, y2)
-		im_PIL = ImageGrab.grab((x1, y1, x2, y2),all_screens = True )
-	else:
-		saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
-		# bmpinfo = saveBitMap.GetInfo()
-		bmpstr = saveBitMap.GetBitmapBits(True)
-		#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
-		im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
+	# if(isForCompatibility):
+	# 	x1, y1, x2, y2 = get_window_pos(Subhwnd)
+	# 	print(x1, y1, x2, y2)
+	# 	im_PIL = ImageGrab.grab((x1, y1, x2, y2),all_screens = True )
+	# else:
+
+	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
+	# bmpinfo = saveBitMap.GetInfo()
+	bmpstr = saveBitMap.GetBitmapBits(True)
+	#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+	im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
 
 	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
 
@@ -275,13 +354,12 @@ key_map = {
     '[': 219, ']': 221, '+': 107, '-': 109}
 
 
-def GetWinPos():
-	print("")
+
 
 
 def Click(x=None, y=None):
 	try:
-		global Subhwnd,lastY,lastX,rect,trueH,trueW
+		global Subhwnd,lastY,lastX,rect,trueH,trueW,MainhWnd,isMumu
 		if(x==None):
 			x = lastX
 			y = lastY
@@ -292,13 +370,34 @@ def Click(x=None, y=None):
 		tx = int(x * trueW/960)
 		ty = int(y * trueH/540)
 		# print(trueH,trueW,"simPos:",x,y,"truePos:",tx,ty)
+
+
+		if(isMumu):
+			MumuClick(tx,ty)
+			return
+
 		positon = win32api.MAKELONG(int(tx), int(ty))
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, positon)
 		time.sleep(0.015)
 		win32api.SendMessage(Subhwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON,positon)
+
+
 		time.sleep(0.1)
 	except Exception as e:
 		print(f"fallback adb click:{e}")
+
+def MumuClick(tx,ty):
+	cmd3 = "adb shell input tap "+str(int(tx))+" "+ str(int(ty))
+	# print(cmd3)
+	CallCMD(cmd3)
+	return
+
+	# positon = win32api.MAKELONG(int(tx), int(ty))
+	# win32api.SetCursorPos((tx, ty)) #移动
+	# win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+	# time.sleep(0.015)
+	# win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+	# return
 
 def testKey():
 	win32gui.PostMessage(Subhwnd, win32con.WM_KEYDOWN, 90, 0)
@@ -821,6 +920,23 @@ def ghHomeTake():
 
 tuichuMaxTry =0
 
+
+
+
+def WaitExit(path):
+	i = 0
+	if(WaitToClickImg(path,False)):
+		time.sleep(0.1)
+		ZExit()
+		while(WaitToClickImg(path,False) == False):
+			ZExit()
+			i = i+1
+			if(i==15):
+				return
+
+def WaitPlayer():
+	WaitExit('main/'+playerName+'.png')
+
 def ClickPlayer():
 	global playerName
 	if(playerName==""):
@@ -999,21 +1115,23 @@ def OnHouDongHard():
 				ClickXYRatioWait(0.58,0.24)
 				time.sleep(1)
 
-		ClickPlayer()
-
-		for	i in range(5):
-			if(SaoDang(2)):
-				SmallExit()
-				SmallExit()
-				SmallExit()
-				MoveToLeft()
-			else:
-				print("没体力 ->结束")
-				break
-		ZExit()
-		ExitSaoDang()
-
-		HuoDongVHBoss()
+		#活动困难
+		if(isHouDongHard):
+			ClickPlayer()
+			for	i in range(5):
+				if(SaoDang(2)):
+					SmallExit()
+					SmallExit()
+					SmallExit()
+					MoveToLeft()
+				else:
+					print("没体力 ->结束")
+					break
+			ZExit()
+			ExitSaoDang()
+		#活动VHBoss
+		if(isHouDongVH):
+			HuoDongVHBoss()
 
 #主要按键设置
 
@@ -1059,14 +1177,45 @@ def MoveToLeft():
 		ZExit()
 	ClickXYRatioWait(0.0395,0.49)
 
+#普通 困难 高难 位置
+def ClickNor():
+	ClickXYRatioWait(0.608,0.168)
+
+def Clickhard():
+	ClickXYRatioWait(0.734,0.168)
+
+def ClickVeryhard():
+	ClickXYRatioWait(0.859,0.168)
+
+
 def CurSaodang():
 	ClickPlayer()
 	SaoDang()
+
+def StarVh():
+	print('StarVh')
+	ToFightPage()
+	WaitToClickImg('main/zhuXian.png',True)
+	WaitPlayer()
+	ClickVeryhard()
+	ClickPlayer()
+
+	for	i in range(vhMoveTime):
+		MoveToLeft()
+
+	SaoDang(2)
+	ExitSaoDang()
+	ExitSaoDang()
+
 
 def UseAllPower():
 	print('OnHouDongHard')
 	ToFightPage()
 	WaitToClickImg('main/zhuXian.png',True)
+
+	WaitPlayer()
+
+	ClickNor()
 
 	ClickPlayer()
 
@@ -1107,8 +1256,10 @@ def DailyTasks():
 		SendZb()
 	if(isNeedSeed):
 		needSeedZbStart()
-	if(isHouDongHard):
+	if(isHouDongHard|isHouDongVH):
 		OnHouDongHard()
+	if(isVH):
+		StarVh()
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
@@ -1239,7 +1390,6 @@ isTansuoKey ='isTansuo'
 isDxcKey = 'isDxc'
 isExpKey = 'isExp'
 isNiuDanKey ='isNiuDan'
-LeiDianDirKey ='LeiDianDir'
 isRunAndStartKey ='isRunAndStart'
 isAutoCloseKey ="isAutoClose"
 isTuituKey='isTuituKey'
@@ -1297,6 +1447,14 @@ dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
 dxcBossLoopRole = GetStrConfig(dxcBossLoopRoleKey)
 
+isHouDongVHKey='isHouDongVH'
+isHouDongVH = GetBoolConfig(isHouDongVHKey)
+
+isVHKey='isVh'
+isVH=GetBoolConfig(isVHKey)
+
+vhMoveTimeKey = 'vhMoveTime'
+vhMoveTime = string_to_Int(cfg.get('MainSetting',vhMoveTimeKey,fallback='0'))
 
 dxcBoss=GetStrConfig(dxcDropKey)
 

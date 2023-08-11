@@ -29,29 +29,6 @@ if(os.path.exists('.\\config.ini') == False):
 def GetFullPath(pngName):
     return '.\\' + pngName
 
-#======读取配置======
-LeiDianDirKey ='LeiDianDir'
-isForCompatibilityKey ='isForCompatibility' #兼容模式
-mnqIndexKey ='mnqDrop'
-isMultKey ='isMult'
-dxcDropKey ='dxcDrop'
-curMnqKey ='curMnq'
-moniqTimeKey = 'moniqTime'
-useAllMoveTimeKey = 'useAllMoveTime'
-dxcDropValue =["炸脖龙","绿龙","Ex4"]
-mnqDropValue =["雷电","Mumu(开发中...)"]
-mnqIndexDropValue=["0","1"]
-
-
-cfg = ConfigParser()
-configPath = GetFullPath('config.ini')
-cfg.read(configPath,'utf-8')
-mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
-LeiDianDir = cfg.get('MainSetting',LeiDianDirKey)
-isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
-isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
-curMnq =cfg.get('MainSetting',curMnqKey,fallback='雷电')
-
 
 def string_to_float(str):
 	try:
@@ -65,13 +42,52 @@ def string_to_Int(str):
 	except:
 		return 0
 
+
+#======读取配置======
+isMumu = False
+LeiDianDirKey ='LeiDianDir' #也作为dir的gui的key
+MumuDirKey ='MunuDir'
+isForCompatibilityKey ='isForCompatibility' #兼容模式
+mnqIndexKey ='mnqDrop'
+isMultKey ='isMult'
+dxcDropKey ='dxcDrop'
+
+moniqTimeKey = 'moniqTime'
+
+
+dxcDropValue =["炸脖龙","绿龙","Ex4"]
+mnqDropValue =["雷电","Mumu"]
+mnqIndexDropValue=["0","1"]
+
+
+cfg = ConfigParser()
+configPath = GetFullPath('config.ini')
+cfg.read(configPath,'utf-8')
+mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
+isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
+isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
+
+
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
-useAllMoveTime = string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='0'))
+
+MnqDir=""
 
 print("moniqTime",moniqTime)
 
 MainSettingKey='MainSetting_'+mnqIndex
 
+
+def GetMnq():
+	global isMumu,MnqDir,curMnq
+	isMumu = curMnq != "雷电"
+
+	if(isMumu):
+		MnqDir = cfg.get('MainSetting',MumuDirKey,fallback="")
+	else:
+		MnqDir = cfg.get('MainSetting',LeiDianDirKey,fallback="")
+
+	print(curMnq,MnqDir)
+		
 
 def SetConfigAuto(key,AllValues):
 	SetConfig(key,str(AllValues[key]))
@@ -94,13 +110,20 @@ def GetBoolConfig(boolKey):
 
 def SetMnqSetting():
 	cfg.set('MainSetting',useAllMoveTimeKey,str(useAllMoveTime))
+	cfg.set('MainSetting',vhMoveTimeKey,str(vhMoveTime))
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 	cfg.set('MainSetting',moniqTimeKey,moniqTime)
 	cfg.set('MainSetting',isMultKey,str(isMult))
 	cfg.set('MainSetting',isForCompatibilityKey,str(isForCompatibility))
+	cfg.set('MainSetting',curMnqKey,curMnq)
+
+
 def SetMnqDir():
-	print(LeiDianDir)
-	cfg.set('MainSetting',LeiDianDirKey,LeiDianDir)
+	print("MnqDir = ",MnqDir)
+	if(isMumu):
+		cfg.set('MainSetting',MumuDirKey,MnqDir)
+	else:
+		cfg.set('MainSetting',LeiDianDirKey,MnqDir)		
 isRunAndStart = False
 isAutoClose = False
 
@@ -133,6 +156,7 @@ isDianZanKey='isDianZan'
 isHomeTakeKey='isHomeTake'
 isHouDongHardKey='isHouDongHard'
 isUseAllPowerKey='isUseAllPower'
+
 needZbNameKey = 'needZbName'
 isBuyMoreExpKey = 'isBuyMoreExp'
 isTuituKey='isTuituKey'
@@ -163,6 +187,30 @@ isHouDongHard=GetBoolConfig(isHouDongHardKey)
 isUseAllPower=GetBoolConfig(isUseAllPowerKey)
 
 
+useAllMoveTimeKey = 'useAllMoveTime'
+useAllMoveTime = string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='0'))
+
+isVHKey='isVh'
+isVH=GetBoolConfig(isVHKey)
+
+vhMoveTimeKey = 'vhMoveTime'
+vhMoveTime = string_to_Int(cfg.get('MainSetting',vhMoveTimeKey,fallback='0'))
+
+
+curMnqKey ='curMnq'
+curMnq =cfg.get('MainSetting',curMnqKey,fallback='雷电')
+
+isHouDongVHKey='isHouDongVH'
+isHouDongVH = GetBoolConfig(isHouDongVHKey)
+
+
+
+GetMnq()
+
+print(curMnq,isMumu)
+
+
+
 #dxcStartLevel=GetStrConfig(dxcStartLevelKey)
 # dxcGroupBoss=GetStrConfig(dxcGroupBossKey)
 # dxcGroupDaoZhong =GetStrConfig(dxcGroupDaoZhongKey)
@@ -181,7 +229,7 @@ isAllSelect2= False
 
 #保存配置
 def SavaConfig(AllValues):
-	RunTimeValue()
+	RunTimeValue() 
 	SetConfigAuto(isJJCKey,AllValues)
 	SetConfigAuto(isTansuoKey,AllValues)
 	SetConfigAuto(isDxcKey,AllValues)
@@ -206,14 +254,16 @@ def SavaConfig(AllValues):
 
 	SetConfigAuto(needZbNameKey,AllValues)
 	SetConfigAuto(playerNameKey,AllValues)
+	SetConfigAuto(isVHKey,AllValues)
+	SetConfigAuto(isHouDongVHKey,AllValues)
 	# SetConfigAuto(dxcGroupBossKey,AllValues)
 	# SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
 	# SetConfigAuto(dxcBossLoopRoleKey,AllValues)
 	#SetConfigAuto(dxcStartLevelKey,AllValues)
 
 	# SetConfigAuto(LeiDianDirKey,AllValues)
-	global LeiDianDir
-	LeiDianDir = AllValues[LeiDianDirKey]
+	global MnqDir
+	MnqDir = AllValues[LeiDianDirKey]
 	SetMnqSetting()
 	SetMnqDir()
 
@@ -240,11 +290,13 @@ def ReadConfig():
 	ReadBoolConfig(isTuituKey)
 	ReadBoolConfig(isAutoTaskKey)
 	ReadBoolConfig(isBuyMoreExpKey)
-
+	ReadBoolConfig(isVHKey)
+	ReadStrConfig(isHouDongVHKey)
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
 
 	ReadStrConfig(playerNameKey)
+
 
 	# ReadStrConfig(mnqIndexKey,AllValues)
 
@@ -256,21 +308,21 @@ def ReadConfig():
 # 	WriteCloseLeidian(path)
 	# WirteStartPy()
 
-def WriteCloseLeidian(path):
-	print('write ',path,'CloseLeiDian.cmd')
-	fileName = 'CloseLeiDian.cmd'
-	with open(GetFullPath(fileName),'w') as f:
-		cmdStr =("cd /d "+path+"\n\ndnconsole.exe quitall\n\nexit")
-		f.write(cmdStr)
+# def WriteCloseLeidian(path):
+# 	print('write ',path,'CloseLeiDian.cmd')
+# 	fileName = 'CloseLeiDian.cmd'
+# 	with open(GetFullPath(fileName),'w') as f:
+# 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe quitall\n\nexit")
+# 		f.write(cmdStr)
 
-def WriteLeiDian(path,index):
-	print('write ',path,'StartLeiDian.cmd')
-	fileName = 'StartLeiDian.cmd'
-	if(index == '1'):
-		fileName = 'StartLeiDian1.cmd'
-	with open(GetFullPath(fileName),'w') as f:
-		cmdStr =("cd /d "+path+"\n\ndnconsole.exe launchex --index "+index+" --packagename com.bilibili.priconne\n\nexit")
-		f.write(cmdStr)
+# def WriteLeiDian(path,index):
+# 	print('write ',path,'StartLeiDian.cmd')
+# 	fileName = 'StartLeiDian.cmd'
+# 	if(index == '1'):
+# 		fileName = 'StartLeiDian1.cmd'
+# 	with open(GetFullPath(fileName),'w') as f:
+# 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe launchex --index "+index+" --packagename com.bilibili.priconne\n\nexit")
+# 		f.write(cmdStr)
 
 # def WirteStartPy():
 # 	with open(GetFullPath('StartPy.cmd'),'w') as f:
@@ -287,7 +339,12 @@ def WriteLeiDian(path,index):
 from subprocess import run
 
 def CallLeiDian():
-	cmdStr = "cd /d "+LeiDianDir+" & dnconsole.exe"+"  launchex --index " + str(mnqIndex) + " --packagename com.bilibili.priconne\n"
+	cmdStr = "cd /d "+MnqDir+" & dnconsole.exe"+"  launchex --index " + str(mnqIndex) + " --packagename com.bilibili.priconne\n"
+	print("cmdstr",cmdStr)
+	os.system(cmdStr)
+
+def CallMumu():
+	cmdStr = "cd /d "+MnqDir+" & MuMuManager.exe api -v 0 launch_player\n"
 	print("cmdstr",cmdStr)
 	os.system(cmdStr)
 
@@ -307,7 +364,10 @@ def CallPy():
 		win32api.ShellExecute(0, 'open', GetFullPath('AutoPcrCmd.exe'), '', '', 1)
 
 def StartPcr():
-	CallLeiDian()
+	if(isMumu):
+		CallMumu()
+	else:	
+		CallLeiDian()
 	CallPy()
 
 
@@ -318,14 +378,14 @@ left_col = [
 [sg.Checkbox('点赞',isDianZan,key=isDianZanKey)],
 
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
-[sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey)],
-[sg.Checkbox('普通清空体力',isUseAllPower,key=isUseAllPowerKey),sg.Checkbox('活动困难+VH',isHouDongHard,key=isHouDongHardKey)],
+[sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('vh碎片*1',isVH,key = isVHKey)],
+[sg.Checkbox('普通*n',isUseAllPower,key=isUseAllPowerKey),sg.Checkbox('活动困难',isHouDongHard,key=isHouDongHardKey),sg.Checkbox('活动VH',isHouDongVH,key=isHouDongVHKey)],
 [sg.Checkbox('请求捐赠',isNeedSeed,key=isNeedSeedKey),sg.Checkbox('赠送礼物',isSend,key=isSendKey)],
 [sg.Checkbox('自动剧情',isAutoTask,key = isAutoTaskKey),sg.Checkbox('自动推图',isTuitu,key = isTuituKey)],
 
-[sg.Text('模拟器文件夹:'),sg.DropDown(mnqDropValue, curMnq ,key=curMnqKey,size=(15,None))],
-[sg.InputText(LeiDianDir,size =(35,None),key= LeiDianDirKey)],
-[sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('检查模拟器')]]
+[sg.Text('模拟器文件夹:'),sg.DropDown(mnqDropValue, curMnq ,enable_events=True,key=curMnqKey,size=(8,None))],
+[sg.InputText(MnqDir,size =(35,None),key= LeiDianDirKey)],
+[sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('test')]]
 right_col = [[sg.Text('其他配置                  ')],
 [sg.Checkbox('兼容模式',isForCompatibility,key = isForCompatibilityKey)],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(4,None),key =mnqIndexKey),
@@ -333,7 +393,7 @@ sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor
 [sg.Text('启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
-[sg.Text('清空体力左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey)],
+[sg.Text('普通*n左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey),sg.Text('vh碎片*1左移'),sg.InputText(vhMoveTime,size =(4,None),key= vhMoveTimeKey)],
 [sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
 
@@ -353,14 +413,18 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime,isForCompatibility
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime,isForCompatibility,vhMoveTime,curMnq
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	moniqTime = values[moniqTimeKey]
 	useAllMoveTime = values[useAllMoveTimeKey]
+	vhMoveTime = values[vhMoveTimeKey]
 	isMult = values[isMultKey]
 	isForCompatibility = values[isForCompatibilityKey]
 	print('MainSettingKey = ',MainSettingKey)
+	curMnq = values[curMnqKey]
+	GetMnq()
+	# -> SetMnqSetting()
 
 
 def SetAllSelect1():
@@ -375,8 +439,9 @@ def SetAllSelect1():
 def SetAllSelect2():
 	# window[isNeedSeedKey].Update(isAllSelect2)
 	# window[isSendKey].Update(isAllSelect2)
-	# window[isHouDongHardKey].Update(isAllSelect2)
-	#window[isUseAllPowerKey].Update(isAllSelect2)
+	window[isHouDongHardKey].Update(isAllSelect2)
+	window[isVHKey].Update(isAllSelect2)
+	window[isUseAllPowerKey].Update(isAllSelect2)
 	window[isXQBKey].Update(isAllSelect2)
 	# window[isTuituKey].Update(isAllSelect2)
 	window[isXinSuiKey].Update(isAllSelect2)
@@ -385,7 +450,7 @@ def SetAllSelect2():
 while True:
 	event, values = window.read()
 	print(event)
-	if event == '检查模拟器':
+	if event == 'test':
 		MainhWnd =  win32gui.FindWindow('LDPlayerMainFrame',None)
 		if(MainhWnd == 0):
 			print("没有检测到雷电模拟器启动")
@@ -394,35 +459,7 @@ while True:
 		winName = win32gui.GetWindowText(MainhWnd)
 		isCur64 = False
 		if(winName.endswith("(64)")):
-			isCur64 = True
-
-		targetName = "雷电模拟器"
-		cmpName =""
-		print("Find",MainhWnd ,winName)
-		if(values[mnqIndexKey] == "0"):
-			targetName = "雷电模拟器"
-		elif(values[mnqIndexKey] == "1"):
-			targetName = "雷电模拟器-1"
-
-		weiShu = "32"
-		cmpName = targetName
-		if(isFor64):
-			cmpName = targetName+"(64)"
-			weiShu = "64"
-
-		moniqWeiShu = "32"
-		if(isCur64):
-			moniqWeiShu ="64"
-
-		if(isCur64 != isFor64):
-			print("设置位数错误,设置位数:",weiShu, "应该设置为:",moniqWeiShu)
-			continue
-
-		if(cmpName == winName):
-			print("模拟器名字正确")
-		else:
-			print("模拟器名字或序号错误! 请求目标模拟器名为",targetName,"而正运行的模拟器名为",winName)
-
+			print("64位")
 
 
 	if event ==  isAllSelectKey_1:
@@ -431,9 +468,15 @@ while True:
 	if event ==  isAllSelectKey_2:
 		isAllSelect2 = bool(1-isAllSelect2)
 		SetAllSelect2()
-
+	#切换模拟器序号
 	if event == mnqIndexKey:
 		ReadConfig()
+	#切换模拟器文件夹
+	if event == curMnqKey:
+		curMnq = values[curMnqKey]
+		GetMnq()
+		window[LeiDianDirKey].Update(MnqDir)
+		print("set ",MnqDir)
 
 	if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
 		print("close")
