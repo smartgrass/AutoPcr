@@ -1112,6 +1112,7 @@ def OnAutoTaskStart():
 
 menuNofindTime=0
 
+#自动剧情
 def OnAutoTask():
 	print("AutoTask")
 	isNoAct = True

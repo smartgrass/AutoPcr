@@ -28,6 +28,7 @@ XCOPY  .\运行说明\模拟器配置 .\TMP\运行说明\ /q /e /r /S /Y
 
 XCOPY  .\运行说明\其他说明(可跳过) .\TMP\其他说明(可跳过)\ /q /e /r /S /Y
 XCOPY  .\运行说明\运行失败原因.txt .\TMP\ /Y
+XCOPY  .\运行说明\exe需要管理模式启动.txt .\TMP\ /Y
 
 XCOPY  .\dxc .\TMP\dxc\ /q /e /r /S /Y
 XCOPY  .\jjc .\TMP\jjc\ /q /e /r /S /Y
@@ -60,7 +61,7 @@ del .\AutoPcr4.0.spec
 del .\AutoPcr4.0.py
 
 cd ..
-python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\ .\TMP\运行说明\ .\TMP\其他说明(可跳过) .\TMP\运行失败原因.txt
+python -m zipfile -c AutoPcr.zip .\TMP\AutoPcr.exe .\TMP\AutoPcrCmd.exe  .\TMP\config.ini .\TMP\com.bilibili.priconne_960x540.kmp .\TMP\com.android.launcher3.smp .\TMP\com.bilibili.priconne.smp .\TMP\dxc\ .\TMP\jjc\ .\TMP\main\ .\TMP\other\ .\TMP\shop\ .\TMP\tansuo\ .\TMP\task\ .\TMP\运行说明\ .\TMP\其他说明(可跳过) .\TMP\运行失败原因.txt .\TMP\exe需要管理模式启动.txt
 
 echo. 删除临时文件夹
 rd /s /q .\TMP
