@@ -12,6 +12,8 @@ import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 import sys
+import easyocr
+import re
 
 #region 获取当前路径
 curDir = os.path.dirname(__file__)
@@ -310,17 +312,11 @@ def CreatSaveMap():
 	# 	print("截图失败")
 	# 	return
 
-def SavaShoot():
+def SavaShoot(isCut =False,Rect =(0,0,0,0)):
 	#保存bitmap到内存设备描述表
 	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,isOnce
 	
 	tempPath = GetFullPath("temp.png")
-
-	# if(isForCompatibility):
-	# 	x1, y1, x2, y2 = get_window_pos(Subhwnd)
-	# 	print(x1, y1, x2, y2)
-	# 	im_PIL = ImageGrab.grab((x1, y1, x2, y2),all_screens = True )
-	# else:
 
 	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
 	# bmpinfo = saveBitMap.GetInfo()
@@ -329,6 +325,11 @@ def SavaShoot():
 	im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
 
 	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
+
+	if(isCut):
+		tempPath = GetFullPath("temp_cut.png")
+		newImg = newImg.crop(Rect)
+
 
 	newImg.save(tempPath) #保存
 
@@ -434,7 +435,7 @@ def WaitImgLongTime(targetImg,autoExit = False):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0):
+def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0,FindCount = 1):
 	#isClick:找到图片后是否点击
 	#isShip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
@@ -443,22 +444,30 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 	print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
 	imsch = ac.imread(target_ImgPath) # 带查找的部分
-	match_result = ac.find_template(imsrc, imsch, match,rgb=isRgb)
-
-	print('match : %s %s'%(targetImg,match_result))
 	global waitTime
 
+	match_result = ac.find_template(imsrc, imsch, match,rgb=isRgb)
+	
+	if((match_result != None) & (FindCount > 1)):
+		match_result_list = ac.find_all_template(imsrc, imsch, match,rgb=isRgb)
+		cur = 0
+		for	match_result in SortByX(match_result_list):
+			if(cur < FindCount):
+				x1, y1 = match_result['result']
+				Click(x1, y1)
+				time.sleep(0.1)
+				cur = cur +1
+		waitTime = 0
+		return
+
+	print('match : %s %s'%(targetImg,match_result))
+
 	if match_result != None:
-		# print(match,minMatch,targetImg)
-		# if(match > minMatch):
-		# 	for	ma in match_result:
-		# 		print('confidence ',ma)
-		# 	print("Find Highist " ,len(match_result))
-
-
 		x1, y1 = match_result['result']
+
 		if(match_result['confidence']  < warnMatch):
 			print("\033[1;33m %s %s \033[0m"%(targetImg ,match_result['confidence']))
+
 		waitTime = 0
 
 		if(isClick):
@@ -481,13 +490,22 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 			print("Ship >> ",targetImg)
 			return False
 
-#屏幕截图,并返回保存路径
-def image_X():
-	global curDir
-	img = ImageGrab.grab()
-	sp = os.path.join(curDir,"temp.png")
-	img.save( sp)
-	return sp
+
+def SortByX(match_result_list):
+	newList = sorted(match_result_list, key=lambda x:x['result'])
+	return newList
+
+def CheckResult(match_result):
+
+	return
+
+	
+
+def ClickForCount(img,count):
+	WaitToClickImg(img,FindCount=count)
+	return
+	
+
 
 #点到消失为止
 def ClickUntilNul(path,offsetY=0,maxTry = 20,isRgb= False,match=minMatch,nullWait =0.5):
@@ -759,6 +777,62 @@ def BuyExp():
 		WaitToClickImg('main/sure.png')
 
 	ToHomePage()
+
+def OnBuyDxc():
+	time.sleep(0.5)
+	ToHomePage()
+	ToShopPage()
+	WaitToClickImg('shop/shopTop.png',False)
+
+	ClickXYWait(368,77) #title
+
+	if(IsHasImg('shop/dxcTitle.png',False) == False):
+		Click(368,77) #title
+		time.sleep(0.3)
+	for i in range(dxcBuyTime):
+		if(i >0):
+			#刷新
+			ClickXYWait(563,438)
+			WaitToClickImg('main/sure.png')		
+		WatchNumToBuy(minDxcBuy)
+
+
+	ToHomePage()
+
+	return
+#根据数量购买装备
+def WatchNumToBuy(minBuy):
+	WaitToClickImg("shop/kuang.png",False)
+	buyCount = 0
+	curIndex =0
+	#544
+	imgPath = SavaShoot(True,(283,246,740,272))
+	reader = easyocr.Reader(['ch_sim','en']) 
+	results = reader.readtext(imgPath)
+
+	for r in results:	
+		t =r[1]
+		# 定义正则表达式
+		pattern = '\d+'
+ 		# 匹配字符串中的数字
+		numRaw = re.findall(pattern, t)
+		curIndex = curIndex+1
+		print(t,len(numRaw)>0,numRaw)	
+		if((len(numRaw)>0)):
+			num = int(numRaw[0])
+			if(num <= minBuy):
+				buyCount = curIndex	
+				
+		
+	if(buyCount >0):
+		ClickForCount("shop/kuang.png",buyCount)
+		ClickXYWait(742,438)
+		WaitToClickImg('main/sure.png')		
+		return True
+		#有的购买
+	else:
+		return False
+
 
 def NiuDan():
 	WaitToClickImg('main/niuDan.png')
@@ -1095,6 +1169,36 @@ def NextChapter():
 
 def OnHouDongHard():
 	print('OnHouDongHard')
+
+	isEnter = True
+	if(1-EnterHuodongHard()):
+		print('ReTry HouDong!!!')
+		isEnter = EnterHuodongHard()
+	
+	if(1-isEnter):
+		print('No HouDong!!!')
+		return
+
+	#活动困难
+	if(isHouDongHard):
+		ClickPlayer()
+		for	i in range(5):
+			if(SaoDang(2)):
+				SmallExit()
+				SmallExit()
+				SmallExit()
+				MoveToLeft()
+			else:
+				print("没体力 ->结束")
+				break
+		ZExit()
+		ExitSaoDang()
+	#活动VHBoss
+	if(isHouDongVH):
+		HuoDongVHBoss()
+
+
+def EnterHuodongHard():
 	ToFightPage()
 	time.sleep(0.5)
 	#地下城入口存在->达到Fight界面
@@ -1104,34 +1208,22 @@ def OnHouDongHard():
 		ZExit()
 		ZExit()
 		print('Check HuoDong!')
-
-		if(WaitToClickImg('task/task.png',False,maxTry=25) == True):
-			if(IsHasImg('other/box.png',False) == True):
-				time.sleep(0.5)
-				ZExit()
-				ZExit()
-				print('EnterHuoDong!')
-				ClickXYRatioWait(0.58,0.24)
-				ClickXYRatioWait(0.58,0.24)
-				time.sleep(1)
-
-		#活动困难
-		if(isHouDongHard):
-			ClickPlayer()
-			for	i in range(5):
-				if(SaoDang(2)):
-					SmallExit()
-					SmallExit()
-					SmallExit()
-					MoveToLeft()
-				else:
-					print("没体力 ->结束")
-					break
+	
+	#对话的情况 似乎无法避免
+	if(WaitToClickImg('task/task.png',False,maxTry=25) == True):
+		#活动表层
+		if(IsHasImg('other/box.png',False) == True):
+			time.sleep(0.5)
 			ZExit()
-			ExitSaoDang()
-		#活动VHBoss
-		if(isHouDongVH):
-			HuoDongVHBoss()
+			ZExit()
+			print('EnterHuoDong!')
+			ClickXYRatioWait(0.58,0.24)
+			ClickXYRatioWait(0.58,0.24)
+			time.sleep(1)
+		return True
+	else:
+		return False
+
 
 #主要按键设置
 
@@ -1263,6 +1355,9 @@ def DailyTasks():
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
+	if(isBuyDxc):
+		OnBuyDxc()
+
 	if(isTuitu):
 		OnTuituStart()
 	if(isHomeTake):
@@ -1308,6 +1403,10 @@ def ClickXYRatio(Rx,Ry):
 def ClickXYRatioWait(Rx,Ry):
 	Click(x = width*Rx,y=height*Ry)
 	time.sleep(0.5)
+
+def ClickXYWait(x,y):
+	Click(x ,y)
+	time.sleep(0.4)
 
 def WaitStart():
 	print('=== WaitStart ===')
@@ -1374,8 +1473,8 @@ RunName = "运行"
 
 
 
-def GetStrConfig(key):
-	return cfg.get(MainSettingKey,key,fallback='')
+def GetStrConfig(key,fallback=''):
+	return cfg.get(MainSettingKey,key,fallback=fallback)
 
 def GetBoolConfig(boolKey):
 	return cfg.getboolean(MainSettingKey,boolKey,fallback=False)
@@ -1453,6 +1552,16 @@ isHouDongVH = GetBoolConfig(isHouDongVHKey)
 isVHKey='isVh'
 isVH=GetBoolConfig(isVHKey)
 
+
+isBuyDxcKey = 'isBuyDxc'
+isBuyDxc =  GetBoolConfig(isBuyDxcKey)
+
+minDxcBuyKey ="minDxcBuy"
+minDxcBuy = string_to_Int(GetStrConfig(minDxcBuyKey,'200'))
+
+dxcBuyTimeKey ="dxcBuyTime"
+dxcBuyTime = string_to_Int(GetStrConfig(dxcBuyTimeKey,'8'))
+
 vhMoveTimeKey = 'vhMoveTime'
 vhMoveTime = string_to_Int(cfg.get('MainSetting',vhMoveTimeKey,fallback='0'))
 
@@ -1468,25 +1577,15 @@ else:
 
 #endregion
 def test():
-	RightSelct(0)
-	# for i in range(10):
+	
+	WatchNumToBuy(200)
 
 
 	os._exit(0)
 	time.sleep(40)
-	return
-
-def testWin(x,y):
-	ret = win32gui.GetWindowRect(Subhwnd)
-	ret2 = win32gui.GetClientRect(Subhwnd)
-	height = ret[3] - ret[1]
-	width = ret[2] - ret[0]
-	tx = int(x * width/960)
-	ty = int(y * height/540)
-	print(ret,ret2)
-	print(height,width,"oldPos:",x,y,"truePos:",tx,ty)
 
 	return
+
 
 def RunAutoPcr():
 	#按下Esc键停止
@@ -1494,9 +1593,13 @@ def RunAutoPcr():
 	global t1
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
+
+
+
 	WaitWin32Start()
-	# HuoDongVHBoss()
+
 	# test()
+	# HuoDongVHBoss()
 	#CurSaodang()
 
 	time.sleep(0.5)
@@ -1504,8 +1607,6 @@ def RunAutoPcr():
 		print('Wait Start... ',moniqTime,"s")
 		time.sleep(moniqTime)
 		WaitStart()
-	else:
-		time.sleep(2)
 
 	print('=== 开始 按Exc退出程序 ===\n')
 

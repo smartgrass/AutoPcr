@@ -47,7 +47,6 @@ def string_to_Int(str):
 isMumu = False
 LeiDianDirKey ='LeiDianDir' #也作为dir的gui的key
 MumuDirKey ='MunuDir'
-isForCompatibilityKey ='isForCompatibility' #兼容模式
 mnqIndexKey ='mnqDrop'
 isMultKey ='isMult'
 dxcDropKey ='dxcDrop'
@@ -65,7 +64,6 @@ configPath = GetFullPath('config.ini')
 cfg.read(configPath,'utf-8')
 mnqIndex = cfg.get('MainSetting',mnqIndexKey,fallback='0')
 isMult =cfg.getboolean('MainSetting',isMultKey,fallback=False)
-isForCompatibility =cfg.getboolean('MainSetting',isForCompatibilityKey,fallback=False)
 
 
 moniqTime = string_to_float(cfg.get('MainSetting',moniqTimeKey,fallback='20'))
@@ -101,8 +99,8 @@ def ReadBoolConfig(key):
 	window[key].Update(GetBoolConfig(key))
 
 
-def GetStrConfig(key):
-	return cfg.get(MainSettingKey,key,fallback='')
+def GetStrConfig(key,fallback=''):
+	return cfg.get(MainSettingKey,key,fallback=fallback)
 
 def GetBoolConfig(boolKey):
 	return cfg.getboolean(MainSettingKey,boolKey,fallback=False)
@@ -114,7 +112,6 @@ def SetMnqSetting():
 	cfg.set('MainSetting',mnqIndexKey,mnqIndex)
 	cfg.set('MainSetting',moniqTimeKey,moniqTime)
 	cfg.set('MainSetting',isMultKey,str(isMult))
-	cfg.set('MainSetting',isForCompatibilityKey,str(isForCompatibility))
 	cfg.set('MainSetting',curMnqKey,curMnq)
 
 
@@ -204,6 +201,15 @@ isHouDongVHKey='isHouDongVH'
 isHouDongVH = GetBoolConfig(isHouDongVHKey)
 
 
+isBuyDxcKey = 'isBuyDxc'
+isBuyDxc =  GetBoolConfig(isBuyDxcKey)
+
+minDxcBuyKey ="minDxcBuy"
+minDxcBuy = string_to_Int(GetStrConfig(minDxcBuyKey,'200'))
+
+dxcBuyTimeKey ="dxcBuyTime"
+dxcBuyTime = string_to_Int(GetStrConfig(dxcBuyTimeKey,'16'))
+
 
 GetMnq()
 
@@ -256,6 +262,9 @@ def SavaConfig(AllValues):
 	SetConfigAuto(playerNameKey,AllValues)
 	SetConfigAuto(isVHKey,AllValues)
 	SetConfigAuto(isHouDongVHKey,AllValues)
+	SetConfigAuto(isBuyDxcKey,AllValues)
+	SetConfigAuto(minDxcBuyKey,AllValues)
+	SetConfigAuto(dxcBuyTimeKey,AllValues)
 	# SetConfigAuto(dxcGroupBossKey,AllValues)
 	# SetConfigAuto(dxcGroupDaoZhongKey,AllValues)
 	# SetConfigAuto(dxcBossLoopRoleKey,AllValues)
@@ -291,11 +300,15 @@ def ReadConfig():
 	ReadBoolConfig(isAutoTaskKey)
 	ReadBoolConfig(isBuyMoreExpKey)
 	ReadBoolConfig(isVHKey)
+	ReadBoolConfig(isBuyDxcKey)
+
+
 	ReadStrConfig(isHouDongVHKey)
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
-
 	ReadStrConfig(playerNameKey)
+	ReadStrConfig(minDxcBuyKey)
+	ReadStrConfig(dxcBuyTimeKey)
 
 
 	# ReadStrConfig(mnqIndexKey,AllValues)
@@ -375,7 +388,7 @@ left_col = [
 [sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
 [sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('领取奖励',isHomeTake,key=isHomeTakeKey)],
-[sg.Checkbox('点赞',isDianZan,key=isDianZanKey)],
+[sg.Checkbox('点赞',isDianZan,key=isDianZanKey),sg.Checkbox('地下城商店',isBuyDxc,key=isBuyDxcKey)],
 
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('vh碎片*1',isVH,key = isVHKey)],
@@ -387,13 +400,13 @@ left_col = [
 [sg.InputText(MnqDir,size =(35,None),key= LeiDianDirKey)],
 [sg.Button('保存配置'), sg.Button(RunName), sg.Button(StartRunName),sg.Button('test')]]
 right_col = [[sg.Text('其他配置                  ')],
-[sg.Checkbox('兼容模式',isForCompatibility,key = isForCompatibilityKey)],
 [sg.Text('模拟器序号'),sg.DropDown(mnqIndexDropValue,mnqIndex,enable_events=True,size =(4,None),key =mnqIndexKey),
 sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor64Key)],
 [sg.Text('启动等待时间'),sg.InputText(moniqTime,size =(6,None),key= moniqTimeKey),sg.Checkbox('自动关闭',isAutoClose,key=isAutoCloseKey)],
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('普通*n左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey),sg.Text('vh碎片*1左移'),sg.InputText(vhMoveTime,size =(4,None),key= vhMoveTimeKey)],
+[sg.Text('地下城商店刷新次数'),sg.InputText(dxcBuyTime,size =(4,None),key= dxcBuyTimeKey),sg.Text('购买<'),sg.InputText(minDxcBuy,size =(4,None),key= minDxcBuyKey)],
 [sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
 
@@ -413,14 +426,13 @@ layout = [
 window = sg.Window('AutoPcr', layout)
 
 def RunTimeValue():
-	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime,isForCompatibility,vhMoveTime,curMnq
+	global isRunAndStart,mnqIndex,MainSettingKey,moniqTime,isMult,useAllMoveTime,vhMoveTime,curMnq
 	mnqIndex = values[mnqIndexKey]
 	MainSettingKey='MainSetting_'+mnqIndex
 	moniqTime = values[moniqTimeKey]
 	useAllMoveTime = values[useAllMoveTimeKey]
 	vhMoveTime = values[vhMoveTimeKey]
 	isMult = values[isMultKey]
-	isForCompatibility = values[isForCompatibilityKey]
 	print('MainSettingKey = ',MainSettingKey)
 	curMnq = values[curMnqKey]
 	GetMnq()
