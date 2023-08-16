@@ -807,7 +807,7 @@ def WatchNumToBuy(minBuy):
 	curIndex =0
 	#544
 	imgPath = SavaShoot(True,(283,246,740,272))
-	reader = easyocr.Reader(['ch_sim','en']) 
+	reader = easyocr.Reader(['ch_sim']) 
 	results = reader.readtext(imgPath)
 
 	for r in results:	
@@ -816,9 +816,9 @@ def WatchNumToBuy(minBuy):
 		pattern = '\d+'
  		# 匹配字符串中的数字
 		numRaw = re.findall(pattern, t)
-		curIndex = curIndex+1
 		print(t,len(numRaw)>0,numRaw)	
 		if((len(numRaw)>0)):
+			curIndex = curIndex+1
 			num = int(numRaw[0])
 			if(num <= minBuy):
 				buyCount = curIndex	
