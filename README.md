@@ -4,7 +4,7 @@ git: https://github.com/smartgrass/AutoPcr
 
 b站: https://www.bilibili.com/video/BV1xT4y1U75y
 
-Exe版本(v6.6): https://share.weiyun.com/1weMy2gN
+Exe版本: https://share.weiyun.com/1weMy2gN
 
 <img src="https://github.com/smartgrass/AutoPcr/blob/main/png/Top.png" width= "500"/>
 
