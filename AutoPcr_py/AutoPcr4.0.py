@@ -12,7 +12,7 @@ import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 import sys
-import easyocr
+# import easyocr
 import re
 
 #region 获取当前路径
@@ -48,6 +48,7 @@ t1 = threading.Thread()
 
 #region 读取配置
 #其他页面
+tansuoStart ='tansuo/start.png'
 useAllMoveTimeKey = "useAllMoveTime"
 moniqTimeKey = 'moniqTime'
 dxcDropKey ='dxcDrop'
@@ -254,6 +255,7 @@ def WaitMumuStartAPP():
 
 	cmd0 =MnqDir
 	os.chdir(cmd0)
+	print('chdir',cmd0)
 	# os.system(cmd0)
 	# CallCMD(cmd0)
 
@@ -268,12 +270,18 @@ def WaitMumuStartAPP():
 		print("模拟器启动完成->启动Pcr")
 		cmd2="MuMuManager.exe api -v 0 launch_app com.bilibili.priconne"
 		CallCMD(cmd2)
+		time.sleep(2)
 
 	
 	#连接
 	print("连接 adb")
 	cmd3 = "MuMuManager.exe adb -v 0 connect"
 	CallCMD(cmd3)
+	if(isRunAndStart):
+		time.sleep(2)
+		str3 = CallCMD(cmd3)
+		print("连接 adb",str3)
+
 
 	cmd4 ="MuMuManager.exe api -v 0 show_player_window"
 	CallCMD(cmd4)
@@ -281,6 +289,18 @@ def WaitMumuStartAPP():
 	#返回路径
 	# os.chdir(curDir)
 	return
+
+
+def TestMumuClick():
+#test
+	cmd3 = "adb shell input tap 10 10"
+	# print(cmd3)
+	back = CallCMD(cmd3)
+	if(back==""):
+		print('no back')
+		return False
+	
+	return True
 
 def CallPcrStart():
 	return
@@ -435,7 +455,7 @@ def WaitImgLongTime(targetImg,autoExit = False):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0,FindCount = 1):
+def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0,offsetX=0,FindCount = 1):
 	#isClick:找到图片后是否点击
 	#isShip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
@@ -472,6 +492,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 
 		if(isClick):
 			y1 = y1+(offsetY*trueH/540)
+			x1 = x1 + (offsetX*trueW/960)
 			time.sleep(0.1)
 			Click(x1,y1)
 			time.sleep(0.6)
@@ -678,7 +699,7 @@ def StartTanSuo():
 	if(IsHasImg("tansuo/topMana.png",False)):
 		RightSelct(0)
 	time.sleep(0.5)
-	WaitToClickImg("tansuo/start.png")
+	ClickSaoDangStart()
 	WaitToClickImg("main/sure.png")
 	WaitToClickImg("tansuo/return.png")
 	time.sleep(0.5)
@@ -698,7 +719,7 @@ def StartTanSuo():
 	if(IsHasImg("tansuo/topExp.png",False)):
 		RightSelct(0)
 	time.sleep(0.5)
-	WaitToClickImg("tansuo/start.png")
+	ClickSaoDangStart()
 	WaitToClickImg("main/sure.png")
 	WaitToClickImg("tansuo/return.png")
 	time.sleep(0.5)
@@ -802,28 +823,37 @@ def OnBuyDxc():
 	return
 #根据数量购买装备
 def WatchNumToBuy(minBuy):
+	return
+	'''
 	WaitToClickImg("shop/kuang.png",False)
+
+	#544
+	imgPath = SavaShoot(True,(283,246,760,272))
+	reader = easyocr.Reader(['ch_sim']) 
+	#width_ths (float, default = 0.5) - 合并框的最大水平距离
+	results = reader.readtext(imgPath,low_text = 0.2)
+
 	buyCount = 0
 	curIndex =0
-	#544
-	imgPath = SavaShoot(True,(283,246,740,272))
-	reader = easyocr.Reader(['ch_sim']) 
-	results = reader.readtext(imgPath)
-
 	for r in results:	
-		t =r[1]
-		# 定义正则表达式
-		pattern = '\d+'
+		print(r)
+		text =r[1] 
  		# 匹配字符串中的数字
-		numRaw = re.findall(pattern, t)
-		print(t,len(numRaw)>0,numRaw)	
+		numRaw = re.findall('\d+', text)
+		
+		#has num
 		if((len(numRaw)>0)):
 			curIndex = curIndex+1
 			num = int(numRaw[0])
+			print('numRaw:',numRaw,'num:',num,'curIndex',curIndex)	
 			if(num <= minBuy):
-				buyCount = curIndex	
+				buyCount = curIndex
+		else:
+			print('text',text,'no num')	
 				
 		
+	# print('wait...',buyCount)
+	# time.sleep(100)
 	if(buyCount >0):
 		ClickForCount("shop/kuang.png",buyCount)
 		ClickXYWait(742,438)
@@ -832,6 +862,7 @@ def WatchNumToBuy(minBuy):
 		#有的购买
 	else:
 		return False
+'''
 
 
 def NiuDan():
@@ -851,16 +882,16 @@ def EnterDiaoCha():
 
 def SaoDang(_time =4):
 
-	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
+	if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
 		MoveToLeft()
 		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
 
-	if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+	if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 		if(WaitToClickImg('tansuo/plus.png')):
 			for i in range(_time):
 				Click()
-		WaitToClickImg('tansuo/start.png')
+		ClickSaoDangStart()
 		WaitToClickImg("main/sure.png")
 		time.sleep(0.2)
 		WaitToClickImg("main/skip.png")
@@ -871,6 +902,10 @@ def SaoDang(_time =4):
 		print("没体力- > 结束")
 		return False
 
+
+def ClickSaoDangStart():
+	WaitToClickImg(tansuoStart,offsetX=50)
+	return
 
 def ExitSaoDang():
 	time.sleep(0.5)
@@ -903,6 +938,7 @@ def xinSui():
 		WaitToClickImg('tansuo/xinSuiEnter.png')
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
+	RightSelct(0)
 	RightSelct(0)
 	for i in range(3):
 		print(i)
@@ -1097,7 +1133,7 @@ def OnTuituLoop():
 		time.sleep(1.5)  #过渡
 		OnTuituLoop()
 	else:
-		if(WaitToClickImg('tansuo/start.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+		if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
 			print("已经全部通关...")
 			ExitSaoDang()
 		else:
@@ -1356,8 +1392,8 @@ def DailyTasks():
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
-	if(isBuyDxc):
-		OnBuyDxc()
+	# if(isBuyDxc):
+	# 	OnBuyDxc()
 
 	if(isTuitu):
 		OnTuituStart()
@@ -1578,13 +1614,21 @@ else:
 
 #endregion
 def test():
-	
-	WatchNumToBuy(200)
 
+	# reader = easyocr.Reader(['ch_sim']) 
+	# results = reader.readtext('temp_cut.png',low_text = 0.2)
 
-	os._exit(0)
+	# for r in results:	
+	# 	print(r[1],r[2])
+		
+	# 	numRaw = re.findall('\d+', r[1])		
+	# 	#has num
+	# 	if((len(numRaw)>0)):
+	# 		print(numRaw[0])
+
 	time.sleep(40)
 
+	os._exit(0)
 	return
 
 
@@ -1596,10 +1640,10 @@ def RunAutoPcr():
 	t0.start()
 
 
+	# test()
 
 	WaitWin32Start()
 
-	# test()
 	# HuoDongVHBoss()
 	#CurSaodang()
 

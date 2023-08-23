@@ -262,7 +262,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(playerNameKey,AllValues)
 	SetConfigAuto(isVHKey,AllValues)
 	SetConfigAuto(isHouDongVHKey,AllValues)
-	SetConfigAuto(isBuyDxcKey,AllValues)
+	# SetConfigAuto(isBuyDxcKey,AllValues)
 	SetConfigAuto(minDxcBuyKey,AllValues)
 	SetConfigAuto(dxcBuyTimeKey,AllValues)
 	# SetConfigAuto(dxcGroupBossKey,AllValues)
@@ -388,7 +388,7 @@ left_col = [
 [sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
 [sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('领取奖励',isHomeTake,key=isHomeTakeKey)],
-[sg.Checkbox('点赞',isDianZan,key=isDianZanKey),sg.Checkbox('地下城商店',isBuyDxc,key=isBuyDxcKey)],
+[sg.Checkbox('点赞',isDianZan,key=isDianZanKey)], #,sg.Checkbox('地下城商店(无)',isBuyDxc,key=isBuyDxcKey)
 
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('vh碎片*1',isVH,key = isVHKey)],
@@ -406,7 +406,7 @@ sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('普通*n左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey),sg.Text('vh碎片*1左移'),sg.InputText(vhMoveTime,size =(4,None),key= vhMoveTimeKey)],
-[sg.Text('地下城商店刷新次数'),sg.InputText(dxcBuyTime,size =(4,None),key= dxcBuyTimeKey),sg.Text('购买<'),sg.InputText(minDxcBuy,size =(4,None),key= minDxcBuyKey)],
+[sg.Text('dxc商店刷新次数(无)'),sg.InputText(dxcBuyTime,size =(4,None),key= dxcBuyTimeKey),sg.Text('购买<'),sg.InputText(minDxcBuy,size =(4,None),key= minDxcBuyKey)],
 [sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
 
