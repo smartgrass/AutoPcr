@@ -98,13 +98,15 @@ def string_to_Int(str):
 	except:
 		return 0
 
-def string_to_IntArr(str):
-	strArr=str.splte(',')
-
-	try:
-		return int(str)
-	except:
-		return 0
+def string_to_IntArr(input_string):
+	number_strings = input_string.split(',')
+	int_array = []
+	for num in number_strings:
+		try:
+			int_array.append(int(num))
+		except ValueError:
+			int_array.append(0)
+	return int_array
 
 useAllMoveTime =string_to_Int(cfg.get('MainSetting',useAllMoveTimeKey,fallback='0'))
 
@@ -480,13 +482,13 @@ def WaitImgLongTime(targetImg,autoExit = False):
 			return
 #查找图片
 
-def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0,offsetX=0,FindCount = 1):
+def WaitToClickImg(targetImg,isClick = True,isskip = True,maxTry = 12,autoExit = False,match = minMatch,isRgb = False,offsetY=0,offsetX=0,FindCount = 1):
 	#isClick:找到图片后是否点击
-	#isShip:查找失败后是否跳过
+	#isskip:查找失败后是否跳过
 	#maxTry:查找失败重新尝试次数
 	target_ImgPath = GetFullPath(targetImg)
 	Screen_ImgPath = SavaShoot()
-	print(target_ImgPath)
+	# print(target_ImgPath)
 	imsrc = ac.imread(Screen_ImgPath) # 原始图像
 	imsch = ac.imread(target_ImgPath) # 带查找的部分
 	global waitTime
@@ -505,13 +507,15 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 		waitTime = 0
 		return
 
-	print('match : %s %s'%(targetImg,match_result))
+	if match_result != None:
+		print("[√] :%s %.3f"%(targetImg ,match_result['confidence']))
+	else:
+		print('[×] : %s'%(targetImg))
 
 	if match_result != None:
 		x1, y1 = match_result['result']
-
 		if(match_result['confidence']  < warnMatch):
-			print("\033[1;33m %s %s \033[0m"%(targetImg ,match_result['confidence']))
+			print("[Bad] : %s %.3f <%.3f"%(targetImg ,match_result['confidence'],warnMatch))
 
 		waitTime = 0
 
@@ -524,16 +528,15 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 		return True
 	else:
 		waitTime = waitTime+1
-		print((isShip==False))
-		if((isShip==False)|(waitTime < maxTry)):
+		if((isskip==False)|(waitTime < maxTry)):
 			time.sleep(0.18)
-			if(isShip == False):
+			if(isskip == False):
 				time.sleep(3)
 			if(waitTime < maxTry and autoExit):
 				ZExit()
-			return WaitToClickImg(targetImg,isClick,isShip,maxTry,autoExit,match,isRgb)
+			return WaitToClickImg(targetImg,isClick,isskip,maxTry,autoExit,match,isRgb)
 		else:
-			print("Ship >> ",targetImg)
+			print("Skip >> ",targetImg)
 			return False
 
 
@@ -667,10 +670,11 @@ def StartJJC():
 	time.sleep(1)
 	ClickPlay()
 	ClickPlay()
-	time.sleep(7)
 	print("sleep...")
-	if(WaitToClickImg('jjc/ship.png',maxTry=25) == False):
-		WaitToClickImg('jjc/ship.png',maxTry=25)
+	time.sleep(7)
+	if(WaitToClickImg('jjc/skip.png',maxTry=36) == False):
+		time.sleep(1)
+		WaitToClickImg('jjc/skip.png',maxTry=36)
 	Click()
 	time.sleep(2)
 	LongTimeCheck("jjc/win.png","jjc/lose.png")
@@ -689,7 +693,6 @@ def StartPJJC():
 	WaitToClickImg("jjc/pjjcTop.png",False)
 	ZExit() #关掉提示框
 	RightSelct(0) #选择
-	RightSelct(0) #选择
 
 	time.sleep(1.5)
 	ClickPlay()
@@ -699,13 +702,14 @@ def StartPJJC():
 	ClickPlay()
 	time.sleep(0.3)
 	ClickPlay()
-	print("sleep for 5s...")
-	time.sleep(6)
-	if(WaitToClickImg('jjc/ship.png',maxTry=20) == False):
-		WaitToClickImg('jjc/ship.png',maxTry=20)
+	print("sleep for 7s...")
+	time.sleep(7)
+	if(WaitToClickImg('jjc/skip.png',maxTry=36) == False):
+		time.sleep(1)
+		WaitToClickImg('jjc/skip.png',maxTry=36)
 	Click()
 	Click()
-	time.sleep(1.5)
+	time.sleep(2.5)
 	LongTimeCheck("jjc/pjjcEnd.png","jjc/pjjcEnd.png")
 	time.sleep(2.5)
 	ClickNext()
@@ -832,26 +836,37 @@ def OnBuyDxc():
 		ToShopPage()
 		WaitToClickImg('shop/shopTop.png',False)
 
-
-
-	Click(368,77) #title
-	ClickXYWait(368,77)
-	if(IsHasImg('shop/dxcTitle.png',False) == False):
-		ClickXYWait(368,77)
-
-	for i in range(dxcBuyTime):
-		if(i >0):
-			#刷新
-			ClickXYWait(563,438)
-			time.sleep(0.5)
-			WaitToClickImg('main/sure.png')
-			time.sleep(1)
-		WatchNumToBuy(minDxcBuy)
-
+	for j, n in enumerate(ZbBuyTimeArr, 1):
+		if(n<=0):
+			continue
+		print('buyTime',n)
+		EnterTitle(j)
+		for i in range(n):
+			if(i >0):
+				#刷新
+				ClickXYWait(563,438)
+				time.sleep(0.5)
+				WaitToClickImg('main/sure.png')
+				time.sleep(1)
+			WatchNumToBuy(minDxcBuy)
 
 	ToHomePage()
 
 	return
+def EnterTitle(index):
+	if(index == 1):
+		Click(368,77) #title
+		ClickXYWait(368,77)
+		if(IsHasImg('shop/dxcTitle.png',False) == False):
+			ClickXYWait(368,77)
+	elif(index == 2):
+		Click(460,77) #title
+		ClickXYWait(460,77)
+	else:
+		Click(550,77) #title
+		ClickXYWait(550,77)
+
+
 #根据数量购买装备
 def WatchNumToBuy(minBuy):
 
@@ -990,7 +1005,6 @@ def xinSui():
 		WaitToClickImg('tansuo/xinSuiEnter.png')
 
 	WaitToClickImg('tansuo/xinSuiTop.png',False)
-	RightSelct(0)
 	RightSelct(0)
 	for i in range(3):
 		print(i)
@@ -1250,7 +1264,6 @@ def NextChapter():
 	print('切换下章节')
 	WaitToClickImg('main/back.png')
 	RightSelct(0) #i
-	RightSelct(0) #i
 	WaitToClickImg('main/back.png',False)
 	RightSelct(1) #i
 	WaitToClickImg('task/noSound.png')
@@ -1340,10 +1353,13 @@ def ClickPlay():
 #右边选项栏
 def RightSelct(i):
 	if(i==0):
+		ClickXYRatio(0.91,0.293)
 		ClickXYRatioWait(0.91,0.293)
 	elif(i==1):
+		ClickXYRatio(0.91,0.513)
 		ClickXYRatioWait(0.91,0.513)
 	elif(i==2):
+		ClickXYRatio(0.91,0.701)
 		ClickXYRatioWait(0.91,0.701)
 	return
 
@@ -1650,7 +1666,8 @@ minDxcBuyKey ="minDxcBuy"
 minDxcBuy = string_to_Int(GetStrConfig(minDxcBuyKey,'200'))
 
 dxcBuyTimeKey ="dxcBuyTime"
-dxcBuyTime = string_to_Int(GetStrConfig(dxcBuyTimeKey,'8'))
+
+ZbBuyTimeArr=string_to_IntArr(GetStrConfig(dxcBuyTimeKey,'8,8,8'))
 
 vhMoveTimeKey = 'vhMoveTime'
 vhMoveTime = string_to_Int(cfg.get('MainSetting',vhMoveTimeKey,fallback='0'))

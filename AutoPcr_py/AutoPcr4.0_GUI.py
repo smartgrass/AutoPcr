@@ -208,7 +208,7 @@ minDxcBuyKey ="minDxcBuy"
 minDxcBuy = string_to_Int(GetStrConfig(minDxcBuyKey,'200'))
 
 dxcBuyTimeKey ="dxcBuyTime"
-dxcBuyTime = string_to_Int(GetStrConfig(dxcBuyTimeKey,'16'))
+dxcBuyTime = GetStrConfig(dxcBuyTimeKey,'8,8,8')
 
 
 GetMnq()
