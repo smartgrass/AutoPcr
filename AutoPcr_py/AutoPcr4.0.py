@@ -671,7 +671,7 @@ def StartJJC():
 	ClickPlay()
 	ClickPlay()
 	print("sleep...")
-	time.sleep(7)
+	time.sleep(6)
 	if(WaitToClickImg('jjc/skip.png',maxTry=36) == False):
 		time.sleep(1)
 		WaitToClickImg('jjc/skip.png',maxTry=36)
@@ -924,11 +924,11 @@ def StrToInt(x,defaut=9999):
 def ImgToText(img):
 	try:
 		pytesseract.pytesseract.tesseract_cmd = curDir+('/OCR/tesseract.exe')
-		text = pytesseract.image_to_string(img, lang='eng')#chi_sim
-		#config='--psm 6 -c tessedit_char_whitelist=0123456789:持有数
+		text = pytesseract.image_to_string(img, lang='eng')
 		return text
 	except Exception as e:
 		print("错误 ",e)
+		#需要将tesseract安装到当前目录/OCR 文件夹中
 		return ""
 
 
