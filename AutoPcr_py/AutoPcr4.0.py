@@ -6,12 +6,12 @@ import threading
 import time
 import os
 from ctypes import *
-from PIL import ImageGrab
 from PIL import Image
 import aircv as ac
 import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 import sys
+import pytesseract
 # import easyocr
 import re
 
@@ -31,7 +31,7 @@ if(os.path.exists('.\\config.ini') == False):
 	os.chdir(curDir)
 
 #图片路径拼接
-def GetFullPath(pngName):	
+def GetFullPath(pngName):
 	return os.path.join(curDir,pngName)
     # return '.\\' + pngName
 
@@ -82,7 +82,7 @@ def GetMnq():
 		MnqDir = cfg.get('MainSetting',MumuDirKey,fallback="")
 	else:
 		MnqDir = cfg.get('MainSetting',LeiDianDirKey,fallback="")
-GetMnq()	
+GetMnq()
 
 
 print("模拟器:",curMnq)
@@ -93,6 +93,14 @@ def string_to_float(str):
 	except:
 		return 20
 def string_to_Int(str):
+	try:
+		return int(str)
+	except:
+		return 0
+
+def string_to_IntArr(str):
+	strArr=str.splte(',')
+
 	try:
 		return int(str)
 	except:
@@ -160,7 +168,7 @@ def get_win_title():
 def CallCMD(cmd_command):
 	try:
 		completed_process = subprocess.check_output(
-			cmd_command, 
+			cmd_command,
 			shell=True,
 			text=True  # 让输出以文本形式返回而不是字节形式
 		)
@@ -169,7 +177,7 @@ def CallCMD(cmd_command):
 	except subprocess.CalledProcessError as e:
 		print("命令执行失败:", e)
 		return "error"
-	
+
 
 def WaitWin32Start():
 	#如果Main为0则等待
@@ -180,7 +188,7 @@ def WaitWin32Start():
 		GetMumuWin()
 	else:
 		GetLeiDianWin()
-	
+
 
 	#查找渲染句柄
 	def FindWinFun(hwnd,lParam):
@@ -191,7 +199,7 @@ def WaitWin32Start():
 			Subhwnd = hwnd
 
 	print("Find MainhWnd",MainhWnd,win32gui.GetWindowText(MainhWnd))
-	
+
 	win32gui.EnumChildWindows(MainhWnd, FindWinFun, None)
 	while(Subhwnd == None):
 		time.sleep(1.5)
@@ -214,7 +222,7 @@ def WaitWin32Start():
 	SaveW = int(trueW * Scale)
 	SaveH = int(trueH * Scale)
 	print("SaveH ",SaveH, "SaveW",SaveW)
-	
+
 	CreatSaveMap()
 
 def GetLeiDianWin():
@@ -272,7 +280,7 @@ def WaitMumuStartAPP():
 		CallCMD(cmd2)
 		time.sleep(2)
 
-	
+
 	#连接
 	print("连接 adb")
 	cmd3 = "MuMuManager.exe adb -v 0 connect"
@@ -299,7 +307,7 @@ def TestMumuClick():
 	if(back==""):
 		print('no back')
 		return False
-	
+
 	return True
 
 def CallPcrStart():
@@ -332,10 +340,34 @@ def CreatSaveMap():
 	# 	print("截图失败")
 	# 	return
 
-def SavaShoot(isCut =False,Rect =(0,0,0,0)):
+def SavaCutShoot(Rect =(0,0,0,0),isSavaToFile = False,scale = 1):
 	#保存bitmap到内存设备描述表
-	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap,isOnce
-	
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+
+	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
+	# bmpinfo = saveBitMap.GetInfo()
+	bmpstr = saveBitMap.GetBitmapBits(True)
+	#im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+	im_PIL = Image.frombuffer('RGB',(SaveW,SaveH),bmpstr,'raw','BGRX',0,1)
+
+	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
+	newImg = newImg.crop(Rect)
+
+	if(scale != 1):
+		newSize = (int(newImg._size[0]*scale), int(newImg._size[1]*scale))
+		newImg = newImg.resize(newSize,Image.Resampling.LANCZOS)
+
+	if(isSavaToFile):
+		tempPath = GetFullPath("temp_cut.png")
+		newImg.save(tempPath) #保存
+
+	return newImg
+
+
+def SavaShoot():
+	#保存bitmap到内存设备描述表
+	global window_title,MainhWnd,Subhwnd,saveDC,mfcDC,saveBitMap
+
 	tempPath = GetFullPath("temp.png")
 
 	saveDC.BitBlt((0,0), (SaveW,SaveH), mfcDC, (0, 0), win32con.SRCCOPY)
@@ -346,17 +378,10 @@ def SavaShoot(isCut =False,Rect =(0,0,0,0)):
 
 	newImg = im_PIL.resize((width,height),Image.Resampling.LANCZOS)
 
-	if(isCut):
-		tempPath = GetFullPath("temp_cut.png")
-		newImg = newImg.crop(Rect)
-
-
 	newImg.save(tempPath) #保存
 
-	# newImg.show() #显示
-
 	return tempPath
-	# 
+	#
 key_map = {
     "0": 48, "1": 49, "2": 50, "3": 51, "4": 52, "5": 53, "6": 54, "7": 55, "8": 56, "9": 57,
     'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116, 'F6': 117, 'F7': 118, 'F8': 119,
@@ -467,7 +492,7 @@ def WaitToClickImg(targetImg,isClick = True,isShip = True,maxTry = 12,autoExit =
 	global waitTime
 
 	match_result = ac.find_template(imsrc, imsch, match,rgb=isRgb)
-	
+
 	if((match_result != None) & (FindCount > 1)):
 		match_result_list = ac.find_all_template(imsrc, imsch, match,rgb=isRgb)
 		cur = 0
@@ -520,12 +545,12 @@ def CheckResult(match_result):
 
 	return
 
-	
+
 
 def ClickForCount(img,count):
 	WaitToClickImg(img,FindCount=count)
 	return
-	
+
 
 
 #点到消失为止
@@ -560,7 +585,7 @@ def LongTimeCheck(im1,im2):
 	isWaiting = True
 	#True表示识别1图 False表示识别2图
 	while(isWaiting):
-		time.sleep(2)
+		time.sleep(2.5)
 		if(IsHasImg(im1,False)):
 			print('has ',im1)
 			return True
@@ -663,6 +688,7 @@ def StartPJJC():
 	ZExit()
 	WaitToClickImg("jjc/pjjcTop.png",False)
 	ZExit() #关掉提示框
+	RightSelct(0) #选择
 	RightSelct(0) #选择
 
 	time.sleep(1.5)
@@ -800,21 +826,26 @@ def BuyExp():
 	ToHomePage()
 
 def OnBuyDxc():
-	time.sleep(0.5)
-	ToHomePage()
-	ToShopPage()
-	WaitToClickImg('shop/shopTop.png',False)
 
-	ClickXYWait(368,77) #title
+	if(IsHasImg('shop/shopTop.png',False) == False):
+		ToHomePage()
+		ToShopPage()
+		WaitToClickImg('shop/shopTop.png',False)
 
+
+
+	Click(368,77) #title
+	ClickXYWait(368,77)
 	if(IsHasImg('shop/dxcTitle.png',False) == False):
-		Click(368,77) #title
-		time.sleep(0.3)
+		ClickXYWait(368,77)
+
 	for i in range(dxcBuyTime):
 		if(i >0):
 			#刷新
 			ClickXYWait(563,438)
-			WaitToClickImg('main/sure.png')		
+			time.sleep(0.5)
+			WaitToClickImg('main/sure.png')
+			time.sleep(1)
 		WatchNumToBuy(minDxcBuy)
 
 
@@ -823,46 +854,67 @@ def OnBuyDxc():
 	return
 #根据数量购买装备
 def WatchNumToBuy(minBuy):
-	return
-	'''
+
 	WaitToClickImg("shop/kuang.png",False)
 
-	#544
-	imgPath = SavaShoot(True,(283,246,760,272))
-	reader = easyocr.Reader(['ch_sim']) 
-	#width_ths (float, default = 0.5) - 合并框的最大水平距离
-	results = reader.readtext(imgPath,low_text = 0.2)
+	#x1,y1,x2,y2
+	newImg = SavaCutShoot((340,246,724,272))
 
 	buyCount = 0
-	curIndex =0
-	for r in results:	
-		print(r)
-		text =r[1] 
- 		# 匹配字符串中的数字
-		numRaw = re.findall('\d+', text)
-		
-		#has num
-		if((len(numRaw)>0)):
-			curIndex = curIndex+1
-			num = int(numRaw[0])
-			print('numRaw:',numRaw,'num:',num,'curIndex',curIndex)	
-			if(num <= minBuy):
-				buyCount = curIndex
+	# newImg.crop(Rect)
+	w, h = newImg.size
+	# 坐标点可以根据自己的需要进行调整
+	cut = [(0, 0, 40, h), (168, 0, 206, h), (342, 0, 378, h)]
+	for i, n in enumerate(cut, 1):
+		subImg = newImg.crop(n)
+		subImg = ScaleImg(subImg,1.4)
+		text = ImgToText(subImg)
+		num = StrToInt(text)
+		if(minBuy >= num):
+			buyCount = i
+			print(num,'√')
 		else:
-			print('text',text,'no num')	
-				
-		
-	# print('wait...',buyCount)
-	# time.sleep(100)
+			print(minBuy,'<',num,'x')
+
+	print('buyCount=',buyCount)
+	#勾选所有
 	if(buyCount >0):
 		ClickForCount("shop/kuang.png",buyCount)
+		time.sleep(0.1)
 		ClickXYWait(742,438)
-		WaitToClickImg('main/sure.png')		
+		WaitToClickImg('main/sure.png')
 		return True
 		#有的购买
 	else:
 		return False
-'''
+
+def ScaleImg(img,scale):
+	newSize = (int(img._size[0]*scale), int(img._size[1]*scale))
+	img = img.resize(newSize,Image.Resampling.LANCZOS)
+	return img
+
+def StrToInt(x,defaut=9999):
+	try:
+		r=int(x)
+	except:
+		pattern = "\d+"  # 匹配一个或多个数字
+		result = re.search(pattern, x)
+		try:
+			r=int(result.group())
+		except:
+			r=defaut
+		print('str',x)
+	return r
+
+def ImgToText(img):
+	try:
+		pytesseract.pytesseract.tesseract_cmd = curDir+('/OCR/tesseract.exe')
+		text = pytesseract.image_to_string(img, lang='eng')#chi_sim
+		#config='--psm 6 -c tessedit_char_whitelist=0123456789:持有数
+		return text
+	except Exception as e:
+		print("错误 ",e)
+		return ""
 
 
 def NiuDan():
@@ -1211,7 +1263,7 @@ def OnHouDongHard():
 	if(1-EnterHuodongHard()):
 		print('ReTry HouDong!!!')
 		isEnter = EnterHuodongHard()
-	
+
 	if(1-isEnter):
 		print('No HouDong!!!')
 		return
@@ -1245,7 +1297,7 @@ def EnterHuodongHard():
 		ZExit()
 		ZExit()
 		print('Check HuoDong!')
-	
+
 	#对话的情况 似乎无法避免
 	if(WaitToClickImg('task/task.png',False,maxTry=25) == True):
 		#活动表层
@@ -1392,8 +1444,8 @@ def DailyTasks():
 	if(isUseAllPower):
 		UseAllPower()
 		StartTakeAll()
-	# if(isBuyDxc):
-	# 	OnBuyDxc()
+	if(isBuyDxc):
+		OnBuyDxc()
 
 	if(isTuitu):
 		OnTuituStart()
@@ -1404,12 +1456,13 @@ def DailyTasks():
 
 
 def CloseMoniqi():
+	if(isMumu):
+		return
 	print("3 秒后关闭模拟器")
 	time.sleep(3)
 	cmdStr = "cd /d "+LeiDianDir+" & dnconsole.exe quitall"
 	print("cmdstr",cmdStr)
 	os.system(cmdStr)
-	# win32api.ShellExecute(0, 'open', GetFullPath('CloseLeiDian.cmd'), '', '', 1)
 
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
@@ -1615,16 +1668,14 @@ else:
 #endregion
 def test():
 
-	# reader = easyocr.Reader(['ch_sim']) 
-	# results = reader.readtext('temp_cut.png',low_text = 0.2)
+	text=ImgToText(GetFullPath("temp_cut.png"))
+	print(text)
+	numRaw = re.findall('\d+', text)
 
-	# for r in results:	
-	# 	print(r[1],r[2])
-		
-	# 	numRaw = re.findall('\d+', r[1])		
-	# 	#has num
-	# 	if((len(numRaw)>0)):
-	# 		print(numRaw[0])
+	#has num
+	if((len(numRaw)>0)):
+		for i in range(len(numRaw)):
+			print(numRaw[i])
 
 	time.sleep(40)
 
@@ -1639,13 +1690,8 @@ def RunAutoPcr():
 	t0 = threading.Thread(target=CheckEnd,args=(endKey,))
 	t0.start()
 
-
 	# test()
-
 	WaitWin32Start()
-
-	# HuoDongVHBoss()
-	#CurSaodang()
 
 	time.sleep(0.5)
 	if(isRunAndStart):

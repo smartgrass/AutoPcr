@@ -12,3 +12,4 @@ AutoPcr_py/**.lnk
 /ignore/
 /AutoPcr_py/**.zip
 /AutoPcr_py/temp_cut.png
+/AutoPcr_py/OCR/**

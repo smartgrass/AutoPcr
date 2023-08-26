@@ -85,7 +85,7 @@ def GetMnq():
 		MnqDir = cfg.get('MainSetting',LeiDianDirKey,fallback="")
 
 	print(curMnq,MnqDir)
-		
+
 
 def SetConfigAuto(key,AllValues):
 	SetConfig(key,str(AllValues[key]))
@@ -120,7 +120,7 @@ def SetMnqDir():
 	if(isMumu):
 		cfg.set('MainSetting',MumuDirKey,MnqDir)
 	else:
-		cfg.set('MainSetting',LeiDianDirKey,MnqDir)		
+		cfg.set('MainSetting',LeiDianDirKey,MnqDir)
 isRunAndStart = False
 isAutoClose = False
 
@@ -213,7 +213,6 @@ dxcBuyTime = string_to_Int(GetStrConfig(dxcBuyTimeKey,'16'))
 
 GetMnq()
 
-print(curMnq,isMumu)
 
 
 
@@ -235,7 +234,7 @@ isAllSelect2= False
 
 #保存配置
 def SavaConfig(AllValues):
-	RunTimeValue() 
+	RunTimeValue()
 	SetConfigAuto(isJJCKey,AllValues)
 	SetConfigAuto(isTansuoKey,AllValues)
 	SetConfigAuto(isDxcKey,AllValues)
@@ -262,7 +261,7 @@ def SavaConfig(AllValues):
 	SetConfigAuto(playerNameKey,AllValues)
 	SetConfigAuto(isVHKey,AllValues)
 	SetConfigAuto(isHouDongVHKey,AllValues)
-	# SetConfigAuto(isBuyDxcKey,AllValues)
+	SetConfigAuto(isBuyDxcKey,AllValues)
 	SetConfigAuto(minDxcBuyKey,AllValues)
 	SetConfigAuto(dxcBuyTimeKey,AllValues)
 	# SetConfigAuto(dxcGroupBossKey,AllValues)
@@ -302,54 +301,12 @@ def ReadConfig():
 	ReadBoolConfig(isVHKey)
 	ReadBoolConfig(isBuyDxcKey)
 
-
 	ReadStrConfig(isHouDongVHKey)
 	ReadStrConfig(dxcDropKey)
 	ReadStrConfig(needZbNameKey)
 	ReadStrConfig(playerNameKey)
 	ReadStrConfig(minDxcBuyKey)
 	ReadStrConfig(dxcBuyTimeKey)
-
-
-	# ReadStrConfig(mnqIndexKey,AllValues)
-
-
-# def WriteCmds():
-# 	path = str(LeiDianDir)
-# 	index = str(mnqIndex)
-# 	WriteLeiDian(path,index)
-# 	WriteCloseLeidian(path)
-	# WirteStartPy()
-
-# def WriteCloseLeidian(path):
-# 	print('write ',path,'CloseLeiDian.cmd')
-# 	fileName = 'CloseLeiDian.cmd'
-# 	with open(GetFullPath(fileName),'w') as f:
-# 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe quitall\n\nexit")
-# 		f.write(cmdStr)
-
-# def WriteLeiDian(path,index):
-# 	print('write ',path,'StartLeiDian.cmd')
-# 	fileName = 'StartLeiDian.cmd'
-# 	if(index == '1'):
-# 		fileName = 'StartLeiDian1.cmd'
-# 	with open(GetFullPath(fileName),'w') as f:
-# 		cmdStr =("cd /d "+path+"\n\ndnconsole.exe launchex --index "+index+" --packagename com.bilibili.priconne\n\nexit")
-# 		f.write(cmdStr)
-
-# def WirteStartPy():
-# 	with open(GetFullPath('StartPy.cmd'),'w') as f:
-# 		cmdStr =("python "+curDir+"\AutoPcr4.0.py\n\nexit")
-# 		f.write(cmdStr)
-
-# def WirteStart(path):
-# 	with open(GetFullPath('start.cmd'),'w') as f:
-# 		print('write ',path,'start.cmd')
-# 		cmdStr  = "start call "+curDir+"\startPy.cmd\n\n"+"cd /d "+ path+"\n\ndnconsole.exe launchex --index 0 --packagename com.bilibili.priconne\n\nexit"
-# 		f.write(cmdStr)
-
-
-from subprocess import run
 
 def CallLeiDian():
 	cmdStr = "cd /d "+MnqDir+" & dnconsole.exe"+"  launchex --index " + str(mnqIndex) + " --packagename com.bilibili.priconne\n"
@@ -379,7 +336,7 @@ def CallPy():
 def StartPcr():
 	if(isMumu):
 		CallMumu()
-	else:	
+	else:
 		CallLeiDian()
 	CallPy()
 
@@ -388,7 +345,7 @@ left_col = [
 [sg.Text('日常功能'),sg.Checkbox('',isAllSelect1,key=isAllSelectKey_1,enable_events=True)],
 [sg.Checkbox('竞技场',isJJC,key=isJJCKey),sg.Checkbox('探索',isTansuo,key=isTansuoKey),sg.Checkbox('地下城',isDxc,key=isDxcKey)],
 [sg.Checkbox('购买经验',isExp,key=isExpKey),sg.Checkbox('扭蛋',isNiuDan,key=isNiuDanKey),sg.Checkbox('领取奖励',isHomeTake,key=isHomeTakeKey)],
-[sg.Checkbox('点赞',isDianZan,key=isDianZanKey)], #,sg.Checkbox('地下城商店(无)',isBuyDxc,key=isBuyDxcKey)
+[sg.Checkbox('点赞',isDianZan,key=isDianZanKey) ,sg.Checkbox('买装备',isBuyDxc,key=isBuyDxcKey)],
 
 [sg.Text('次用功能'),sg.Checkbox('',isAllSelect2,key=isAllSelectKey_2,enable_events=True)],
 [sg.Checkbox('星球杯',isXQB,key = isXQBKey),sg.Checkbox('心之碎片',isXinSui,key = isXinSuiKey),sg.Checkbox('vh碎片*1',isVH,key = isVHKey)],
@@ -406,7 +363,7 @@ sg.Checkbox('多开',isMult,key=isMultKey),sg.Checkbox('64位',isFor64,key=isFor
 [sg.Text('玩家角色:main/'),sg.InputText(playerName,size =(8,None),key= playerNameKey),sg.Text('.png')],
 [sg.Text('求装备:other/zuanbei/'),sg.InputText(needZbName,size =(8,None),key= needZbNameKey),sg.Text('.png')],
 [sg.Text('普通*n左移'),sg.InputText(useAllMoveTime,size =(4,None),key= useAllMoveTimeKey),sg.Text('vh碎片*1左移'),sg.InputText(vhMoveTime,size =(4,None),key= vhMoveTimeKey)],
-[sg.Text('dxc商店刷新次数(无)'),sg.InputText(dxcBuyTime,size =(4,None),key= dxcBuyTimeKey),sg.Text('购买<'),sg.InputText(minDxcBuy,size =(4,None),key= minDxcBuyKey)],
+[sg.Text('买装备次数[3]'),sg.InputText(dxcBuyTime,size =(8,None),key= dxcBuyTimeKey),sg.Text('购买<'),sg.InputText(minDxcBuy,size =(4,None),key= minDxcBuyKey)],
 [sg.Checkbox('买经验*5',isBuyMoreExp,key = isBuyMoreExpKey)],
 [sg.Text('地下城'),sg.DropDown(dxcDropValue, dxcBoss ,key=dxcDropKey,size=(15,None))],
 
@@ -452,11 +409,12 @@ def SetAllSelect2():
 	# window[isNeedSeedKey].Update(isAllSelect2)
 	# window[isSendKey].Update(isAllSelect2)
 	window[isHouDongHardKey].Update(isAllSelect2)
-	window[isVHKey].Update(isAllSelect2)
 	window[isUseAllPowerKey].Update(isAllSelect2)
 	window[isXQBKey].Update(isAllSelect2)
 	# window[isTuituKey].Update(isAllSelect2)
 	window[isXinSuiKey].Update(isAllSelect2)
+	window[isVHKey].Update(isAllSelect2)
+	window[isHouDongVHKey].Update(isAllSelect2)
 # sg.popup_get_folder('Enter the file you wish to process')
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
@@ -471,7 +429,7 @@ while True:
 		winName = win32gui.GetWindowText(MainhWnd)
 		isCur64 = False
 		if(winName.endswith("(64)")):
-			print("64位")
+			print(winName,"64位")
 
 
 	if event ==  isAllSelectKey_1:
