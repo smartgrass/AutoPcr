@@ -90,7 +90,8 @@ python环境, 没用过python的还是不推荐去用了
 
  PIL库做截图保存;
  
- tesseract 文字识别(需要额外安装tesseract.exe)
+ tesseract 文字识别(需要额外安装[tesseract.exe](https://digi.bib.uni-mannheim.de/tesseract/))
+ 
 
 管理员模式运行 "SetupPip.cmd" 安装
 
