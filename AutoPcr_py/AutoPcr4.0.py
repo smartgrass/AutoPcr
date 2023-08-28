@@ -927,6 +927,8 @@ def ImgToText(img):
 		text = pytesseract.image_to_string(img, lang='eng')
 		return text
 	except Exception as e:
+		if(os.path.exists('./OCR/tesseract.exe') == False):
+			print("没有 OCR/tesseract.exe","下载-> https://digi.bib.uni-mannheim.de/tesseract/")
 		print("错误 ",e)
 		#需要将tesseract安装到当前目录/OCR 文件夹中
 		return ""
