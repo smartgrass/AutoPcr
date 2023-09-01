@@ -951,12 +951,12 @@ def EnterDiaoCha():
 
 def SaoDang(_time =4):
 
-	if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False) == False):
+	if(WaitToClickImg(tansuoStart,isRgb=True,maxTry=8,isClick=False) == False):
 		MoveToLeft()
-		if(WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+		if(WaitToClickImg('tansuo/start2.png',match=warnMatch,isRgb=True,maxTry=8,isClick=False)):
 			MoveToLeft()
 
-	if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+	if(WaitToClickImg(tansuoStart,isRgb=True,maxTry=8,isClick=False)):
 		if(WaitToClickImg('tansuo/plus.png')):
 			for i in range(_time):
 				Click()
@@ -1178,7 +1178,7 @@ def OnTuituStart():
 def OnTuituLoop():
 	print('>>OnTuituLoop')
 	ClickPlayer()
-	if( WaitToClickImg('tansuo/start2.png',match=hightMatch,isRgb=True,maxTry=16,isClick=False)):
+	if( WaitToClickImg('tansuo/start2.png',match=warnMatch,isRgb=True,maxTry=16,isClick=False)):
 		print("检测到不能扫荡 -> 新关卡")
 		time.sleep(0.2)
 		ClickPlay()
@@ -1201,7 +1201,7 @@ def OnTuituLoop():
 		time.sleep(1.5)  #过渡
 		OnTuituLoop()
 	else:
-		if(WaitToClickImg(tansuoStart,match=hightMatch,isRgb=True,maxTry=8,isClick=False)):
+		if(WaitToClickImg(tansuoStart,match=warnMatch,isRgb=True,maxTry=8,isClick=False)):
 			print("已经全部通关...")
 			ExitSaoDang()
 		else:
