@@ -831,7 +831,7 @@ def BuyExp():
 
 def OnBuyDxc():
 
-	if(IsHasImg('shop/shopTop.png',False) == False):
+	if(IsHasImg('shop/shopTop.png',False,match=hightMatch) == False):
 		ToHomePage()
 		ToShopPage()
 		WaitToClickImg('shop/shopTop.png',False)
