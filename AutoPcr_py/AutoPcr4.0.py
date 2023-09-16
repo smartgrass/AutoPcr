@@ -12,7 +12,7 @@ import keyboard
 import win32gui, win32ui, win32con,win32api,win32print
 import sys
 import pytesseract
-# import easyocr
+import random
 import re
 
 #region 获取当前路径
@@ -654,6 +654,12 @@ def ToShopPage():
 	time.sleep(1)
 #endregion
 
+def TakeJJC():
+	if(isTakeJJC):
+		if(WaitToClickImg("jjc/get.png")):
+			ZExit()
+			ZExit()
+			ZExit()
 
 def StartJJC():
 	print("===竞技场==")
@@ -665,6 +671,7 @@ def StartJJC():
 	WaitToClickImg("jjc/jjcTop.png",False)
 	ZExit()
 	ZExit()
+	TakeJJC()
 	RightSelct(0)
 
 	time.sleep(1)
@@ -691,7 +698,11 @@ def StartPJJC():
 	time.sleep(1)
 	ZExit()
 	WaitToClickImg("jjc/pjjcTop.png",False)
-	ZExit() #关掉提示框
+	ZExit()
+	ZExit()
+	TakeJJC()
+	ZExit()
+	ZExit()
 	RightSelct(0) #选择
 
 	time.sleep(1.5)
@@ -804,7 +815,7 @@ def BuyExp():
 	ToHomePage()
 	ToShopPage()
 	WaitToClickImg('shop/shopTop.png',False)
-
+	EnterTitle(0)
 	buyTime = 1
 	if(isBuyMoreExp):
 		buyTime = 5
@@ -854,7 +865,10 @@ def OnBuyDxc():
 
 	return
 def EnterTitle(index):
-	if(index == 1):
+	if(index ==0):
+		Click(273,77) #title
+		ClickXYWait(273,77)
+	elif(index == 1):
 		Click(368,77) #title
 		ClickXYWait(368,77)
 		if(IsHasImg('shop/dxcTitle.png',False) == False):
@@ -862,7 +876,7 @@ def EnterTitle(index):
 	elif(index == 2):
 		Click(460,77) #title
 		ClickXYWait(460,77)
-	else:
+	elif(index == 3):
 		Click(550,77) #title
 		ClickXYWait(550,77)
 
@@ -1301,6 +1315,11 @@ def OnHouDongHard():
 	if(isHouDongVH):
 		HuoDongVHBoss()
 
+	#收取任务
+	# WaitToClickImg("task/task.png")
+	# WaitToClickImg("task/takeAll.png")
+	# WaitToClickImg("task/close.png")
+
 
 def EnterHuodongHard():
 	ToFightPage()
@@ -1675,6 +1694,12 @@ vhMoveTimeKey = 'vhMoveTime'
 vhMoveTime = string_to_Int(cfg.get('MainSetting',vhMoveTimeKey,fallback='0'))
 
 dxcBoss=GetStrConfig(dxcDropKey)
+
+#收jjc币
+isTakeJJC = True
+if(random.randint(1,10)>2):
+	isTakeJJC = False
+
 
 if(dxcBoss =="炸脖龙"):
 	dxcBossNum =2
